@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register to Komodo Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+    </header>
+    <div class="form-container register-box">
+        <h2 class="form-title">Register to Komodo Hub</h2> <!-- Title inside the box -->
+        <form>
+            <input type="text" placeholder="Name *" required>
+            <input type="text" placeholder="Username *" required>
+            <input type="password" placeholder="Password *" required>
+            <input type="password" placeholder="Confirm password *" required>
+
+            <div class="dropdown">
+                <select required>
+                    <option value="" disabled selected></option> <!-- Placeholder -->
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="member">Member</option>
+                </select>
+            </div>
+
+            <input type="text" placeholder="Access code (student & teacher)" required>
+
+            <img src="giphy.gif" alt="Loading animation" class="gif">
+
+            <button type="submit" class="submit-button">Register</button>
+
+        </form>
+        <p class="redirect">
+            Already have an account? <a href="login.html">Login</a>
+        </p>
+    </div>
+</body>
+</html>
