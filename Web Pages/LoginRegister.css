@@ -33,8 +33,8 @@ header {
     background: linear-gradient(145deg, #b6d4a4, #9cbc89);
     border-radius: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    width: 300px;
+    padding: 30px;
+    width: 350px;
     text-align: center;
 }
 .button-group {
@@ -60,7 +60,7 @@ header {
 form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 20px; 
 }
 
 input, select {
@@ -75,7 +75,6 @@ input, select {
 input::placeholder, select {
     color: #555;
 }
-
 .dropdown {
     position: relative;
     margin-top: 1px;
@@ -85,8 +84,9 @@ input::placeholder, select {
     border-bottom: 1px solid #333; 
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 2px 0;
+    width: 100%; 
+    padding: 4.5px 0;
+    cursor: pointer;
 }
 
 .dropdown select {
@@ -94,13 +94,13 @@ input::placeholder, select {
     -webkit-appearance: none;
     -moz-appearance: none;
     background: none; 
-    border: none; 
     font-size: 14px;
     color: #5e6259; 
     outline: none;
     cursor: pointer;
-    width: 100%;
+    width: 100%; 
     padding: 3px;
+    text-align: left;
 }
 
 .dropdown::before {
@@ -109,6 +109,49 @@ input::placeholder, select {
     color: #5e6259;
     margin-right: 10px;
     flex-shrink: 0;
+    cursor: pointer; 
+}
+
+.dropdown select option {
+    background: #b8cab3; 
+    color: #333; 
+}
+
+.dropdown::after {
+    content: "▾"; 
+    font-size: 12px;
+    position: absolute;
+    right: 0;
+    color: #282727;
+    pointer-events: none; 
+}
+.dropdown {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+}
+
+.dropdown select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;  
+    cursor: pointer;
+}
+
+.dropdown::before {
+    content: "Register as *   ";
+    font-size: 14px;
+    color: #5e6259;
+    margin-right: 10px;
+    flex-shrink: 0;
+    display: inline-block;
+    cursor: pointer; 
+}
+.dropdown select {
+    width: 100%;
 }
 
 .dropdown select option {
@@ -121,8 +164,8 @@ input::placeholder, select {
     position: absolute;
     right: 0;
     color: #282727;
+    pointer-events: none;
 }
-
 .submit-button {
     background: linear-gradient(145deg, #52763d, #aacb96);
     border: none;
@@ -134,7 +177,6 @@ input::placeholder, select {
     transition: transform 0.2s, background 0.3s ease;
     margin-top: 40px;
 }
-
 .submit-button:hover {
     background: linear-gradient(145deg, #647b56, #b6d4a4); 
     transform: scale(1.05);
@@ -148,7 +190,6 @@ input::placeholder, select {
     color: #555;
     text-decoration: underline;
 }
-
 .gif {
     width: 50px;
     display: block;
@@ -156,7 +197,6 @@ input::placeholder, select {
     position: relative;
     z-index: 0;
 }
-
 .submit-button {
     margin-top: 0;
     position: relative;
