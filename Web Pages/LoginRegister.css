@@ -130,25 +130,7 @@ input::placeholder, select {
     color: #282727;
     pointer-events: none; 
 }
-.dropdown {
-    position: relative;
-    width: 100%;
-    cursor: pointer;
-}
 
-
-.dropdown select option {
-    background: #b8cab3; 
-    color: #333; 
-}
-.dropdown::after {
-    content: "▾"; 
-    font-size: 12px;
-    position: absolute;
-    right: 0;
-    color: #282727;
-    pointer-events: none;
-}
 .submit-button {
     background: linear-gradient(145deg, #52763d, #aacb96);
     border: none;
