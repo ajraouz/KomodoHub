@@ -75,9 +75,10 @@ input, select {
 input::placeholder, select {
     color: #555;
 }
+
 .dropdown {
     position: relative;
-    margin-top: 1px;
+    margin-top: 0px;
     font-size: 14px; 
     color: #666; 
     text-align: left;
@@ -85,29 +86,33 @@ input::placeholder, select {
     display: flex;
     align-items: center;
     width: 100%; 
-    padding: 4.5px 0;
+    padding: 4px 0;
     cursor: pointer;
 }
 
 .dropdown select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background: none; 
-    font-size: 14px;
-    color: #5e6259; 
-    outline: none;
-    cursor: pointer;
+    -webkit-appearance: none; 
+    -moz-appearance: none;    
+    appearance: none;         
+    background-color: transparent; 
+    padding-right: 10px;
     width: 100%; 
-    padding: 3px;
-    text-align: left;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1; 
+    border-color:  #a2c98d;
+    cursor: pointer;
 }
+
 
 .dropdown::before {
     content: "Register as *   ";
     font-size: 14px;
     color: #5e6259;
-    margin-right: 10px;
+    margin-right: 2px;
     flex-shrink: 0;
     cursor: pointer; 
 }
@@ -131,28 +136,6 @@ input::placeholder, select {
     cursor: pointer;
 }
 
-.dropdown select {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;  
-    cursor: pointer;
-}
-
-.dropdown::before {
-    content: "Register as *   ";
-    font-size: 14px;
-    color: #5e6259;
-    margin-right: 10px;
-    flex-shrink: 0;
-    display: inline-block;
-    cursor: pointer; 
-}
-.dropdown select {
-    width: 100%;
-}
 
 .dropdown select option {
     background: #b8cab3; 
