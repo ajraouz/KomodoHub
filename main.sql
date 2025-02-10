@@ -7,6 +7,7 @@ CREATE TABLE Student(
     Password CHAR(50) NOT NULL,
     AccessCode INTEGER NOT NULL,
     TotalPoints INTEGER,
+    TotalPosts INTEGER,
     Avatar BLOB
 );
 
