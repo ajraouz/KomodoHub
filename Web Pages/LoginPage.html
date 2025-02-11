@@ -14,12 +14,12 @@
     </header>
     <div class="form-container login-box">
         <h2 class="form-title">Login</h2> <!-- Title inside the box -->
-        <form>
+        <form id="registerForm">
             <input type="text" placeholder="Username *" required>
             <input type="password" placeholder="Password *" required>
 
             <div class="dropdown">
-                <select required>
+                <select id="dropdown" required>
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
                     <option value="member">Member</option>
@@ -28,7 +28,7 @@
         
             <img src="Images/giphy.gif" alt="Loading animation" class="gif">
 
-            <button type="submit" class="submit-button">Log In</button>
+            <button id="submit" type="submit" class="submit-button">Log In</button>
 
         </form>
         <p class="redirect">
