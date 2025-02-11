@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="LoginRegister.css">
+</head>
+<body>
+    <header>
+        <a href="HomePage.html">
+            <img src="Images/komodoLogo.png" alt="Logo" class="logo">
+        </a>
+    </header>
+    <div class="form-container login-box">
+        <h2 class="form-title">Login</h2> <!-- Title inside the box -->
+        <form>
+            <input type="text" placeholder="Username *" required>
+            <input type="password" placeholder="Password *" required>
+
+            <div class="dropdown">
+                <select required>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="member">Member</option>
+                </select>
+            </div>
+        
+            <img src="Images/giphy.gif" alt="Loading animation" class="gif">
+
+            <button type="submit" class="submit-button">Log In</button>
+
+        </form>
+        <p class="redirect">
+            Don't have an account? <a href="RegisterPage.html">Register</a>
+        </p>
+    </div>
+</body>
+</html>
