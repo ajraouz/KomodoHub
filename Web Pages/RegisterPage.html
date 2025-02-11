@@ -40,45 +40,6 @@
         </p>
     </div>
 
-    <script>
-        document.getElementById('dropdown').addEventListener('change', function () {
-            let selectedValue = this.value;
-            let accessCodeInput = document.getElementById('accessCode');
-            let button = document.getElementById('submit');
-
-            // Show/hide access code field based on selection
-            if (selectedValue === 'student' || selectedValue === 'teacher') {
-                accessCodeInput.style.display = 'block';
-                accessCodeInput.required = true;
-                button.textContent = 'Register';
-            }
-            else if (selectedValue === 'member') {
-                accessCodeInput.style.display = 'none';
-                accessCodeInput.required = false;
-                button.textContent = 'Go to Payment Page';
-            }
-            else {
-                accessCodeInput.style.display = 'none';
-                accessCodeInput.required = false;
-            }
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevents form from actually submitting
-
-            let userType = document.getElementById('dropdown').value;
-            
-            if (userType === 'member') {
-                window.location.href = 'HomePage.html'; // Redirects to member page
-            }
-            else if (userType === 'student' || userType === 'teacher') {
-                window.location.href = 'LoginPage.html'; // Redirects to student registration
-            }
-            else {
-                alert("Please select a valid user type!"); // Fallback in case no selection is made
-            }
-        });
-    </script>
 </body>
 </html>
 
