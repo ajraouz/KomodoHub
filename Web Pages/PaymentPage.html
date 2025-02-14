@@ -146,6 +146,31 @@
             } else {
                 alert("Please fill out all fields.");
             }
+            const user = JSON.parse(localStorage.getItem('userData'));  // Get user data from localStorage
+
+            // Send the registration data to the backend for insertion
+            const formData = new FormData();
+            formData.append('username', user.username);
+            formData.append('name', user.name);
+            formData.append('password', user.password);
+
+            fetch('http://127.0.0.1:5001/complete_payment_registration', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.message) {
+                    alert(result.message);  // Registration successful
+                    window.location.href = '/Web Pages/LoginPage.html';  // Redirect to login page
+                } else {
+                    alert("Error: " + result.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error completing payment and registration:', error);
+                alert("There was an error completing your registration.");
+            });
         }
 
         function capitalizeName(event) {

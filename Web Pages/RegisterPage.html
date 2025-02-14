@@ -88,8 +88,17 @@
                 formData.append('access_code', accessCode);
             }
 
+            // If user is a member, don't submit form right now, just go to payment page
+            if (userType === 'member') {
+                // Store user data in localStorage or sessionStorage to access on payment page
+                localStorage.setItem('userData', JSON.stringify({ username, name, password }));
+                
+                window.location.href = 'Web Pages/PaymentPage.html';
+                return;
+            }
+
             try {
-                let response = await fetch('http://127.0.0.1:5000/register', {  // <-- Ensure you use this URL
+                let response = await fetch('http://127.0.0.1:5001/register', {  // <-- Ensure you use this URL
                     method: 'POST',
                     body: formData
                 });
@@ -98,7 +107,7 @@
 
                 if (response.ok) {
                     alert(result.message);
-                    window.location.href = userType === 'member' ? 'HomePage.html' : 'LoginPage.html';
+                    window.location.href = 'LoginPage.html';
                 } else {
                     alert("Error: " + result.error);
                 }

@@ -61,6 +61,33 @@ def register():
         logging.exception("An error occurred while registering.")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/complete_payment_registration', methods=['POST'])
+def complete_payment_registration():
+    try:
+        logging.debug("Received post-payment registration request.")
+
+        username = request.form.get('username')
+        name = request.form.get('name')
+        password = request.form.get('password')
+
+        # Add any logic here to verify the payment (e.g., check payment ID, token, etc.)
+
+        conn = sqlite3.connect('KH_Database.db')
+        cursor = conn.cursor()
+
+        sql = "INSERT INTO Member (Username, FullName, Password) VALUES (?, ?, ?)"
+        cursor.execute(sql, (username, name, password))
+
+        conn.commit()
+        conn.close()
+
+        logging.info("User registered successfully after payment.")
+        return jsonify({"message": "Registration completed successfully!"}), 200
+
+    except Exception as e:
+        logging.exception("An error occurred during post-payment registration.")
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
-    webbrowser.open("http://127.0.0.1:5000/")
-    app.run(debug=True, port=5000)
+    webbrowser.open("http://127.0.0.1:5001/")
+    app.run(debug=True, port=5001)
