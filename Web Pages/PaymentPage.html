@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komodo Hub Payment</title>
+    <link rel="stylesheet" href="PaymentPage.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="payment-box">
+            <h1>Payment</h1>
+            <p>Please enter complete information for payment</p>
+            
+            <form id="payment-form">
+                <label>Cardholder name</label>
+                <input type="text" id="cardholder-name" placeholder="Full name on card" required>
+
+                <label>Card Information</label>
+                <input type="text" id="card-number" placeholder="_ _ _ _  _ _ _ _  _ _ _ _  _ _ _ _" maxlength="19" required>
+
+                <div class="card-details">
+                    <div>
+                        <input type="text" id="CVV" placeholder="CVV" required maxlength="3">
+                    </div>
+                    <div>
+                        <input type="text" id="expiry-date" placeholder="MM / YY" maxlength="7" required>
+                    </div>
+                </div>
+
+                <button type="button" onclick="completePayment()">Complete Payment</button>
+            </form>
+        </div>
+
+        <div class="ticket-background">
+            <div class="total-amount-box">
+                <p>Amount to be paid: £<span id="finalAmount">9.60</span></p>
+            </div>
+        </div>
+
+        <div class="ticket-background2">
+        </div>
+
+        <div class="payment-summary">
+            <h3>Payment Summary</h3>
+            <p><strong>Order Number</strong><span id="order-number"></span></p>
+            <p><strong>Order Amount (£)</strong> £<span id="totalAmount">8.00</span></p>
+            <p><strong>VAT</strong> <span id="vatAmount">20%</span></p>
+            <p><strong>VAT Amount</strong> £<span id="totalAmount">1.60</span></p>
+        </div>
+    </div>
+
+    <script>
+
+        function generateOrderNumber() {
+            return Math.floor(10000000 + Math.random() * 90000000);
+        }
+    
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("order-number").innerText = generateOrderNumber();
+        });
+
+        document.getElementById('expiry-date').addEventListener('input', function(event) {
+            let value = event.target.value.replace(/\D/g, ''); 
+
+            
+            if (event.inputType === 'deleteContentBackward') {
+                return;
+            }
+
+            if (value.length >= 2) {
+                let mm = value.substring(0, 2);
+                let yy = value.substring(2, 4);
+
+        
+                if (parseInt(mm) > 12) {
+                    mm = '0' + mm[0]; 
+                    yy = value.substring(1, 3); 
+                }
+
+                value = mm + ' / ' + yy; 
+            }
+
+            event.target.value = value;
+        });
+
+        document.getElementById('CVV').addEventListener('input', function(event) {
+            let value = event.target.value;
+    
+            
+            if (event.inputType === 'deleteContentBackward') {
+                return; 
+            }
+    
+            value = value.replace(/\D/g, '');
+            event.target.value = value;
+        });
+    
+        document.getElementById('card-number').addEventListener('input', function(event) {
+            let value = event.target.value;
+        
+            if (event.inputType === 'deleteContentBackward') {
+                return; 
+            }
+    
+            value = value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            event.target.value = value;
+        });
+    
+        document.getElementById('cardholder-name').addEventListener('input', function(event) {
+            let value = event.target.value;
+    
+            
+            value = value.replace(/[^a-zA-Z\s]/g, '');
+    
+            value = value.replace(/\b\w/g, function(char) {
+                return char.toUpperCase();
+            });
+    
+            event.target.value = value;
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("order-number").innerText = generateOrderNumber();
+            document.getElementById("cardholder-name").addEventListener("input", capitalizeName);
+        });
+
+        function completePayment() {
+            let formFields = document.querySelectorAll("#payment-form input");
+            let allValid = true;
+
+            formFields.forEach(function(input) {
+                if (input.value.trim() === "") {
+                    input.style.borderColor = "red";
+                    allValid = false;
+                } else {
+                    input.style.borderColor = ""; 
+                }
+            });
+
+            if (allValid) {
+                window.location.href = "HomePage.html";  
+            } else {
+                alert("Please fill out all fields.");
+            }
+        }
+
+        function capitalizeName(event) {
+            let value = event.target.value;
+            value = value.replace(/[^a-zA-Z\s]/g, '').toLowerCase();
+            const words = value.split(" ");
+            if (words[0]) words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+            if (words[1]) words[1] = words[1].charAt(0).toUpperCase() + words[1].slice(1);
+            event.target.value = words.join(" ");
+        }
+    </script>
+
+</body>
+</html>
