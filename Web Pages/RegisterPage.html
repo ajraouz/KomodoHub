@@ -4,39 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register to Komodo Hub</title>
-    <link rel="stylesheet" href="LoginRegister.css">
+    <link rel="stylesheet" href="/Web Pages/LoginRegister.css" type="text/css">
 </head>
 <body>
     <header>
-        <a href="HomePage.html">
-            <img src="Images/komodoLogo.png" alt="Logo" class="logo">
+        <a href="/Web Pages/HomePage.html">
+            <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
         </a>
     </header>
     <div class="form-container register-box">
         <h2 class="form-title">Register to Komodo Hub</h2>
-        <form id="registerForm">
-            <input type="text" placeholder="Name *" required>
-            <input type="text" placeholder="Username *" required>
-            <input type="password" placeholder="Password *" required>
-            <input type="password" placeholder="Confirm password *" required>
+        <form id="registerForm" action="/register" method="POST">
+            <input type="text" name="name" placeholder="Name *" required>
+            <input type="text" name="username" placeholder="Username *" required>
+            <input type="password" name="password" placeholder="Password *" required>
+            <input type="password" name="confirm_password" placeholder="Confirm password *" required>
 
             <div class="dropdown">
-                <select id="dropdown" required>
+                <select name="user_type" id="dropdown" required>
                     <option value="student">Student</option>
                     <option value="teacher">Teacher</option>
                     <option value="member">Member</option>
                 </select>
             </div>
     
-            <input id="accessCode" type="text" placeholder="Access code" required>
+            <input id="accessCode" name="access_code" type="text" placeholder="Access code" required>
 
-            <img src="Images/giphy.gif" alt="Loading animation" class="gif">
+            <img src="/Web Pages/Images/giphy.gif" alt="Loading animation" class="gif">
 
             <button id="submit" type="submit" class="submit-button">Register</button>
 
         </form>
         <p class="redirect">
-            Already have an account? <a href="LoginPage.html">Login</a>
+            Already have an account? <a href="/Web Pages/LoginPage.html">Login</a>
         </p>
     </div>
 
@@ -63,19 +63,48 @@
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevents form from actually submitting
+        document.getElementById('registerForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission
 
+            let name = document.querySelector('input[placeholder="Name *"]').value;
+            let username = document.querySelector('input[placeholder="Username *"]').value;
+            let password = document.querySelector('input[placeholder="Password *"]').value;
+            let confirmPassword = document.querySelector('input[placeholder="Confirm password *"]').value;
             let userType = document.getElementById('dropdown').value;
-            
-            if (userType === 'member') {
-                window.location.href = 'HomePage.html'; // Redirects to member page
+            let accessCode = document.getElementById('accessCode').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
             }
-            else if (userType === 'student' || userType === 'teacher') {
-                window.location.href = 'LoginPage.html'; // Redirects to student registration
+
+            let formData = new FormData();
+            formData.append('name', name);
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('user_type', userType);
+
+            if (userType === 'student' || userType === 'teacher') {
+                formData.append('access_code', accessCode);
             }
-            else {
-                alert("Please select a valid user type!"); // Fallback in case no selection is made
+
+            try {
+                let response = await fetch('http://127.0.0.1:5000/register', {  // <-- Ensure you use this URL
+                    method: 'POST',
+                    body: formData
+                });
+
+                let result = await response.json();
+
+                if (response.ok) {
+                    alert(result.message);
+                    window.location.href = userType === 'member' ? 'HomePage.html' : 'LoginPage.html';
+                } else {
+                    alert("Error: " + result.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while registering.");
             }
         });
     </script>
