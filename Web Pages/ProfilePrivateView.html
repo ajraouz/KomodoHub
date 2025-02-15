@@ -25,8 +25,9 @@
         <!-- Left Side -->
         <div class="profile-section">
             <!-- Profile Info -->
+             <!-- Profile Info -->
             <div class="profile-container">
-                <img id="profile-avatar" src="avatar1.png" alt="Profile Picture">
+                <img id="profile-avatar" src="Images/default.png" alt="Profile Picture">  
                 <div class="profile-info">
                     <h2>Alvisha Aslam</h2>
                     <p class="username">@alv123</p>
@@ -36,17 +37,20 @@
 
             <!-- Avatar Selection & Password Change -->
             <div class="settings-container">
-                <p class="section-title">Choose Avatar</p>
+                <p class="section-title">Choose Avatar</p><!-- Avatar Selection -->
                 <div class="avatar-options">
-                    <img class="avatar" src="Images/cool.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/lion.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/rabbit.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/panda.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/monkey.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/dog.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/fox.png" onclick="setAvatar(this)">
-                    <img class="avatar" src="Images/frog-.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/default.png" data-avatar="default" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/cool.png" data-avatar="cool" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/lion.png" data-avatar="lion" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/rabbit.png" data-avatar="rabbit" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/panda.png" data-avatar="panda" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/monkey.png" data-avatar="monkey" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/dog.png" data-avatar="dog" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/fox.png" data-avatar="fox" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/frog-.png" data-avatar="frog" onclick="setAvatar(this)">
                 </div>
+                <!-- Save Avatar Button -->
+                <button onclick="saveAvatar()" class="btn blue">Save Avatar</button>
                 
                 <h3>Change Password</h3>
                 <div class="password-container">

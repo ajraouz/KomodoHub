@@ -101,7 +101,10 @@ body {
     cursor: pointer;
     transition: 0.3s;
 }
-
+#profile-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.4);
+}
 .profile-info {
     flex: 1;
 }
@@ -142,12 +145,22 @@ body {
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: 0.3s ease;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
 }
 
-.avatar:hover, .avatar.selected {
-    border: 3px solid #3b82f6;
+.avatar:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
+
+/* Selected avatar effect */
+.avatar.selected {
+    border: 3px solid #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+    position: relative;
+}
+
 
 /* Contributions Section */
 .contributions-container {
