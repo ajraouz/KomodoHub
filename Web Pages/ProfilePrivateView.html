@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komodo Hub Profile</title>
+    <link rel="stylesheet" href="ProfilePrivateView.css">
+    <script defer src="ProfilePrivateView.js"></script>
+</head>
+<body>
+    <!-- Logo -->
+    <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+
+    <!-- Logout Button -->
+    <button class="logout-button" onclick="logout()">Logout</button>
+
+    <!-- Main Layout -->
+    <div class="main-container">
+        <!-- Left Side -->
+        <div class="profile-section">
+            <!-- Profile Info -->
+            <div class="profile-container">
+                <img id="profile-avatar" src="avatar1.png" alt="Profile Picture">
+                <div class="profile-info">
+                    <h2>Alvisha Aslam</h2>
+                    <p class="username">@alv123</p>
+                    <p><strong>Role:</strong> Student</p>
+                </div>
+            </div>
+
+            <!-- Avatar Selection & Password Change -->
+            <div class="settings-container">
+                <p class="section-title">Choose Avatar</p>
+                <div class="avatar-options">
+                    <img class="avatar" src="Images/cool.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/lion.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/rabbit.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/panda.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/monkey.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/dog.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/fox.png" onclick="setAvatar(this)">
+                    <img class="avatar" src="Images/frog-.png" onclick="setAvatar(this)">
+                </div>
+                
+                <h3>Change Password</h3>
+                <div class="password-container">
+                    <input type="password" id="newPassword" placeholder="Enter new password" oninput="validatePassword()">
+                    
+                </div>
+                <p id="passwordError" class="error-message"></p>
+                <button onclick="changePassword()" class="btn blue">Update Password</button>
+                </div>
+        </div>
+
+        <!-- Right Side: Contributions -->
+        <div class="contributions-container">
+            <h3>Contributions</h3>
+            <p><strong>Posts:</strong> <span id="posts">10</span></p>
+            <p><strong>Points:</strong> <span id="points">250</span></p>
+
+            <button onclick="deleteAccount()" class="btn red">Delete Account</button>
+        </div>
+    </div>
+</body>
+</html>
+
