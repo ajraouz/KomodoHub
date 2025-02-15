@@ -50,7 +50,7 @@ function showModal(article) {
     title.innerText = articles[article].title;
     content.innerText = articles[article].content;
     image.src = articles[article].image;
-    profile.src = articles[article].profile || 'images/default-profile.jpg'; 
+    profile.src = articles[article].profile || 'images/default.png'; 
     member.innerText = articles[article].member;
     memberType.innerText = articles[article].memberType;
     date.innerText = articles[article].date;
