@@ -8,11 +8,17 @@
     <script defer src="ProfilePrivateView.js"></script>
 </head>
 <body>
-    <!-- Logo -->
-    <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
-
-    <!-- Logout Button -->
-    <button class="logout-button" onclick="logout()">Logout</button>
+    <div class="navbar">
+        <a href="HomePage.html">
+            <!-- Logo -->
+            <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+        </a>
+    
+        <a href="HomePage.html">
+           <!-- Logout Button -->
+           <button class="logout-button" onclick="logout()">Logout</button>
+        </a>
+    </div>
 
     <!-- Main Layout -->
     <div class="main-container">
@@ -45,7 +51,7 @@
                 <h3>Change Password</h3>
                 <div class="password-container">
                     <input type="password" id="newPassword" placeholder="Enter new password" oninput="validatePassword()">
-                    
+                    <span class="toggle-password" onclick="togglePassword()">🙈</span>
                 </div>
                 <p id="passwordError" class="error-message"></p>
                 <button onclick="changePassword()" class="btn blue">Update Password</button>

@@ -48,3 +48,15 @@ function deleteAccount() {
         alert("Account deleted.");
     }
 }
+function togglePassword() {
+    const passwordInput = document.getElementById("newPassword");
+    const toggleIcon = document.querySelector(".toggle-password");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.textContent = "👁️"; // Change icon to "hide" mode
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.textContent = "🙈"; // Change icon to "show" mode
+    }
+}
