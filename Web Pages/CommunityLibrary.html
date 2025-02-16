@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komodo Hub</title>
+    <link rel="stylesheet" href="CommunityLibrary.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="HomePage.html">
+            <img src="images/komodoLogo.png" alt="Logo" class="logo">
+        </a>
+        
+        <div class="nav-center">
+            <a href="CommunityLibrary.html"><button class="community-btn">Community Library</button></a>
+            <a href="SchoolLibrary.html"><button>School Library</button></a>
+            <a href="Post.html"><button>Post</button></a>
+            <a href="Games.html"><button>Games</button></a>
+        </div>
+    
+        <a href="LoginPage.html"><button class="login">Login</button></a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <!-- First Card -->
+            <div class="card" onclick="showModal('elephants')">
+                <div class="card-header">
+                    <a href="profileA.html" class="profile-link">
+                        <img src="images/default.png" alt="Profile" class="profile-img">
+                    </a>
+                    <div class="card-info">
+                        <div class="profile-info">
+                            <span class="member-name">user1</span>
+                            <span class="member-type">Member</span>
+                        </div>
+                        <div class="timestamp">
+                            <span class="date">10 Feb 2025</span>
+                            <span class="time">12:42 PM</span>
+                        </div>
+                    </div>
+                </div>
+                <img src="images/elephant.jpg" alt="Elephants">
+                <h3>The last Sumatran elephants</h3>
+                <p>Some of the last Sumatran elephants roam the forest of Sepitun...</p>
+            </div>
+
+            <!-- Second Card -->
+            <div class="card" onclick="showModal('rhinos')">
+                <div class="card-header">
+                    <a href="profileB.html" class="profile-link">
+                        <img src="images/default.png" alt="Profile" class="profile-img">
+                    </a>
+                    <div class="card-info">
+                        <div class="profile-info">
+                            <span class="member-name">user2</span>
+                            <span class="member-type">Member</span>
+                        </div>
+                        <div class="timestamp">
+                            <span class="date">10 Feb 2025</span>
+                            <span class="time">12:42 PM</span>
+                        </div>
+                    </div>
+                </div>
+                <img src="images/rhino.jpg" alt="Rhino">
+                <h3>Javan rhinos</h3>
+                <p>The International Union of Nature (IUCN) classified Javan rhinos as critically endangered...</p>
+            </div>
+
+            <!-- Third Card -->
+            <div class="card" onclick="showModal('tigers')">
+                <div class="card-header">
+                    <a href="profileC.html" class="profile-link">
+                        <img src="images/default.png" alt="Profile" class="profile-img">
+                    </a>
+                    <div class="card-info">
+                        <div class="profile-info">
+                            <span class="member-name">user3</span>
+                            <span class="member-type">Member</span>
+                        </div>
+                        <div class="timestamp">
+                            <span class="date">10 Feb 2025</span>
+                            <span class="time">12:42 PM</span>
+                        </div>
+                    </div>
+                </div>
+                <img src="images/tiger.jpg" alt="Tiger">
+                <h3>Endangered Tigers</h3>
+                <p>Tigers are facing habitat destruction and poaching...</p>
+            </div>            
+        </div>
+    </div>
+
+<!-- Updated Popup Modal -->
+<div class="overlay" id="overlay" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+    <div class="modal-header">
+        <a id="modal-profile-link" href="" class="profile-link">
+            <img id="modal-profile" src="" alt="Profile" class="profile-img">
+        </a>
+        <div class="modal-info">
+            <div id="modal-profile-info" class="profile-info">
+                <span id="modal-member" class="member-name"></span>
+                <span id="modal-member-type" class="member-type"></span>
+            </div>
+            <div id="modal-timestamp" class="timestamp">
+                <span id="modal-date" class="date"></span>
+                <span id="modal-time" class="time"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-content">
+        <img id="modal-image" src="" alt="Animal Image">
+        <h3 id="modal-title"></h3>
+        <p id="modal-content"></p>
+    </div>
+
+    <button onclick="closeModal()">Close</button>
+</div>
+
+<script src="CommunityLibrary.js"></script>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Page</title>
+    <link rel="stylesheet" href="Post.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="HomePage.html">
+            <img src="images/komodoLogo.png" alt="Logo" class="logo">
+        </a>
+        
+        <div class="nav-center">
+            <a href="CommunityLibrary.html"><button>Community Library</button></a>
+            <a href="SchoolLibrary.html"><button>School Library</button></a>
+            <a href="Post.html"><button class="post-btn">Post</button></a>
+            <a href="Games.html"><button>Games</button></a>
+        </div>
+    
+        <a href="LoginPage.html"><button class="login">Login</button></a>
+    </div>
+    <div class="container">
+        <div class="create-post-title">Create the Post</div>
+        <div class="post-box">
+            <div class="profile-info">
+                <img src="images/default.png" alt="Profile" class="profile-img">
+                <div>
+                    <p class="username">User1</p>
+                    <p class="user-role">Member</p>
+                </div>
+            </div>
+            <input type="text" id="title" placeholder="Title">
+            <textarea id="content" placeholder="Write your post here"></textarea>
+            <div class="button-container">
+                <label for="media-upload" class="media-btn">📷 Add media</label>
+                <input type="file" id="media-upload" hidden>
+                <button id="post-button">Post</button>
+            </div>
+        </div>
+    </div>
+    <script src="Post.js"></script>
+</body>
+</html>
