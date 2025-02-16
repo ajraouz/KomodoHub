@@ -12,15 +12,6 @@ body {
     align-items: center;
     height: 100vh;
 }
-header {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-}
-.logo {
-    width: 250px;
-    height: auto;
-}
 .form-title {
     font-size: 29px; 
     font-weight: bold;
@@ -31,11 +22,12 @@ header {
 }
 .form-container {
     background: linear-gradient(145deg, #b6d4a4, #9cbc89);
-    border-radius: 20px;
+    border-radius: 15px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     padding: 30px;
-    width: 350px;
+    width: 340px;
     text-align: center;
+    margin-top: 85px;
 }
 .button-group {
     display: flex;
@@ -167,3 +159,105 @@ input::placeholder, select {
     position: relative;
     z-index: 0;
 }
+
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    height: 90px;
+    margin-left: 20px;
+    display: flex;
+}
+
+.navbar .logo {
+    height: 90px;
+    margin-left: 20px;
+    display: flex;
+    position: relative;
+    transition: transform 0.2s ease-in-out;
+}
+
+.navbar .logo::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 70%);
+    transform: skewX(-25deg);
+    transition: left 0.8s ease-in-out;
+    opacity: 0;
+}
+
+.navbar .logo:hover::after {
+    left: 100%;
+    opacity: 1;
+}
+
+.navbar .logo:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+    filter: drop-shadow(0 0 15px rgba(125, 245, 66, 0.8)); 
+}
+
+
+.logo:hover {
+    filter: drop-shadow(0 0 20px rgba(125, 245, 66,0)); 
+}
+
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+
+.navbar button {
+    background: black;
+    border: 2px solid transparent;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out, border 0.3s ease-in-out;;
+}
+
+.navbar a[href="LoginPage.html"] button {
+    border: 2px solid green; 
+    box-shadow: 0 0 10px green; 
+    font-weight: bold;
+}
+
+.navbar button:hover{
+    transform: scale(1.1);
+}
+
+.navbar .login {
+    margin-left: auto;
+    margin-right: 20px;
+    transform: none;
+}
+
+.navbar button:hover {
+    transform: scale(1.1);
+}
+
+.navbar .logo:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+}
+

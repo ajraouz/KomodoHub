@@ -149,10 +149,12 @@ h2 {
 #game-container h1,
 #game-container h2 {
     font-weight: bold;
-    color: black !important;
-    font-size: 30px; 
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+    color: rgb(255, 255, 255) !important;
+    font-size: 25px; 
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8); 
 }
+
+
 
 #word-list h2 {
     color: white !important;
@@ -273,7 +275,7 @@ html, body {
 }
 
 .navbar .logo {
-    height: 70px;
+    height: 90px;
     margin-left: 20px;
     display: flex;
     position: relative;
