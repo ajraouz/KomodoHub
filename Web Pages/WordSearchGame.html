@@ -51,9 +51,18 @@
 
     <script>
         function goBack() {
-            document.getElementById("game-container").style.display = "none"; 
-            document.getElementById("difficulty-screen").style.display = "flex"; 
+            let gameContainer = document.getElementById("game-container");
+            let difficultyScreen = document.getElementById("difficulty-screen");
+        
+            if (gameContainer && difficultyScreen) {
+                gameContainer.style.display = "none"; 
+                difficultyScreen.style.display = "flex"; 
+            } else {
+                console.error("Error: One or more elements not found.");
+            }
         }
+        
+
         function startGame(difficulty) {
             console.log("Selected difficulty:", difficulty); 
         
@@ -252,17 +261,6 @@ function markWordAsFound(word) {
                 }
             }
 
-
-            function checkWord() {
-                let selectedWord = selectedCells.map(c => c.textContent).join("");
-                let reversedWord = selectedWord.split("").reverse().join("");
-        
-                if (words.some(w => w.replace(/\s+/g, "") === selectedWord) && !foundWords.has(selectedWord)) {
-                    markWordAsFound(selectedWord);
-                } else if (words.some(w => w.replace(/\s+/g, "") === reversedWord) && !foundWords.has(reversedWord)) {
-                    markWordAsFound(reversedWord);
-                }
-            }
         
             function markWordAsFound(word) {
                 selectedCells.forEach(c => {
@@ -286,10 +284,6 @@ function markWordAsFound(word) {
                     messageElement.classList.add("win-message");
                 }
             }
-        
-            backButton.addEventListener("click", () => {
-                window.location.href = "difficulty.html";
-            });
         }
         
     </script>
