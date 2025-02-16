@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Profile - Komodo Hub</title>
+    <link rel="stylesheet" href="ProfilePrivateView.css">
+    <script defer src="ProfilePrivateView.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="HomePage.html">
+            <!-- Logo -->
+            <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+        </a>
+        
+        <div class="nav-center">
+            <a href="CommunityLibrary.html"><button>Community Library</button></a>
+            <a href="SchoolLibrary.html"><button>School Library</button></a>
+            <a href="Post.html"><button>Post</button></a>
+            <a href="Games.html"><button>Games</button></a>
+        </div>
+    
+        <a href="ProfilePrivateView.html"><button class="logout-button">Profile</button></a>
+    </div>
+
+    <div class="main-container">
+        <!-- Public Profile Section -->
+        <div class="profile-section">
+            <div class="profile-container">
+                <img id="profile-avatar" src="Images/default.png" alt="Profile Picture">  
+                <div class="profile-info">
+                    <h2 class="name">Alvisha Aslam</h2> <!-- Name -->
+                    <p class="username">@alv123</p>
+                    <p class="role"><strong>Role:</strong> Student</p> <!-- Role -->
+                </div>
+            </div>
+
+            <!-- Contributions Section -->
+            <div class="contributions-container">
+                <h3>Contributions</h3>
+                <p><strong>📜 Posts: </strong> <span id="posts">10</span></p>
+                <p><strong>⭐ Points: </strong> <span id="points">550</span></p>
+                <p><strong>🎖 Rank: </strong> <span id="rank">Beginner</span></p>
+
+                <!-- Progress Bar -->
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <p class="next-rank" id="next-rank">Next Rank: Advanced</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
