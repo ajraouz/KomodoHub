@@ -24,14 +24,13 @@
     <div class="main-container">
         <!-- Left Side -->
         <div class="profile-section">
-            <!-- Profile Info -->
-             <!-- Profile Info -->
+            <!-- Profile Section -->
             <div class="profile-container">
                 <img id="profile-avatar" src="Images/default.png" alt="Profile Picture">  
                 <div class="profile-info">
-                    <h2>Alvisha Aslam</h2>
+                    <h2 class="name">Alvisha Aslam</h2> <!-- Name -->
                     <p class="username">@alv123</p>
-                    <p><strong>Role:</strong> Student</p>
+                    <p class="role"><strong>Role:</strong> Student</p> <!-- Role -->
                 </div>
             </div>
 
@@ -64,12 +63,21 @@
 
         <!-- Right Side: Contributions -->
         <div class="contributions-container">
-            <h3>Contributions</h3>
-            <p><strong>Posts:</strong> <span id="posts">10</span></p>
-            <p><strong>Points:</strong> <span id="points">250</span></p>
-
-            <button onclick="deleteAccount()" class="btn red">Delete Account</button>
-        </div>
+            <h3>My Contributions</h3>
+            
+            <p><strong>📜 Posts: </strong> <span id="posts">10</span></p>
+            <p><strong>⭐ Points: </strong> <span id="points">550</span></p>
+            <p><strong>🎖 Rank: </strong> <span id="rank">Beginner</span></p>
+        
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        
+            <p class="next-rank" id="next-rank">Next Rank: Advanced</p>
+            
+            <button onclick="deleteAccount()" class="delete-button">🗑 Delete Account</button>
+        </div>                        
     </div>
 </body>
 </html>

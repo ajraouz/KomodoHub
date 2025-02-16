@@ -67,7 +67,7 @@ function validatePassword() {
     const minLength = password.length >= 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasSpecialChar = /[-_!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!minLength || !hasUpperCase || !hasNumber || !hasSpecialChar) {
         passwordError.textContent = "⚠️ Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.";
@@ -90,6 +90,7 @@ function changePassword() {
 
         // Clear the input field
         document.getElementById("newPassword").value = "";
+        passwordError.textContent = "";
     }
 }
 
@@ -115,4 +116,72 @@ function togglePassword() {
         passwordInput.type = "password";
         toggleIcon.textContent = "🙈"; // Change icon to "show" mode
     }
+}
+
+// Rank thresholds - adjust as needed
+const rankThresholds = [
+    { rank: "Beginner", points: 0 },
+    { rank: "Intermediate", points: 100 },
+    { rank: "Advanced", points: 250 },
+    { rank: "Expert", points: 500 },
+    { rank: "Master", points: 1000 }
+];
+
+document.addEventListener("DOMContentLoaded", function () {
+    updateProgress();
+});
+
+function getCurrentRank(points) {
+    let currentRank = rankThresholds[0].rank;
+    let nextRank = rankThresholds[1].rank; // Default next rank
+    let currentThreshold = rankThresholds[0].points;
+    let nextThreshold = rankThresholds[1].points;
+
+    for (let i = 0; i < rankThresholds.length; i++) {
+        if (points >= rankThresholds[i].points) {
+            currentRank = rankThresholds[i].rank;
+            currentThreshold = rankThresholds[i].points;
+
+            if (i + 1 < rankThresholds.length) {
+                nextRank = rankThresholds[i + 1].rank;
+                nextThreshold = rankThresholds[i + 1].points;
+            } else {
+                nextRank = null; // No next rank
+                nextThreshold = currentThreshold; // Prevent division by zero
+            }
+        }
+    }
+
+    return { currentRank, nextRank, currentThreshold, nextThreshold };
+}
+
+function updateProgress() {
+    let points = parseInt(document.getElementById("points").innerText) || 0;
+    let progressBar = document.getElementById("progress");
+    let rankDisplay = document.getElementById("rank");
+    let nextRankDisplay = document.getElementById("next-rank");
+
+    let { currentRank, nextRank, currentThreshold, nextThreshold } = getCurrentRank(points);
+
+    // Calculate progress percentage
+    let progressPercentage = nextRank
+        ? ((points - currentThreshold) / (nextThreshold - currentThreshold)) * 100
+        : 100; // If max rank, set progress bar to 100%
+
+    progressPercentage = Math.max(0, Math.min(progressPercentage, 100)); // Ensure valid range
+
+    // Update UI elements
+    rankDisplay.innerText = currentRank;
+    nextRankDisplay.innerText = nextRank ? `Next Rank: ${nextRank}` : "Max Rank Achieved";
+    progressBar.style.width = `${progressPercentage}%`;
+}
+
+// Function to add points dynamically
+function addPoints(newPoints) {
+    let pointsElement = document.getElementById("points");
+    let currentPoints = parseInt(pointsElement.innerText) || 0;
+    let updatedPoints = currentPoints + newPoints;
+
+    pointsElement.innerText = updatedPoints;
+    updateProgress();
 }
