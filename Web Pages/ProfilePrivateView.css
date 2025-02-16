@@ -198,8 +198,8 @@ h3 {
 
 /* Selected avatar effect */
 .avatar.selected {
-    border: 3px solid #3b82f6;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+    border: 3px solid #3bf654;
+    box-shadow: 0 0 15px rgba(59, 246, 128, 0.6);
     position: relative;
 }
 
@@ -316,10 +316,10 @@ h3 {
 }
 
 
-.blue { background-color: #3b82f6; }
+.green { background-color: #069e34; }
 .gray { background-color: #6b7280; }
 .red { background-color: #ef4444; }
-.blue:hover { background-color: #2563eb; }
+.green:hover { background-color: #0a7635; }
 .gray:hover { background-color: #4b5563; }
 .red:hover { background-color: #dc2626; }
 
