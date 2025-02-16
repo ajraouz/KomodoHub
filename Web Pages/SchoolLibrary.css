@@ -63,6 +63,9 @@ body {
 .navbar .school-btn {
     border: 2px solid rgb(105, 250, 105);
 }
+.navbar .community-btn {
+    border: 2px solid rgb(105, 250, 105);;
+}
 .navbar button:hover {
     transform: scale(1.1); 
 }
