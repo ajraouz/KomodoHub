@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const avatarOptions = document.querySelectorAll(".avatar");
     const profileAvatar = document.getElementById("profile-avatar");
-    const saveButton = document.querySelector(".btn.blue");
+    const saveButton = document.querySelector(".btn.green");
     
     // Create message element for feedback
     const avatarMessage = document.createElement("p");
