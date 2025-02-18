@@ -66,7 +66,12 @@ function loadNextAnimal() {
 
 // Function to start the game
 function startGame(difficulty) {
-    document.body.style.background = "url('Images/silh_bg.png') no-repeat center center/cover";
+    document.body.style.background = "url('Images/silh_bg.png') ";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed"; // Forces fixed background
+    
     console.log(`Game started with difficulty: ${difficulty}`);
 
     totalQuestions = difficulty === "easy" ? 5 : difficulty === "medium" ? 10 : 14;
@@ -160,7 +165,11 @@ function updateScoreDisplay() {
 }
 
 function goBack() {
-    document.body.style.background = "url('Images/game_sil_bg.png') no-repeat center center/cover";
+    document.body.style.background = "url('Images/game_sil_bg.png')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed";
     document.getElementById("difficulty-screen").style.display = "flex";
     document.getElementById("game-container").style.display = "none";
 }
@@ -175,7 +184,11 @@ function restartGame() {
     score = 0;
     questionIndex = 0;
     updateScoreDisplay(); // Reset score display
-    document.body.style.background = "url('Images/game_sil_bg.png') no-repeat center center/cover";
+    document.body.style.background = "url('Images/game_sil_bg.png') ";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundAttachment = "fixed";
     document.getElementById("final-score-container").style.display = "none"; // Hide final score
     document.getElementById("difficulty-screen").style.display = "flex"; // Show difficulty selection
 }

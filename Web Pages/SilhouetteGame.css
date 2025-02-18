@@ -1,6 +1,7 @@
 /* General Reset */
 body {
-    background: url('Images/game_sil_bg.png') no-repeat center center/cover;
+    background: url('Images/game_sil_bg.png') no-repeat center center fixed;
+    background-size: cover;
     display: flex;
     background-attachment: fixed;
     flex-direction: column;
@@ -9,7 +10,7 @@ body {
     scroll-behavior: smooth;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     font-family: Arial, sans-serif;
     margin: 0;
     margin-top: 50px;
