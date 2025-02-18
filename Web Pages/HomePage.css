@@ -164,7 +164,7 @@ body {
     gap: 140px;
     background-color: rgba(255, 255, 255, 0.747);
     color: #000000;
-    padding: 15px 88px;
+    padding: 15px 188px;
     margin-top: auto; 
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
     border-radius: 8px;
@@ -186,10 +186,12 @@ body {
 .address p,
 .contact p {
     font-size: 17px;
+    width: 290%;
 }
 
 .disclaimers p {
     font-size: 12px;
+    width: 290%;
 }
 
 .social-icons {
