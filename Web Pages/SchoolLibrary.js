@@ -18,8 +18,8 @@ function showModal(article) {
             image: 'images/elephant.jpg',
             profile:'',
             member: 'user1',
-            memberType: 'Member',
-            profileLink: 'profileA.html', 
+            memberType: 'Teacher',
+            profileLink: 'ProfilePublicView.html', 
             date: '10 Feb 2025',
             time: '12:42 PM'
         },
@@ -29,8 +29,8 @@ function showModal(article) {
             image: 'images/rhino.jpg',
             profile: '',
             member: 'user2',
-            memberType: 'Member',
-            profileLink: 'profileB.html',
+            memberType: 'Teacher',
+            profileLink: 'ProfilePublicView.html',
             date: '10 Feb 2025',
             time: '12:42 PM'
         },
@@ -40,8 +40,8 @@ function showModal(article) {
             image: 'images/tiger.jpg',
             profile: '',
             member: 'user3',
-            memberType: 'Member',
-            profileLink: 'profileC.html',
+            memberType: 'Teacher',
+            profileLink: 'ProfilePublicView.html',
             date: '10 Feb 2025',
             time: '12:42 PM'
         }

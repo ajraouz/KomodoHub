@@ -35,6 +35,9 @@ body {
     left: 30px;
     transition: all 0.3;
 }
+.logo:hover {
+    filter: drop-shadow(0 0 20px rgba(125, 245, 66, 0.8));
+}
 
 .nav-center {
     position: absolute;
