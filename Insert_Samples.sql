@@ -1,6 +1,9 @@
 INSERT INTO users (username, password, user_type)
 VALUES ('CovSchool', '12345', 'school');
 
+INSERT INTO school (user_id, FullName, Location, TotalMembers)
+VALUES (1, 'Coventry School', 'Coventry', 5);
+
 INSERT INTO Animal (Name, Environment, HowManyLeft, ReasonForDanger, Description)
 VALUES ("Sumatran tiger", "The coastal lowland forest", 200, "Habitat destruction, poaching, deforestation for palm oil plantations and illegal hunting have dramatically reduced its numbers",  "The Sumatran tiger (Panthera tigris sumatrae) is a rare and critically endangered tiger subspecies native to the Indonesian island of Sumatra. It is the smallest of all tiger subspecies, with males weighing between 100–140 kg (220–310 lbs) and females ranging from 75–110 kg (165–243 lbs). Despite its smaller size, the Sumatran tiger is an apex predator, known for its muscular build, agility, and exceptional strength.
 This tiger’s coat is darker and more richly colored than other tiger subspecies, with thick black stripes that are closer together, providing effective camouflage in the dense tropical rainforests of Sumatra. It has a distinctive mane-like ruff of fur around its neck, particularly in males, adding to its striking appearance.

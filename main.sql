@@ -9,8 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE students (
-    student_id INTEGER PRIMARY KEY, 
-    user_id INTEGER UNIQUE, 
+    user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
     AccessCode INTEGER NOT NULL, 
     TotalPoints INTEGER DEFAULT 0, 
@@ -20,8 +19,7 @@ CREATE TABLE students (
 );
 
 CREATE TABLE teachers (
-    teacher_id INTEGER PRIMARY KEY, 
-    user_id INTEGER UNIQUE, 
+    user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
     AccessCode INTEGER NOT NULL, 
     Email TEXT,
@@ -29,15 +27,13 @@ CREATE TABLE teachers (
 );
 
 CREATE TABLE members (
-    member_id INTEGER PRIMARY KEY, 
-    user_id INTEGER UNIQUE, 
+    user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE school (
-    school_id INTEGER PRIMARY KEY, 
-    user_id INTEGER UNIQUE, 
+    user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
     Location TEXT NOT NULL,
     TotalMembers INTEGER NOT NULL,
