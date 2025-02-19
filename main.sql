@@ -1,48 +1,47 @@
 /* No need to run anything, the tables are already created in KH_Database.db */
 /* I keep this file just as a backup */
 
-CREATE TABLE Student(  
-    Username CHAR(20) NOT NULL PRIMARY KEY,
-    FullName CHAR(50) NOT NULL,
-    Password CHAR(50) NOT NULL,
-    AccessCode INTEGER NOT NULL,
-    TotalPoints INTEGER,
-    TotalPosts INTEGER,
-    Avatar BLOB
+CREATE TABLE users (
+    user_id INTEGER PRIMARY KEY, -- Auto-increments automatically in SQLite
+    username TEXT UNIQUE NOT NULL, 
+    password TEXT NOT NULL, 
+    user_type TEXT CHECK(user_type IN ('student', 'teacher', 'member', 'school', 'admin')) NOT NULL
 );
 
-CREATE TABLE Teacher(  
-    Username CHAR(20) NOT NULL PRIMARY KEY,
-    FullName CHAR(50) NOT NULL,
-    Password CHAR(50) NOT NULL,
-    AccessCode INTEGER NOT NULL,
-    Email VARCHAR(255)
+CREATE TABLE students (
+    student_id INTEGER PRIMARY KEY, 
+    user_id INTEGER UNIQUE, 
+    FullName TEXT NOT NULL, 
+    AccessCode INTEGER NOT NULL, 
+    TotalPoints INTEGER DEFAULT 0, 
+    TotalPosts INTEGER DEFAULT 0, 
+    Avatar BLOB,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Member(  
-    Username CHAR(20) NOT NULL PRIMARY KEY,
-    FullName CHAR(50) NOT NULL,
-    Password CHAR(50) NOT NULL
+CREATE TABLE teachers (
+    teacher_id INTEGER PRIMARY KEY, 
+    user_id INTEGER UNIQUE, 
+    FullName TEXT NOT NULL, 
+    AccessCode INTEGER NOT NULL, 
+    Email TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE Community_Post(  
-    ID INTEGER NOT NULL PRIMARY KEY,
-    Owner CHAR(50) NOT NULL,
-    Title CHAR(50) NOT NULL,
-    Image BLOB,
-    Content NVARCHAR,
-    Date DATE,
-    Time TIME
+CREATE TABLE members (
+    member_id INTEGER PRIMARY KEY, 
+    user_id INTEGER UNIQUE, 
+    FullName TEXT NOT NULL, 
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE School_Post(  
-    ID INTEGER NOT NULL PRIMARY KEY,
-    Owner CHAR(50) NOT NULL,
-    Title CHAR(50) NOT NULL,
-    Image BLOB,
-    Content NVARCHAR,
-    Date DATE,
-    Time TIME
+CREATE TABLE school (
+    school_id INTEGER PRIMARY KEY, 
+    user_id INTEGER UNIQUE, 
+    FullName TEXT NOT NULL, 
+    Location TEXT NOT NULL,
+    TotalMembers INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE Animal(  
@@ -50,14 +49,27 @@ CREATE TABLE Animal(
     Environment CHAR(50) NOT NULL,
     HowManyLeft INTEGER NOT NULL,
     ReasonForDanger VARCHAR(255),
-    Solutions VARCHAR(255)
+    Description VARCHAR(255)
 );
 
-SELECT Student.Username
-FROM Student
-INNER JOIN School_Post ON Student.Username = School_Post.Owner
+CREATE TABLE Community_Post(  
+    ID INTEGER PRIMARY KEY,
+    Owner TEXT NOT NULL,
+    Title TEXT NOT NULL,
+    Image BLOB,
+    Content TEXT,
+    Date TEXT,  -- Stores DATE as TEXT in format 'YYYY-MM-DD'
+    Time TEXT,  -- Stores TIME as TEXT in format 'HH:MM:SS'
+    FOREIGN KEY (Owner) REFERENCES users(username) ON DELETE CASCADE
+);
 
-SELECT Member.Username
-FROM Member
-INNER JOIN Community_Post ON Member.Username = Community_Post.Owner
-
+CREATE TABLE School_Post(  
+    ID INTEGER PRIMARY KEY,
+    Owner TEXT NOT NULL,
+    Title TEXT NOT NULL,
+    Image BLOB,
+    Content TEXT,
+    Date TEXT,
+    Time TEXT,
+    FOREIGN KEY (Owner) REFERENCES users(username) ON DELETE CASCADE
+);
