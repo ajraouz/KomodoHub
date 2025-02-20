@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hangman Game</title>
+  <link rel="stylesheet" href="hangman.css" />
+</head>
+<body>
+  <div id="game-container">
+    <h1>HANGMAN JUNGLE</h1>
+    
+    <!--  Hangman Figure -->
+    <pre id="hangman-figure"></pre>
+    
+    <!-- Word Display -->
+    <div id="word-display"></div>
+    <!-- Attempts and Letters Tried -->
+    <div class="info" id="attempts"></div>
+    <div class="info" id="tried-letters"></div>
+    
+    <!-- Guess Input & Button -->
+    <input type="text" id="guess-input" maxlength="1" autofocus />
+    <button id="guess-button">Guess</button>
+    
+    <!-- Feedback Message & Restart Button -->
+    <div id="message"></div>
+    <button id="restart-button">Restart</button>
+
+    <!-- High Score Display (optional) -->
+    <div id="highscore-display">
+      High Score: <span id="high-score">0</span>
+    </div>
+  </div>
+
+  <script>
+    // Small dictionary of words
+    const words = ["apple", "banana", "orange", "grape", "melon"];
+
+    // hangman stages 
+    const hangmanStages = [
+      `
+         +---+
+         |   |
+             |
+             |
+             |
+        ========
+      `,
+      `
+         +---+
+         |   |
+         O   |
+             |
+             |
+        ========
+      `,
+      `
+         +---+
+         |   |
+         O   |
+         |   |
+             |
+        ========
+      `,
+      `
+         +---+
+         |   |
+         O   |
+        /|   |
+             |
+        ========
+      `,
+      `
+         +---+
+         |   |
+         O   |
+        /|\\  |
+             |
+        ========
+      `,
+      `
+         +---+
+         |   |
+         O   |
+        /|\\  |
+        /    |
+        ========
+      `,
+      `
+         +---+
+         |   |
+         O   |
+        /|\\  |
+        / \\  |
+        ========
+      `
+    ];
+
+    let wordToGuess      = "";
+    let guessedLetters   = [];
+    let attemptsRemaining= 6;
+    let lettersTried     = [];
+    let wrongGuesses     = 0;
+    let highScore        = 0;
+
+    // DOM references
+    const hangmanFigure   = document.getElementById("hangman-figure");
+    const wordDisplay     = document.getElementById("word-display");
+    const attemptsDisplay = document.getElementById("attempts");
+    const triedLettersDiv = document.getElementById("tried-letters");
+    const guessInput      = document.getElementById("guess-input");
+    const guessButton     = document.getElementById("guess-button");
+    const messageDisplay  = document.getElementById("message");
+    const restartButton   = document.getElementById("restart-button");
+    const highScoreSpan   = document.getElementById("high-score");
+
+    // Start a new game
+    function initializeGame() {
+      wordToGuess = words[Math.floor(Math.random() * words.length)];
+      guessedLetters = Array(wordToGuess.length).fill("_");
+      attemptsRemaining = 6;
+      wrongGuesses = 0;
+      lettersTried = [];
+      hangmanFigure.textContent = hangmanStages[0];
+      messageDisplay.textContent = "";
+      guessInput.value = "";
+      guessInput.disabled = false;
+      guessButton.disabled = false;
+      restartButton.style.display = "none";
+      updateDisplay();
+    }
+    // Update the display
+    function updateDisplay() {
+      wordDisplay.textContent = guessedLetters.join(" ");
+      attemptsDisplay.textContent = "Attempts Remaining: " + attemptsRemaining;
+      triedLettersDiv.textContent = "Letters Tried: " + lettersTried.join(", ");
+      highScoreSpan.textContent = highScore;
+    }
+    // Handle a guess
+    function processGuess() {
+      const guess = guessInput.value.toLowerCase();
+      guessInput.value = "";
+      if (!guess.match(/[a-z]/i)) {
+        messageDisplay.textContent = "Please enter a valid letter.";
+        return;
+      }
+      if (lettersTried.includes(guess)) {
+        messageDisplay.textContent = "You've already tried that letter.";
+        return;
+      }
+
+      lettersTried.push(guess);
+
+      if (wordToGuess.includes(guess)) {
+        // Reveal the guessed letter in all correct positions
+        for (let i = 0; i < wordToGuess.length; i++) {
+          if (wordToGuess[i] === guess) {
+            guessedLetters[i] = guess;
+          }
+        }
+        messageDisplay.textContent = "Good guess!";
+      } else {
+        attemptsRemaining--;
+        wrongGuesses++;
+        hangmanFigure.textContent = hangmanStages[wrongGuesses];
+        messageDisplay.textContent = "That letter is not in the word.";
+      }
+
+      updateDisplay();
+      checkEndGame();
+    }
+
+    // Check for win or loss
+    function checkEndGame() {
+      if (!guessedLetters.includes("_")) {
+        messageDisplay.textContent = "You win! The word was: " + wordToGuess;
+        if (attemptsRemaining > highScore) {
+          highScore = attemptsRemaining;
+        }
+        endGame();
+      } else if (attemptsRemaining <= 0) {
+        messageDisplay.textContent = "Game Over! The word was: " + wordToGuess;
+        endGame();
+      }
+    }
+
+    // End the game
+    function endGame() {
+      guessInput.disabled = true;
+      guessButton.disabled = true;
+      restartButton.style.display = "inline-block";
+      updateDisplay();
+    }
+
+    // Event listeners
+    guessButton.addEventListener("click", processGuess);
+    guessInput.addEventListener("keyup", function(e) {
+      if (e.key === "Enter") {
+        processGuess();
+      }
+    });
+    restartButton.addEventListener("click", initializeGame);
+
+    // Initialize on page load
+    initializeGame();
+  </script>
+</body>
+</html>
