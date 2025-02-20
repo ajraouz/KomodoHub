@@ -98,7 +98,8 @@ body {
     max-width: 1400px; /* Set a maximum width for larger screens */
     height: 600px; 
     overflow: hidden;
-    position: relative;
+    position: absolute;
+    top: 90px;
 }
 
 /* Games wrapper with blurred background */
