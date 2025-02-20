@@ -4,12 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const games = [
         { name: "Animal Silhouette Guessing", img: "Images/Silhouette_logo.png", link: "SilhouetteGame.html" },
         { name: "Word Search Game", img: "Images/Wordsearch_logo.png", link: "WordSearchGame.html" },
+        { name: "Hangman Jungle Game", img: "Images/Hangman_logo.png", link: "hangman.html" },
         { name: "Animal Silhouette Guessing", img: "Images/Silhouette_logo.png", link: "SilhouetteGame.html" },
         { name: "Word Search Game", img: "Images/Wordsearch_logo.png", link: "WordSearchGame.html" },
-        { name: "Animal Silhouette Guessing", img: "Images/Silhouette_logo.png", link: "SilhouetteGame.html" },
-        { name: "Word Search Game", img: "Images/Wordsearch_logo.png", link: "WordSearchGame.html" },
-        { name: "Animal Silhouette Guessing", img: "Images/Silhouette_logo.png", link: "SilhouetteGame.html" },
-        { name: "Word Search Game", img: "Images/Wordsearch_logo.png", link: "WordSearchGame.html" }
+        { name: "Hangman Jungle Game", img: "Images/Hangman_logo.png", link: "hangman.html" },
     ];
 
     games.forEach(game => {
