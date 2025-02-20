@@ -3,7 +3,7 @@ from flask_cors import CORS  # Import CORS
 import sqlite3
 import logging
 import webbrowser
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
 
@@ -101,6 +101,60 @@ def complete_payment_registration():
 
     except Exception as e:
         logging.exception("An error occurred during post-payment registration.")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        logging.debug("Received login request.")
+
+        # Get login form data
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user_type = request.form.get('user_type')  # Get the user type from the dropdown
+
+        logging.debug(f"Login attempt for username: {username} as {user_type}")
+
+        if not username or not password or not user_type:
+            logging.error("Missing username, password, or user type.")
+            return jsonify({"error": "Missing username, password, or user type"}), 400
+
+        conn = sqlite3.connect('KH_Database.db')
+        cursor = conn.cursor()
+
+        # Fetch user details from the users table
+        cursor.execute("SELECT user_id, password, user_type FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+
+        conn.close()
+
+        if not user:
+            logging.error("User not found.")
+            return jsonify({"error": "Invalid username or password"}), 401
+
+        user_id, hashed_password, db_user_type = user
+
+        # Check if the selected user type matches the database user type
+        if db_user_type.lower() != user_type.lower():
+            logging.error("Incorrect user type selection.")
+            return jsonify({"error": "Invalid user type selection"}), 401
+
+        # Verify password
+        if not check_password_hash(hashed_password, password):
+            logging.error("Incorrect password.")
+            return jsonify({"error": "Invalid username or password"}), 401
+
+        logging.info(f"User {username} logged in successfully as {user_type}.")
+
+        # Return successful login response
+        return jsonify({
+            "message": "Login successful!",
+            "user_type": db_user_type,
+            "username": username
+        }), 200
+
+    except Exception as e:
+        logging.exception("An error occurred during login.")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
