@@ -59,8 +59,7 @@ def register():
             cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
                            (user_id, name, access_code, None))
         elif user_type == "member":
-            cursor.execute("INSERT INTO members (user_id, FullName) VALUES (?, ?)", 
-                           (user_id, name))
+            return jsonify({"error": "Members must complete payment first."}), 400
         else:
             logging.error("Invalid user type.")
             return jsonify({"error": "Invalid user type"}), 400
@@ -81,22 +80,31 @@ def complete_payment_registration():
     try:
         logging.debug("Received post-payment registration request.")
 
-        username = request.form.get('username')
-        name = request.form.get('name')
-        password = request.form.get('password')
+        # Get the form data (which was stored before the payment)
+        data = request.get_json()
+        username = data['username']
+        name = data['name']
+        password = data['password']
 
-        # Add any logic here to verify the payment (e.g., check payment ID, token, etc.)
+        # Hash the password for security
+        hashed_password = generate_password_hash(password)
 
         conn = sqlite3.connect('KH_Database.db')
         cursor = conn.cursor()
 
-        sql = "INSERT INTO Member (Username, FullName, Password) VALUES (?, ?, ?)"
-        cursor.execute(sql, (username, name, password))
+        # Insert the member into the database
+        cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
+                       (username, hashed_password, "member"))
+        user_id = cursor.lastrowid
 
+        cursor.execute("INSERT INTO members (user_id, FullName) VALUES (?, ?)", 
+                       (user_id, name))
+
+        # Commit changes and close connection
         conn.commit()
         conn.close()
 
-        logging.info("User registered successfully after payment.")
+        logging.info("Member registered successfully after payment.")
         return jsonify({"message": "Registration completed successfully!"}), 200
 
     except Exception as e:
@@ -108,12 +116,11 @@ def login():
     try:
         logging.debug("Received login request.")
 
-        # Get login form data
         username = request.form.get('username')
         password = request.form.get('password')
-        user_type = request.form.get('user_type')  # Get the user type from the dropdown
+        user_type = request.form.get('user_type')  # User type from dropdown
 
-        logging.debug(f"Login attempt for username: {username} as {user_type}")
+        logging.debug(f"Login attempt for username: {username}, user type: {user_type}")
 
         if not username or not password or not user_type:
             logging.error("Missing username, password, or user type.")
@@ -122,10 +129,9 @@ def login():
         conn = sqlite3.connect('KH_Database.db')
         cursor = conn.cursor()
 
-        # Fetch user details from the users table
+        # Query the database for the user and their user type
         cursor.execute("SELECT user_id, password, user_type FROM users WHERE username = ?", (username,))
         user = cursor.fetchone()
-
         conn.close()
 
         if not user:
@@ -139,14 +145,12 @@ def login():
             logging.error("Incorrect user type selection.")
             return jsonify({"error": "Invalid user type selection"}), 401
 
-        # Verify password
+        # Verify the password
         if not check_password_hash(hashed_password, password):
             logging.error("Incorrect password.")
             return jsonify({"error": "Invalid username or password"}), 401
 
         logging.info(f"User {username} logged in successfully as {user_type}.")
-
-        # Return successful login response
         return jsonify({
             "message": "Login successful!",
             "user_type": db_user_type,

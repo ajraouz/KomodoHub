@@ -142,35 +142,40 @@
             });
 
             if (allValid) {
-                window.location.href = "HomePage.html";  
+                // Simulate successful payment (You can add actual payment processing here)
+                window.location.href = "LoginPage.html";  // Redirect to home page after payment
+
+                // Get user data from localStorage
+                const registrationData = JSON.parse(localStorage.getItem('registrationData'));
+
+                // Send the registration data to the backend for insertion after payment
+                fetch('http://127.0.0.1:5001/complete_payment_registration', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: registrationData.username,
+                        name: registrationData.name,
+                        password: registrationData.password
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.message) {
+                        alert(result.message);  // Registration successful
+                        window.location.href = '/Web Pages/LoginPage.html';  // Redirect to login page
+                    } else {
+                        alert("Error: " + result.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error completing payment and registration:', error);
+                    alert("There was an error completing your registration.");
+                });
             } else {
                 alert("Please fill out all fields.");
             }
-            const user = JSON.parse(localStorage.getItem('userData'));  // Get user data from localStorage
-
-            // Send the registration data to the backend for insertion
-            const formData = new FormData();
-            formData.append('username', user.username);
-            formData.append('name', user.name);
-            formData.append('password', user.password);
-
-            fetch('http://127.0.0.1:5001/complete_payment_registration', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.message) {
-                    alert(result.message);  // Registration successful
-                    window.location.href = '/Web Pages/LoginPage.html';  // Redirect to login page
-                } else {
-                    alert("Error: " + result.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error completing payment and registration:', error);
-                alert("There was an error completing your registration.");
-            });
         }
 
         function capitalizeName(event) {

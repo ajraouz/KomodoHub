@@ -23,7 +23,7 @@
     </div>
     <div class="form-container login-box">
         <h2 class="form-title">Login</h2> <!-- Title inside the box -->
-        <form id="registerForm">
+        <form id="loginForm">
             <input type="text" placeholder="Username *" required>
             <input type="password" placeholder="Password *" required>
 
@@ -45,28 +45,36 @@
         </p>
     </div>
     <script>
-        document.getElementById("loginForm").addEventListener("submit", async function(event) {
-            event.preventDefault();  // Prevent page reload
-        
-            let username = document.getElementById("username").value;
-            let password = document.getElementById("password").value;
-            let user_type = document.getElementById("user_type").value; // Get selected user type
-        
-            let response = await fetch("http://127.0.0.1:5001/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&user_type=${encodeURIComponent(user_type)}`
-            });
-        
-            let data = await response.json();
-        
-            if (response.ok) {
-                alert(`Login successful! Welcome, ${data.user_type}`);
-                
-                // Redirect to the respective dashboard based on user type
-                window.location.href = "HomePage.html";
-            } else {
-                alert(`Error: ${data.error}`);
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let username = document.querySelector('input[placeholder="Username *"]').value;
+            let password = document.querySelector('input[placeholder="Password *"]').value;
+            let userType = document.getElementById('dropdown').value;
+
+            let formData = new FormData();
+            formData.append('username', username);
+            formData.append('password', password);
+            formData.append('user_type', userType);
+
+            try {
+                let response = await fetch('http://127.0.0.1:5001/login', {  // <-- Update the endpoint to your login route
+                    method: 'POST',
+                    body: formData
+                });
+
+                let result = await response.json();
+
+                if (response.ok) {
+                    alert(result.message);  // Display a success message (optional)
+                    // Redirect to user dashboard based on user type
+                    window.location.href = 'HomePage.html';
+                } else {
+                    alert("Error: " + result.error);  // Display error message
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while logging in.");
             }
         });
     </script> 

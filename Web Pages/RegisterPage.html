@@ -63,7 +63,7 @@
             }
         });
 
-        document.getElementById('registerForm').addEventListener('submit', async function (event) {
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
             let name = document.querySelector('input[placeholder="Name *"]').value;
@@ -78,6 +78,7 @@
                 return;
             }
 
+            // Prepare user data for registration
             let formData = new FormData();
             formData.append('name', name);
             formData.append('username', username);
@@ -88,32 +89,36 @@
                 formData.append('access_code', accessCode);
             }
 
-            // If user is a member, don't submit form right now, just go to payment page
+            // If user is a member, store the data in localStorage and redirect to payment page
             if (userType === 'member') {
-                // Store user data in localStorage or sessionStorage to access on payment page
-                localStorage.setItem('userData', JSON.stringify({ username, name, password }));
+                localStorage.setItem('registrationData', JSON.stringify({
+                    name: name,
+                    username: username,
+                    password: password,
+                    userType: userType
+                }));
                 
-                window.location.href = 'Web Pages/PaymentPage.html';
-                return;
-            }
-
-            try {
-                let response = await fetch('http://127.0.0.1:5001/register', {  // <-- Ensure you use this URL
+                // Redirect to payment page
+                window.location.href = "Web Pages/PaymentPage.html";
+            } else {
+                // Handle student or teacher registration immediately
+                fetch('http://127.0.0.1:5001/register', {
                     method: 'POST',
                     body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (response.ok) {
+                        alert(result.message);
+                        window.location.href = 'Web Pages/LoginPage.html';  // Redirect to login page
+                    } else {
+                        alert("Error: " + result.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("An error occurred while registering.");
                 });
-
-                let result = await response.json();
-
-                if (response.ok) {
-                    alert(result.message);
-                    window.location.href = 'Web Pages/LoginPage.html';
-                } else {
-                    alert("Error: " + result.error);
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("An error occurred while registering.");
             }
         });
     </script>
