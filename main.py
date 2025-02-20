@@ -3,6 +3,7 @@ from flask_cors import CORS  # Import CORS
 import sqlite3
 import logging
 import webbrowser
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
 
@@ -23,6 +24,7 @@ def register():
     try:
         logging.debug("Received registration request.")
 
+        # Get form data
         username = request.form.get('username')
         name = request.form.get('name')
         password = request.form.get('password')
@@ -31,26 +33,39 @@ def register():
 
         logging.debug(f"Received Data: {username}, {name}, {user_type}, {access_code}")
 
+        # Validate required fields
         if not username or not name or not password or not user_type:
             logging.error("Missing required fields.")
             return jsonify({"error": "Missing required fields"}), 400
 
+        # Hash password for security
+        hashed_password = generate_password_hash(password)
+
         conn = sqlite3.connect('KH_Database.db')
         cursor = conn.cursor()
 
+        # Insert into users table
+        cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
+                       (username, hashed_password, user_type))
+
+        # Get the newly inserted user_id
+        user_id = cursor.lastrowid
+
+        # Insert into the respective table based on user_type
         if user_type == "student":
-            sql = "INSERT INTO Student (Username, FullName, Password, Accesscode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            cursor.execute(sql, (username, name, password, access_code, 0, 0, None))
+            cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
+                           (user_id, name, access_code, 0, 0, None))
         elif user_type == "teacher":
-            sql = "INSERT INTO Teacher (Username, FullName, Password, Accesscode, Email) VALUES (?, ?, ?, ?, ?)"
-            cursor.execute(sql, (username, name, password, access_code, None))
+            cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
+                           (user_id, name, access_code, None))
         elif user_type == "member":
-            sql = "INSERT INTO Member (Username, FullName, Password) VALUES (?, ?, ?)"
-            cursor.execute(sql, (username, name, password))
+            cursor.execute("INSERT INTO members (user_id, FullName) VALUES (?, ?)", 
+                           (user_id, name))
         else:
             logging.error("Invalid user type.")
             return jsonify({"error": "Invalid user type"}), 400
 
+        # Commit changes and close connection
         conn.commit()
         conn.close()
 
