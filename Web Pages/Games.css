@@ -166,3 +166,21 @@ body {
 .game-item a:hover {
     color: #ddd;
 }
+/* Custom Scrollbar */
+.games-list::-webkit-scrollbar {
+    width: 12px;
+}
+
+.games-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+}
+
+.games-list::-webkit-scrollbar-thumb {
+    background: rgba(8, 206, 8, 0.333);
+    border-radius: 6px;
+}
+
+.games-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(8, 206, 8, 0.671);
+}
