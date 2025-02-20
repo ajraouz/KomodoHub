@@ -8,8 +8,6 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Header */
@@ -130,7 +128,7 @@ body {
 }
 
 .main-content {
-    
+    position: relative;
     margin-left: 35px;
     margin-top: 50px;
     min-width: 88%;
