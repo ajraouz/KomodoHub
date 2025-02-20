@@ -44,5 +44,31 @@
             Don't have an account? <a href="RegisterPage.html">Register</a>
         </p>
     </div>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault();  // Prevent page reload
+        
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let user_type = document.getElementById("user_type").value; // Get selected user type
+        
+            let response = await fetch("http://127.0.0.1:5001/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&user_type=${encodeURIComponent(user_type)}`
+            });
+        
+            let data = await response.json();
+        
+            if (response.ok) {
+                alert(`Login successful! Welcome, ${data.user_type}`);
+                
+                // Redirect to the respective dashboard based on user type
+                window.location.href = "HomePage.html";
+            } else {
+                alert(`Error: ${data.error}`);
+            }
+        });
+    </script> 
 </body>
 </html>

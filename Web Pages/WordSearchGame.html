@@ -53,7 +53,7 @@
         function goBack() {
             let gameContainer = document.getElementById("game-container");
             let difficultyScreen = document.getElementById("difficulty-screen");
-        
+    
             if (gameContainer && difficultyScreen) {
                 gameContainer.style.display = "none"; 
                 difficultyScreen.style.display = "flex"; 
@@ -61,51 +61,50 @@
                 console.error("Error: One or more elements not found.");
             }
         }
-        
-
+    
         function startGame(difficulty) {
             console.log("Selected difficulty:", difficulty); 
-        
+    
             document.getElementById("difficulty-screen").style.display = "none";
             document.getElementById("game-container").style.display = "block"; 
             
             initializeGame(difficulty); 
         }
-
+    
         function initializeGame(difficulty) {
             let words, gridSize, cellSize;
-        
+    
             if (difficulty === "easy") {
-                words = ["KOMODO", "MALEO", "ORANGUTAN", "BANTENG", "TARSIUS"];
+                words = ["KOMODO", "MALEO", "ANOA", "BANTENG", "TARSIUS"];
                 gridSize = 7;
                 cellSize = 45;
             } else if (difficulty === "medium") {
-                words = ["KOMODO", "MALEO", "ORANGUTAN", "BANTENG", "TARSIUS",
-                        "ANOA", "JAVAN RHINOCEROS", "JAVAN GIBBON", "BALI MYNA"];
+                words = ["KOMODO", "MALEO", "ORANGUTAN", "BEKANTAN",  "BANTENG", "BABIRUSA", "TARSIUS",
+                "ANOA", "MACAQUE", "BALI MYNA"];
                 gridSize = 12;
                 cellSize = 35;
             } else if (difficulty === "hard") {
-                words = ["ORANGUTAN", "BEKANTAN", "KOMODO", "BALI MYNA", "MALEO", "BABIRUSA",
-                        "ANOA", "JAVAN EAGLE", "TARSIUS", "SUMATRAN TIGER", "JAVAN RHINOCEROS"];
+                words = ["ORANGUTAN", "BEKANTAN", "KOMODO", "BALI MYNA", "SUMATRAN ELEPHANT", "BABIRUSA", "MACAQUE", "BANTENG", 
+                        "MALEO", "JAVAN GIBBON", "ANOA", "JAVAN EAGLE", "TARSIUS", "SUMATRAN TIGER", "JAVAN RHINOCEROS"];
                 gridSize = 15;
                 cellSize = 30;
             }
-        
+    
             const gridElement = document.getElementById("grid");
             const wordListElement = document.getElementById("words");
-            const backButton = document.getElementById("back-button");
-            const messageElement = document.getElementById("message"); 
-        
+    
             let grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(null));
             let selectedCells = [];
             let foundWords = new Set();
             let isMouseDown = false;
-        
+            let startCell = null;
+            let direction = null;
+    
             const directions = [
                 [1, 0], [0, 1], [1, 1], [-1, 1], 
                 [-1, 0], [0, -1], [-1, -1], [1, -1]
             ];
-        
+    
             function canPlaceWord(word, row, col, dx, dy) {
                 for (let i = 0; i < word.length; i++) {
                     let x = row + dx * i, y = col + dy * i;
@@ -115,15 +114,15 @@
                 }
                 return true;
             }
-        
+    
             function placeWord(word) {
                 word = word.replace(/\s+/g, "");
-        
-                for (let attempt = 0; attempt < 200; attempt++) { 
+    
+                for (let attempt = 0; attempt < 500; attempt++) { 
                     let row = Math.floor(Math.random() * gridSize);
                     let col = Math.floor(Math.random() * gridSize);
                     let [dx, dy] = directions[Math.floor(Math.random() * directions.length)];
-        
+    
                     if (canPlaceWord(word, row, col, dx, dy)) {
                         for (let i = 0; i < word.length; i++) {
                             grid[row + dx * i][col + dy * i] = word[i];
@@ -133,12 +132,12 @@
                 }
                 return false; 
             }
-        
+    
             words.forEach(word => {
                 let placed = placeWord(word);
                 if (!placed) console.warn(`Failed to place word: ${word}`);
             });
-        
+    
             for (let i = 0; i < gridSize; i++) {
                 for (let j = 0; j < gridSize; j++) {
                     if (grid[i][j] === null) {
@@ -146,12 +145,12 @@
                     }
                 }
             }
-        
+    
             gridElement.innerHTML = '';
             gridElement.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
             gridElement.style.width = `${gridSize * cellSize}px`;
             gridElement.style.height = `${gridSize * cellSize}px`;
-        
+    
             grid.forEach((row, r) => {
                 row.forEach((letter, c) => {
                     let cell = document.createElement("div");
@@ -159,32 +158,35 @@
                     cell.textContent = letter;
                     cell.dataset.row = r;
                     cell.dataset.col = c;
-        
+    
                     cell.style.width = `${cellSize}px`;
                     cell.style.height = `${cellSize}px`;
                     cell.style.fontSize = `${cellSize * 0.6}px`;
-        
+    
                     cell.addEventListener("mousedown", (event) => {
                         isMouseDown = true;
-                        toggleCellSelection(cell);
+                        startCell = cell;
+                        selectedCells = [cell];
+                        cell.classList.add("selected");
+                        direction = null;
                         event.preventDefault();
                     });
-        
+    
                     cell.addEventListener("mouseenter", () => {
                         if (isMouseDown) {
                             toggleCellSelection(cell);
                         }
                     });
-        
+    
                     cell.addEventListener("mouseup", () => {
                         isMouseDown = false;
                         checkWord();
                     });
-        
+    
                     gridElement.appendChild(cell);
                 });
             });
-        
+    
             wordListElement.innerHTML = "";
             words.forEach(word => {
                 let li = document.createElement("li");
@@ -192,101 +194,69 @@
                 li.dataset.word = word.replace(/\s+/g, "");
                 wordListElement.appendChild(li);
             });
-        
+    
             document.addEventListener("mouseup", () => {
                 isMouseDown = false;
                 checkWord();
             });
-        
+    
             function toggleCellSelection(cell) {
-                if (cell.classList.contains("found")) return;
-        
-                if (cell.classList.contains("selected")) {
-                    cell.classList.remove("selected");
-                    selectedCells = selectedCells.filter(c => c !== cell);
-                } else {
-                    cell.classList.add("selected");
+                if (!isMouseDown) return;
+    
+                let row = parseInt(cell.dataset.row);
+                let col = parseInt(cell.dataset.col);
+    
+                if (!startCell) return;
+    
+                let startRow = parseInt(startCell.dataset.row);
+                let startCol = parseInt(startCell.dataset.col);
+                let dx = row - startRow;
+                let dy = col - startCol;
+    
+                if (!direction) {
+                    if (dx !== 0 && dy !== 0 && Math.abs(dx) !== Math.abs(dy)) {
+                        return;
+                    }
+                    direction = [dx ? dx / Math.abs(dx) : 0, dy ? dy / Math.abs(dy) : 0];
+                }
+    
+                let expectedRow = startRow + direction[0] * selectedCells.length;
+                let expectedCol = startCol + direction[1] * selectedCells.length;
+    
+                if (row === expectedRow && col === expectedCol) {
                     selectedCells.push(cell);
+                    cell.classList.add("selected");
                 }
             }
-        
-            function checkWord() {
-    let selectedWord = selectedCells.map(c => c.textContent).join("");
-    let reversedWord = selectedWord.split("").reverse().join("");
-
-
-    let normalizedWords = words.map(w => w.replace(/\s+/g, ""));
-
-    if (normalizedWords.includes(selectedWord) && !foundWords.has(selectedWord)) {
-        markWordAsFound(selectedWord);
-    } else if (normalizedWords.includes(reversedWord) && !foundWords.has(reversedWord)) {
-        markWordAsFound(reversedWord);
-    }
-}
-
-function markWordAsFound(word) {
-    selectedCells.forEach(c => {
-        c.classList.add("found"); 
-        c.style.backgroundColor = "green"; 
-        c.style.color = "white"; 
-    });
-
-    let wordListItem = document.querySelector(`[data-word="${word}"]`);
-    if (wordListItem) {
-        wordListItem.classList.add("word-found");
-        wordListItem.style.color = "green";  
-        wordListItem.style.fontWeight = "bold";
-    }
-
-    foundWords.add(word);
-    selectedCells = [];
-
-    // Check if all words are found
-    if (foundWords.size === words.length) {
-        alert("🎉 You found all the words! 🎉");
-    }
-}
-
+    
             function checkWord() {
                 let selectedWord = selectedCells.map(c => c.textContent).join("");
                 let reversedWord = selectedWord.split("").reverse().join("");
-
-                // Normalize words in the list
+    
                 let normalizedWords = words.map(w => w.replace(/\s+/g, ""));
-
-                if (normalizedWords.includes(selectedWord) && !foundWords.has(selectedWord)) {
+    
+                if (normalizedWords.includes(selectedWord) || normalizedWords.includes(reversedWord)) {
                     markWordAsFound(selectedWord);
-                } else if (normalizedWords.includes(reversedWord) && !foundWords.has(reversedWord)) {
-                    markWordAsFound(reversedWord);
                 }
+    
+                selectedCells.forEach(cell => cell.classList.remove("selected"));
             }
-
-        
+    
             function markWordAsFound(word) {
                 selectedCells.forEach(c => {
                     c.classList.add("found");
-                    c.style.backgroundColor = "green"; 
-                    c.style.color = "white"; 
+                    c.style.backgroundColor = "green";
+                    c.style.color = "white";
                 });
-        
+    
                 let wordListItem = document.querySelector(`[data-word="${word}"]`);
                 if (wordListItem) {
                     wordListItem.classList.add("word-found");
-                    wordListItem.style.color = "green"; 
+                    wordListItem.style.color = "green";  
                     wordListItem.style.fontWeight = "bold";
-                }
-        
-                foundWords.add(word);
-                selectedCells = [];
-        
-                if (foundWords.size === words.length) {
-                    messageElement.textContent = "🎉 You found all the words! 🎉";
-                    messageElement.classList.add("win-message");
+                    wordListItem.style.textDecoration = "line-through"; 
                 }
             }
         }
-        
     </script>
-
-</body>
-</html>
+    

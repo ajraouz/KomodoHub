@@ -13,6 +13,8 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
+    margin-top: 50px;
 }
 
 /* Navbar */
@@ -84,55 +86,101 @@ body {
     transition: transform 0.2s ease-in-out;
 }
 
-
+/* Updated styles for games container */
 .games-container {
-    padding: 20px;
+    padding: 30px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%; /* Increase width to occupy more screen space */
+    max-width: 1600px; /* Set a maximum width for larger screens */
+    height: 600px; 
+    overflow: hidden;
+    position: absolute;
+    top: 90px;
 }
 
-h1 {
-    color: white;
-    font-size: 32px;
-}
-
+/* Games wrapper with blurred background */
 .games-list {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-wrap: wrap; /* Allow wrapping to the next line */
+    gap: 25px;
     justify-content: center;
-}
-
-.game-item {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 150px;
+    align-items: center;
+    overflow-y: auto; /* Vertical scroll */
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    max-width: 80%;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.game-item img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 10px;
+/* Game item styling */
+.game-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    width: 300px; /* Increased size */
+    height: 335px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+/* Game item hover effect */
+.game-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Game images */
+.game-item img {
+    width: 300px; /* Adjusted size */
+    height: 300px; /* Adjusted size */
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+/* Game text */
 .game-item p {
     margin: 10px 0 0;
-    font-size: 14px;
+    font-size: 22px;
     font-weight: bold;
     color: white;
 }
+
+/* Clickable area */
 .game-item a {
-    text-decoration: none; 
-    color: inherit; 
-    display: block; /* Makes the entire area clickable */
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .game-item a:hover {
-    color: #ddd; 
+    color: #ddd;
+}
+/* Custom Scrollbar */
+.games-list::-webkit-scrollbar {
+    width: 12px;
 }
 
+.games-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+}
+
+.games-list::-webkit-scrollbar-thumb {
+    background: rgba(8, 206, 8, 0.333);
+    border-radius: 6px;
+}
+
+.games-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(8, 206, 8, 0.671);
+}

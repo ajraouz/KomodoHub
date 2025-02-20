@@ -24,15 +24,13 @@ body {
     top: 0;
     z-index: 1000;
 }
-
-/* Logo aligned with other buttons */
 .navbar .logo {
-    height: 100px;
+    height: 80px;
     position: absolute;
     margin-left: 20px;
     display: flex;
-    top: 15px;
-    left: 30px;
+    top: 18px;
+    left: 29px;
     transition: all 0.3;
 }
 .logo:hover {
