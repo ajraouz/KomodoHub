@@ -95,7 +95,7 @@ body {
     align-items: center;
     flex-direction: column;
     width: 100%; /* Increase width to occupy more screen space */
-    max-width: 1400px; /* Set a maximum width for larger screens */
+    max-width: 1600px; /* Set a maximum width for larger screens */
     height: 600px; 
     overflow: hidden;
     position: absolute;
