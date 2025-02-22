@@ -9,19 +9,19 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="HomePage.html">
+        <a href="HomePage.html" onclick="quitGame()">
             <!-- Logo -->
             <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
         </a>
         
         <div class="nav-center">
-            <a href="CommunityLibrary.html"><button>Community Library</button></a>
-            <a href="SchoolLibrary.html"><button>School Library</button></a>
-            <a href="Post.html"><button>Post</button></a>
-            <a href="Games.html"><button>Games</button></a>
+            <a href="CommunityLibrary.html" onclick="quitGame()"><button>Community Library</button></a>
+            <a href="SchoolLibrary.html" onclick="quitGame()"><button>School Library</button></a>
+            <a href="Post.html" onclick="quitGame()"><button>Post</button></a>
+            <a href="Games.html" onclick="quitGame()"><button>Games</button></a>
         </div>
     
-        <a href="LoginPage.html"><button class="login">Login</button></a>
+        <a href="LoginPage.html" onclick="quitGame()"><button class="login">Login</button></a>
     </div>
     
     <!-- Difficulty Selection Screen -->
@@ -47,16 +47,25 @@
                 <img id="animal-image" alt="Guess the animal">
             </div>
 
-            <div id="hint-box">
-                <h3>Hint:</h3>
-                <p id="hint-text">This animal's hint will appear here.</p>
+            <div id="hint-box" class="flip-card">
+                <div class="flip-card-inner" onclick="flipHint()">
+                    <div class="flip-card-front">
+                        <h3>Hint:</h3>
+                        <p>Click to Reveal!</p>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3>Hint:</h3>
+                        <p id="hint-text">This animal's hint will appear here.</p>
+                    </div>
+                </div>
             </div>
+            
         </div>
 
         <div id="options-container"></div>
         <p id="feedback"></p>
         <button id="next-btn" onclick="nextQuestion()">Next</button>
-        <button id="back-button" onclick="confirmExit()">Quit Game</button>
+        <button id="back-button" onclick="quitGame()">Quit Game</button>
     </div>
     
     <!-- Final Score Container (Initially Hidden) -->
