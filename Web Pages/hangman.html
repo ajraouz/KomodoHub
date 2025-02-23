@@ -7,6 +7,22 @@
   <link rel="stylesheet" href="hangman.css" />
 </head>
 <body>
+
+<div class="navbar">
+    <a href="HomePage.html">
+        <img src="images/komodoLogo.png" alt="Logo" class="logo">
+    </a>
+    <div class="nav-center">
+        <a href="CommunityLibrary.html"><button>Community Library</button></a>
+        <a href="SchoolLibrary.html"><button>School Library</button></a>
+        <a href="Post.html"><button>Post</button></a>
+        <a href="Games.html"><button>Games</button></a>
+    </div>
+    <a href="LoginPage.html"><button class="login">Login</button></a>
+</div>
+    
+
+  
   <div id="game-container">
     <h1>HANGMAN JUNGLE</h1>
     
@@ -34,8 +50,20 @@
   </div>
 
   <script>
-    // Small dictionary of words
-    const words = ["apple", "banana", "orange", "grape", "melon"];
+    
+    const words = ["Sumatran Tiger",
+      "Sumatran Elephant",
+      "Javan Rhinoceros",
+      "Banteng",
+      "Javan Gibbon",
+      "Orangutan",
+      "Bekantan",
+      "Komodo",
+      "Bali Mynah",
+      "Anoa",
+      "Babirusa",
+      "Javan Eagle",
+      "Tarsius"];
 
     // hangman stages 
     const hangmanStages = [
@@ -104,7 +132,7 @@
     let wrongGuesses     = 0;
     let highScore        = 0;
 
-    // DOM references
+   
     const hangmanFigure   = document.getElementById("hangman-figure");
     const wordDisplay     = document.getElementById("word-display");
     const attemptsDisplay = document.getElementById("attempts");

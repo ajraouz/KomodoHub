@@ -1,100 +1,208 @@
 /* Global Styles */
 body {
-    background: url('Images/bgHangman.jpg') no-repeat center center fixed;
-    background-size: cover;
-    font-family: Arial, sans-serif;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  
-  /* Game Container */
-  #game-container {
-    background: rgba(193, 239, 199, 0.826);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    padding: 20px 30px;
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
-    position: relative;
-  }
-  
-  /* Heading */
-  h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-  }
-  
-  /* Hangman Figure */
-  #hangman-figure {
-    display: block;
-    margin: 0 auto 20px auto;  
-    
-    border: none;         
-  }
-  
-  /* High Score Display */
-  #highscore-display {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    font-size: 1.2em;
-    text-align: left;
-  }
-  
-  
-  #word-display {
-    font-size: 2em;
-    letter-spacing: 10px;
-    margin: 20px 0;
-  }
-  
-  
-  .info {
-    font-size: 1.2em;
-    margin: 10px 0;
-  }
-  
-  
-  #guess-input {
-    padding: 10px;
-    font-size: 1.2em;
-    width: 50px;
-    text-align: center;
-    margin-top: 5px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    font-size: 1.2em;
-    margin: 10px 5px 0 5px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #74ebd5;
-    color: #fff;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #ACB6E5;
-  }
-  
-  /* Message area */
-  #message {
-    margin-top: 20px;
-    font-size: 1.2em;
-    min-height: 40px;
-  }
-  
-  
-  #restart-button {
-    margin-top: 20px;
-    display: none;
-  }
-  
+  background: url('Images/bgHangman.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; 
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo aligned with other buttons */
+.navbar .logo {
+  height: 80px;
+  margin-left: 20px;
+  display: flex;
+  position: absolute;
+  top: 18px;
+  left: 29px;
+  transition: all 0.3s;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 20px rgba(125, 245, 66, 0.8));
+}
+
+/* Center Navigation Tabs */
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+}
+
+.navbar button {
+  background: black;
+  border: 2px solid transparent;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.navbar a[href="Games.html"] button {
+  border: 2px solid rgb(105, 250, 105); 
+}
+
+/* Login Button */
+.navbar .login {
+  margin-left: auto;
+  margin-right: 20px;
+  transform: none;
+}
+
+.navbar button:hover {
+  transform: scale(1.1);
+}
+
+/* Logo hover effect */
+.navbar .logo:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+/* Main Game Container */
+#game-container {
+  background: rgba(2, 63, 9, 0.68); 
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  max-width: 720px;
+  width: 85%;
+  margin-top: 85px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Game Title */
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #ff8c42; 
+}
+
+/* Hangman Figure */
+#hangman-figure {
+  font-size: 16px;
+  margin: 12px auto;
+  color: #f8f9fa; 
+}
+
+/* Word Display (Hidden Letters) */
+#word-display {
+  font-size: 1.9em;
+  letter-spacing: 9px;
+  margin: 12px 0;
+  color: #ffcc00;
+}
+
+/* Attempts and Tried Letters */
+.info {
+  font-size: 1.2em;
+  margin: 7px 0;
+  color: #ffd166; 
+}
+
+/* Input Container (Aligns Guess Input and Button) */
+.input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Guess Input Field */
+#guess-input {
+  padding: 9px;
+  font-size: 1.2em;
+  width: 55px;
+  text-align: center;
+  border: 3px solid #ff8c42; 
+  border-radius: 8px;
+  background-color: #fef3c7; 
+  color: #333; 
+  font-weight: bold;
+}
+
+/* Input Field Focus Effect */
+#guess-input:focus {
+  border-color: #ff5e00; 
+  outline: none;
+}
+
+/* Guess Button */
+#guess-button {
+  padding: 10px 20px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  background-color: #06d6a0; 
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Guess Button Hover Effect */
+#guess-button:hover {
+  background-color: #059669; 
+  transform: scale(1.05);
+}
+
+/* Restart Button */
+#restart-button {
+  margin-top: 12px;
+  padding: 10px 22px;
+  font-size: 1.2em;
+  border-radius: 8px;
+  background-color: #ff595e; 
+  color: white;
+  cursor: pointer;
+  display: none;
+  border: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Restart Button Hover Effect */
+#restart-button:hover {
+  background-color: #d62828; 
+  transform: scale(1.05);
+}
+
+/* Message Box */
+#message {
+  margin-top: 12px;
+  font-size: 1.2em;
+  min-height: 28px;
+  color: #ffd166; 
+}
+
+/* High Score Display */
+#highscore-display {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 1.2em;
+  background-color: rgba(40, 192, 61, 0.85); 
+  padding: 6px 12px;
+  border-radius: 5px;
+}
