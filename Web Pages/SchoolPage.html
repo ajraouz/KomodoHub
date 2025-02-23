@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><!-- Font Awesome for Social Media Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Profile - Komodo Hub</title>
+    <link rel="stylesheet" href="SchoolPage.css">
+    <script defer src="SchoolPage.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="HomePage.html">
+            <!-- Logo -->
+            <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+        </a>
+        
+        <div class="nav-center">
+            <a href="CommunityLibrary.html"><button>Community Library</button></a>
+            <a href="SchoolLibrary.html"><button>School Library</button></a>
+            <a href="Post.html"><button>Post</button></a>
+            <a href="Games.html"><button>Games</button></a>
+        </div>
+    
+        <a href="ProfilePrivateView.html"><button class="logout-button">Profile</button></a>
+    </div>
+
+    <div class="main-container">
+        <!-- Public Profile Section -->
+        <div class="profile-section">
+            <div class="profile-container">
+                <img id="profile-avatar" src="Images/schoolprof.jpg" alt="Profile Picture">  
+                <div class="profile-info">
+                    <h2 class="name">Ujung Raya Primary School</h2> <!-- Name -->
+                    <p class="username">@KhairunnisaUjungRayaPrimary</p>
+                    <p class="role"><strong>Role:</strong> Principal</p> <!-- Role -->
+                    <p class="role"><strong>About Us:</strong> Located in the heart of Ujung Kulon, Ujung Raya Primary School is dedicated to nurturing young minds while protecting our natural heritage. Surrounded by the Javan Rhinoceros Conservation Area, we inspire students to learn, explore, and lead in environmental conservation. 
+                        Through our partnership with Komodo Hub, we integrate conservation education into our curriculum, empowering students to actively participate in protecting endangered species. We are committed to fostering responsible, compassionate, and environmentally conscious leaders of tomorrow.
+                        Join us in learning and leading for a better future.
+                    </p>
+                    <!-- Contact Us Button -->
+                    <button class="contact-button" onclick="toggleContactForm()">Contact Us</button>
+                    
+                    <!-- Contact Us Modal -->
+                    <div class="contact-form-container" id="contact-form">
+                        <div class="contact-form-content">
+                            <span class="close-button" onclick="toggleContact()">&times;</span>
+                            <h2>Contact Us</h2>
+                            <form id="contactForm">
+                                <div class="input-group">
+                                    <input type="text" name="name" required>
+                                    <label>Your Name</label>
+                                </div>
+                                <div class="input-group">
+                                    <input type="email" name="email" required>
+                                    <label>Your Email</label>
+                                </div>
+                                <div class="input-group">
+                                    <textarea name="message" required></textarea>
+                                    <label>Your Message</label>
+                                </div>
+                                <button type="submit" class="submit-button">Submit</button>
+                            </form>
+                            
+                            <!-- Social Media Links -->
+                            <div class="social-media">
+                                <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                <a href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                                <a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Contributions Section -->
+            <div class="contributions-container">
+                <h3>School Contributions</h3>
+                <p><strong>📜 Posts: </strong> <span id="posts">10</span></p>
+                <p><strong>⭐ Points: </strong> <span id="points">550</span></p>
+                <p><strong>📘 Teachers Involved: </strong> <span id="teachers">15</span></p>
+                <p><strong>🎓 Students Involved: </strong> <span id="students">300</span></p>
+                <p><strong>🎖 Rank: </strong> <span id="rank">Beginner</span></p>
+
+                <!-- Progress Bar -->
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <p class="next-rank" id="next-rank">Next Rank: Advanced</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="vertical-frame">
+        <img src="Images/left_school.png" alt="Fun Animals and Children" class="vertical-img">
+    </div>
+    <div class="right-edge-frame">
+        <img src="Images/right_school.png" alt="Right Edge Image" class="right-edge-img">
+    </div>
+    
+    
+</body>
+</html>

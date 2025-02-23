@@ -1,0 +1,549 @@
+/* General Reset */
+body {
+    background: url('Images/background.jpg') no-repeat center center/cover;
+    display: flex;
+    background-attachment: fixed;
+    flex-direction: column;
+    overflow-x: hidden; 
+    overflow-y: auto; /* Allows content to slide */
+    scroll-behavior: smooth;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    margin-top: 50px;
+} 
+
+/* Navbar */
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    height: 80px;
+    margin-left: 20px;
+    display: flex;
+    position: absolute;
+    top: 18px;
+    left: 29px;
+    transition: all 0.3s;
+}
+
+.navbar button {
+    background: black;
+    border: 2px solid transparent;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 20px rgba(125, 245, 66, 0.8));
+}
+
+/* Center Navigation Tabs */
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+
+
+.navbar .logout-button {
+    margin-left: auto;
+    margin-right: 20px;
+    transform: none;
+}
+
+.navbar button:hover {
+    transform: scale(1.1);
+}
+
+/* Logo hover effect */
+.navbar .logo:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Main Layout */
+.main-container {
+    position: absolute;
+    top: 120px;
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    max-width: 900px;
+}
+
+/* Profile Section */
+.profile-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Profile Info Container */
+.profile-container {
+    background: rgba(79, 108, 76, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+/* Role Styling */
+.profile-info p { 
+    font-family: Tahoma, sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    color: #b4f5b8;
+}
+
+
+/* Change Password Styling */
+h3 { 
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #00e654;
+}
+
+
+#profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+#profile-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.4);
+}
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    margin: 0;
+    font-family: 'Poppins';
+    font-size: 30px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Settings Container */
+.settings-container {
+    background: rgba(79, 108, 76, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Change Avatar Section */
+.settings-container .section-title {
+    font-family: Georgia, serif; /* Classic and elegant */
+    font-size: 20px;
+    font-weight: bold;
+    color: #00e654;
+    margin-top: 0; 
+    padding-top: 0
+}
+/* Avatar Selection */
+.avatar-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+}
+
+.avatar:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* Selected avatar effect */
+.avatar.selected {
+    border: 3px solid #3bf654;
+    box-shadow: 0 0 15px rgba(59, 246, 128, 0.6);
+    position: relative;
+}
+
+/* Contributions Container*/
+.contributions-container {
+    flex: 1;
+    background: rgba(79, 108, 76, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-family: 'Poppins', sans-serif;
+    position: relative; /* Ensures the button is positioned inside this */
+    padding-bottom: 50px
+}
+
+.delete-button {
+    position: absolute;
+    width: 90%;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    bottom: 20px;
+    transform: translateX(-50%); /* Centers the button horizontally */
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-button:hover {
+    background-color: #dc2626;
+}
+
+/* Title */
+.contributions-container h3 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #ffffff;
+    font-family: 'Poppins';
+    margin-bottom: 25px;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Contribution Stats */
+.contributions-container p {
+    font-size: 20px;
+    font-weight: 500;
+    color: #b4f5b8;
+    display: flex;
+    align-items:baseline;
+    justify-content: left;
+    margin: 8px 0;
+}
+
+.contributions-container p strong {
+    color: #56d05e;
+    font-size: 20px;
+}
+
+/* Icons for better visual appeal */
+.contributions-container p::before {
+    content: "• ";
+    color: #2a6b3c;
+    font-size: 22px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.progress {
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(90deg, #3bf66d, #0e682e);
+    transition: width 0.4s ease-in-out;
+}
+
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s ease;
+}
+
+
+.green { background-color: #069e34; }
+.gray { background-color: #6b7280; }
+.red { background-color: #ef4444; }
+.green:hover { background-color: #0a7635; }
+.gray:hover { background-color: #4b5563; }
+.red:hover { background-color: #dc2626; }
+
+
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+/* Password Input Styling */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    
+}
+
+.password-container input {
+    width: 100%;
+    padding: 10px 40px 10px 15px; /* Space for the eye icon */
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.password-container input:focus {
+    border: 1px solid #3b82f6; /* Highlight border when focused */
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+/* Eye Icon */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease-in-out;
+}
+
+.toggle-password:hover {
+    color: #3b82f6; /* Highlight when hovered */
+}
+/* Contact Form Modal */
+.contact-form-container {
+    display: none;
+    position:relative;
+    width: 100%;
+    height: 60%;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.contact-form-content {
+    background: rgba(229, 255, 226, 0.6);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    position: relative;
+    animation: slideIn 0.5s ease;
+}
+
+.contact-form-content h2 {
+    font-family: 'Poppins', sans-serif;
+    color: #023a1c;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    position: relative;
+    margin: 25px 0;
+}
+
+.input-group input,
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    background: #a1e7a5c5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.input-group textarea {
+    resize: none;
+    height: 100px;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: #069e34;
+    box-shadow: 0 0 8px rgba(6, 158, 52, 0.3);
+}
+
+.input-group label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #069e34;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus ~ label,
+.input-group input:valid ~ label,
+.input-group textarea:focus ~ label,
+.input-group textarea:valid ~ label {
+    top: -10px;
+    left: 5px;
+    font-size: 12px;
+    color: #069e34;
+}
+
+.contact-form-content button.submit-button {
+    background-color: #069e34;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.contact-form-content button.submit-button:hover {
+    background-color: #0a7635;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+/* Social Media Icons */
+.social-media {
+    margin-top: 20px;
+}
+
+.social-media a {
+    color: #555;
+    font-size: 24px;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+.social-media a:hover {
+    color: #069e34;
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+/* Add Vibrant Colors */
+.contact-button, .submit-button {
+    background: linear-gradient(90deg, #3bf66d, #0e682e);
+    color: #fff;
+    transition: background 0.3s, transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.contact-button:hover, .submit-button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #3bf66d, #0e682e);
+}
+
+/* Fun Hover Effects */
+.contact-button:hover {
+    animation: bounce 1s;
+}
+
+.avatar:hover {
+    animation: bounce 0.5s;
+}
+
+.vertical-frame {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 110%;
+    z-index: -1; /* Keeps it in the background */
+    overflow: hidden;
+}
+
+.vertical-frame .vertical-img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+}
+.right-edge-frame {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    height: 115%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.right-edge-img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+}
