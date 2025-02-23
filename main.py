@@ -3,6 +3,9 @@ from flask_cors import CORS  # Import CORS
 import sqlite3
 import logging
 import webbrowser
+import base64
+import os
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
@@ -161,6 +164,108 @@ def login():
         logging.exception("An error occurred during login.")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/articles', methods=['GET'])
+def get_articles():
+    conn = sqlite3.connect("KH_Database.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT ID, Owner, Title, Image, Content, Date, Time FROM School_Post")
+
+    articles = []
+    for row in cursor.fetchall():
+        article_id, member, title, image, content, date, time = row
+        image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}" if image else None
+        articles.append({
+            "id": article_id,
+            "member": member,
+            "title": title,
+            "image": image_base64,
+            "content": content,
+            "date": date,
+            "time": time,
+            "member_type": "Teacher"
+        })
+
+    conn.close()
+    return jsonify(articles)
+
+@app.route('/community_articles', methods=['GET'])
+def get_community_articles():
+    conn = sqlite3.connect("KH_Database.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT ID, Owner, Title, Image, Content, Date, Time FROM Community_Post")
+
+    articles = []
+    for row in cursor.fetchall():
+        article_id, member, title, image, content, date, time = row
+        image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}" if image else None
+        articles.append({
+            "id": article_id,
+            "member": member,
+            "title": title,
+            "image": image_base64,
+            "content": content,
+            "date": date,
+            "time": time,
+            "member_type": "Member"
+        })
+
+    conn.close()
+    return jsonify(articles)
+
+@app.route('/post', methods=['POST'])
+def post_article():
+    try:
+        title = request.form.get('title')
+        content = request.form.get('content')
+        owner = request.form.get('owner')
+        date = datetime.now().strftime("%Y-%m-%d")
+        time = datetime.now().strftime("%H:%M:%S")
+
+        image = request.files.get('image')
+        image_blob = image.read() if image else None  
+
+        if not title.strip() or not content.strip() or not owner.strip():
+            return jsonify({"error": "Fields cannot be empty or blank"}), 400
+
+        conn = sqlite3.connect("KH_Database.db")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO School_Post (Owner, Title, Image, Content, Date, Time) VALUES (?, ?, ?, ?, ?, ?)", (owner, title, image_blob, content, date, time))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Post uploaded successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/post_community', methods=['POST'])
+def post_community_article():
+    try:
+        title = request.form.get('title')
+        content = request.form.get('content')
+        owner = request.form.get('owner')
+        date = datetime.now().strftime("%Y-%m-%d")
+        time = datetime.now().strftime("%H:%M:%S")
+
+        image = request.files.get('image')
+        image_blob = image.read() if image else None  
+
+        if not title.strip() or not content.strip() or not owner.strip():
+            return jsonify({"error": "Fields cannot be empty or blank"}), 400
+
+        conn = sqlite3.connect("KH_Database.db")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO Community_Post (Owner, Title, Image, Content, Date, Time) VALUES (?, ?, ?, ?, ?, ?)", (owner, title, image_blob, content, date, time))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Community post uploaded successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")
     app.run(debug=True, port=5001)
