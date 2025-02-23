@@ -1,3 +1,95 @@
+document.addEventListener("DOMContentLoaded", function () {
+    fetchArticles();
+});
+
+function fetchArticles() {
+    fetch("http://127.0.0.1:5001/articles")  // Flask API Endpoint
+        .then(response => response.json())
+        .then(data => {
+            const container = document.querySelector(".container"); // The scrolling articles container
+
+            data.forEach(article => {
+                const card = createCard(article);
+                container.appendChild(card);
+            });
+        })
+        .catch(error => console.error("Error fetching articles:", error));
+}
+
+function createCard(article) {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.onclick = function() {
+        showModal(article);
+    };
+
+    const cardHeader = document.createElement('div');
+    cardHeader.classList.add('card-header');
+
+    // Profile picture link to PublicProfileView.html
+    const profileLink = document.createElement('a');
+    profileLink.href = "ProfilePublicView.html";
+    profileLink.classList.add('profile-link');
+
+    const profileImg = document.createElement('img');
+    profileImg.src = article.profile_image && article.profile_image.trim() ? article.profile_image : 'images/default.png';
+    profileImg.alt = 'Profile';
+    profileImg.classList.add('profile-img');
+    profileLink.appendChild(profileImg);
+
+    const cardInfo = document.createElement('div');
+    cardInfo.classList.add('card-info');
+
+    const profileInfo = document.createElement('div');
+    profileInfo.classList.add('profile-info');
+
+    const memberName = document.createElement('span');
+    memberName.classList.add('member-name');
+    memberName.innerText = article.member;
+
+    const memberType = document.createElement('span');
+    memberType.classList.add('member-type');
+    memberType.innerText = article.member_type;
+
+    profileInfo.appendChild(memberName);
+    profileInfo.appendChild(memberType);
+
+    const timestamp = document.createElement('div');
+    timestamp.classList.add('timestamp');
+    const date = document.createElement('span');
+    date.classList.add('date');
+    date.innerText = article.date;
+    const time = document.createElement('span');
+    time.classList.add('time');
+    time.innerText = article.time;
+
+    timestamp.appendChild(date);
+    timestamp.appendChild(time);
+
+    cardInfo.appendChild(profileInfo);
+    cardInfo.appendChild(timestamp);
+    cardHeader.appendChild(profileLink);
+    cardHeader.appendChild(cardInfo);
+
+    const img = document.createElement('img');
+    img.src = article.image ? article.image : 'images/default.jpg';  
+    img.alt = article.title;
+
+    const title = document.createElement('h3');
+    title.innerText = article.title;
+
+    const content = document.createElement('p');
+    content.innerText = article.content.substring(0, 100) + '...';
+
+    card.appendChild(cardHeader);
+    card.appendChild(img);
+    card.appendChild(title);
+    card.appendChild(content);
+
+    return card;
+}
+
+// Function to show the modal when a card is clicked
 function showModal(article) {
     const modal = document.getElementById('modal');
     const overlay = document.getElementById('overlay');
@@ -11,56 +103,29 @@ function showModal(article) {
     const time = document.getElementById('modal-time');
     const profileLink = document.getElementById('modal-profile-link'); 
 
-    const articles = {
-        elephants: {
-            title: 'The last Sumatran elephants need your voice!',
-            content: '(Some of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the lastSome of the last)Some of the last Sumatran elephants roam the forest of Sepitun. The habitat loss and deforestation continue to threaten their survival, and urgent measures are needed to protect them. Join us in raising awareness and supporting conservation efforts!',
-            image: 'images/elephant.jpg',
-            profile:'',
-            member: 'user1',
-            memberType: 'Teacher',
-            profileLink: 'ProfilePublicView.html', 
-            date: '10 Feb 2025',
-            time: '12:42 PM'
-        },
-        rhinos: {
-            title: 'Javan rhinos',
-            content: 'The International Union of Nature (IUCN) classified Javan rhinos as critically endangered. Habitat destruction and poaching have caused a drastic decline in their population. With only a few left in the wild, every effort counts to ensure their survival.',
-            image: 'images/rhino.jpg',
-            profile: '',
-            member: 'user2',
-            memberType: 'Teacher',
-            profileLink: 'ProfilePublicView.html',
-            date: '10 Feb 2025',
-            time: '12:42 PM'
-        },
-        tigers: {
-            title: 'Endangered Tigers',
-            content: 'Tigers are facing habitat destruction and poaching. With fewer than 4,000 tigers left in the wild, urgent action is needed to prevent their extinction. We must protect their habitats and end illegal poaching activities to safeguard the future of these majestic creatures.',
-            image: 'images/tiger.jpg',
-            profile: '',
-            member: 'user3',
-            memberType: 'Teacher',
-            profileLink: 'ProfilePublicView.html',
-            date: '10 Feb 2025',
-            time: '12:42 PM'
-        }
-    };
+    title.innerText = article.title;
+    content.innerText = article.content;
 
-    title.innerText = articles[article].title;
-    content.innerText = articles[article].content;
-    image.src = articles[article].image;
-    profile.src = articles[article].profile || 'images/default.png'; 
-    member.innerText = articles[article].member;
-    memberType.innerText = articles[article].memberType;
-    date.innerText = articles[article].date;
-    time.innerText = articles[article].time;
-    profileLink.href = articles[article].profileLink; 
+    // FIX: Ensure base64 image is handled correctly
+    image.src = article.image && article.image.startsWith("data:image") ? article.image : 'images/default.jpg';
+
+    // Ensure profile image is set correctly
+    profile.src = article.profile_image && article.profile_image.trim() ? article.profile_image : 'images/default.png';  
+
+    member.innerText = article.member;
+    memberType.innerText = article.member_type;
+    date.innerText = article.date;
+    time.innerText = article.time;
+
+    // Set profile link in modal
+    profileLink.href = "ProfilePublicView.html";  
 
     modal.style.display = 'block';
     overlay.style.display = 'block';
 }
 
+
+// Function to close the modal
 function closeModal() {
     const modal = document.getElementById('modal');
     const overlay = document.getElementById('overlay');
