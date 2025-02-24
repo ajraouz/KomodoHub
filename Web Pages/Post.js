@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Remove image without submitting the post
             document.getElementById("remove-image").addEventListener("click", (event) => {
                 event.stopPropagation(); // Prevents triggering any other event
+                event.preventDefault();
                 mediaUpload.value = "";
                 uploadFeedback.style.display = "none";
             });
@@ -143,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         titleInput.value = "";
         contentInput.value = "";
         mediaUpload.value = "";
+        uploadFeedback.style.display = "none";
     });
 
     function showSuccessMessage(message) {
