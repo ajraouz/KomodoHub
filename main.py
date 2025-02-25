@@ -11,6 +11,11 @@ CORS(app)  # Enable CORS for all routes
 
 logging.basicConfig(level=logging.DEBUG)
 
+
+@app.route('/')
+def serve_homepage():
+    return send_from_directory('Web Pages', 'Homepage.html')
+
 @app.route('/')
 def serve_html_index():
     return send_from_directory('Web Pages', 'RegisterPage.html')
