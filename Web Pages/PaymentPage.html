@@ -142,14 +142,12 @@
             });
 
             if (allValid) {
-                // Simulate successful payment (You can add actual payment processing here)
-                window.location.href = "LoginPage.html";  // Redirect to home page after payment
 
                 // Get user data from localStorage
                 const registrationData = JSON.parse(localStorage.getItem('registrationData'));
 
                 // Send the registration data to the backend for insertion after payment
-                fetch('http://127.0.0.1:5001/complete_payment_registration', {
+                fetch('/complete_payment_registration', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -164,6 +162,7 @@
                 .then(result => {
                     if (result.message) {
                         alert(result.message);  // Registration successful
+                        localStorage.removeItem('registrationData');  // Remove registration data after successful payment
                         window.location.href = '/Web Pages/LoginPage.html';  // Redirect to login page
                     } else {
                         alert("Error: " + result.error);

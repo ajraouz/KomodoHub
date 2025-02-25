@@ -29,59 +29,51 @@ def serve_css_style():
 
 @app.route('/register', methods=['POST'])
 def register():
+    conn = None  # Define the connection outside try
     try:
         logging.debug("Received registration request.")
 
-        # Get form data
         username = request.form.get('username')
         name = request.form.get('name')
         password = request.form.get('password')
         user_type = request.form.get('user_type')
         access_code = request.form.get('access_code') if user_type in ['student', 'teacher'] else None
 
-        logging.debug(f"Received Data: {username}, {name}, {user_type}, {access_code}")
-
-        # Validate required fields
         if not username or not name or not password or not user_type:
-            logging.error("Missing required fields.")
             return jsonify({"error": "Missing required fields"}), 400
 
-        # Hash password for security
         hashed_password = generate_password_hash(password)
 
-        conn = sqlite3.connect('KH_Database.db')
+        conn = sqlite3.connect('KH_Database.db', timeout=10)  # Increased timeout to avoid lock
         cursor = conn.cursor()
 
-        # Insert into users table
         cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
                        (username, hashed_password, user_type))
-
-        # Get the newly inserted user_id
         user_id = cursor.lastrowid
 
-        # Insert into the respective table based on user_type
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
                            (user_id, name, access_code, 0, 0, None))
         elif user_type == "teacher":
             cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
                            (user_id, name, access_code, None))
-        elif user_type == "member":
-            return jsonify({"error": "Members must complete payment first."}), 400
-        else:
-            logging.error("Invalid user type.")
-            return jsonify({"error": "Invalid user type"}), 400
 
-        # Commit changes and close connection
         conn.commit()
-        conn.close()
-
         logging.info("User registered successfully.")
         return jsonify({"message": "Registered successfully!"}), 200
+
+    except sqlite3.OperationalError as e:
+        logging.exception("Database error occurred.")
+        return jsonify({"error": "Database is locked. Try again later."}), 500
 
     except Exception as e:
         logging.exception("An error occurred while registering.")
         return jsonify({"error": str(e)}), 500
+
+    finally:
+        if conn:
+            conn.close()  # Ensuring the connection is always closed
+
 
 @app.route('/complete_payment_registration', methods=['POST'])
 def complete_payment_registration():
@@ -273,4 +265,8 @@ def post_community_article():
         
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")
-    app.run(debug=True, port=5001)
+    app.run(debug=False, port=5001)
+
+# if __name__ == '__main__':
+#     webbrowser.open("http://192.168.1.189:5001/")
+#     app.run(host='0.0.0.0', debug=False, port=5001)

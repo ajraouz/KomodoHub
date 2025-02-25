@@ -41,7 +41,7 @@
 
         </form>
         <p class="redirect">
-            Don't have an account? <a href="RegisterPage.html">Register</a>
+            Don't have an account? <a href="/Web Pages/RegisterPage.html">Register</a>
         </p>
     </div>
     <script>
@@ -58,7 +58,7 @@
             formData.append('user_type', userType);
 
             try {
-                let response = await fetch('http://127.0.0.1:5001/login', {  // <-- Update the endpoint to your login route
+                let response = await fetch('/login', {  // <-- Update the endpoint to your login route
                     method: 'POST',
                     body: formData
                 });
