@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const titleInput = document.getElementById("title");
     const contentInput = document.getElementById("content");
     const mediaUpload = document.getElementById("media-upload");
+    const postType = document.getElementById("post-type"); // Dropdown selection
 
     // Error messages
     const titleError = document.createElement("p");
@@ -38,13 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <img src="${imageUrl}" alt="Uploaded Image" style="width: 50px; height: 50px; border-radius: 5px; object-fit: cover;">
                     <span>Image addition successful</span>
-                    <button style="background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">X</button>
+                    <button id="remove-image" style="background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer;">X</button>
                 </div>
             `;
             uploadFeedback.style.display = "block";
 
-            // Remove image and hide confirmation bar
-            uploadFeedback.querySelector("button").addEventListener("click", () => {
+            // Remove image without submitting the post
+            document.getElementById("remove-image").addEventListener("click", (event) => {
+                event.stopPropagation(); // Prevents triggering any other event
+                event.preventDefault();
                 mediaUpload.value = "";
                 uploadFeedback.style.display = "none";
             });
@@ -52,89 +55,116 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Validate input
-function validateInput(input, errorElement, minWords) {
-    const text = input.value.trim();
-    const words = text.split(/\s+/);
+    function validateInput(input, errorElement, minWords) {
+        const text = input.value.trim();
+        const words = text.split(/\s+/);
 
-    let isValid = true;
-    let errorMessage = "";
+        let isValid = true;
+        let errorMessage = "";
 
-    // Check for minimum word count
-    if (words.length < minWords) {
-        errorMessage = `Minimum of ${minWords} words required.`;
-        isValid = false;
+        if (words.length < minWords) {
+            errorMessage = `Minimum of ${minWords} words required.`;
+            isValid = false;
+        }
+
+        const pattern = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s.,'!?()-]*$/;
+        if (!pattern.test(text)) {
+            errorMessage = "Only numbers or special characters accompanied by alphabets are allowed.";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            errorElement.textContent = errorMessage;
+            input.style.border = "2px solid red";
+        } else {
+            errorElement.textContent = "";
+            input.style.border = "2px solid green";
+        }
+
+        return isValid;
     }
-    // Updated regex: allows alphabets, numbers, and special characters, but requires at least one alphabet
-    const pattern = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s.,'!?()-]*$/;
-    if (!pattern.test(text)) {
-        errorMessage = "Only numbers or special characters accompanied by alphabets are allowed.";
-        isValid = false;
-    }
 
-    // Show or hide error message
-    if (!isValid) {
-        errorElement.textContent = errorMessage;
-        input.style.border = "2px solid red";
-    } else {
-        errorElement.textContent = "";
-        input.style.border = "2px solid green";
-    }
+    postButton.addEventListener("click", async (event) => {
+        event.preventDefault();
 
-    return isValid;
-}
-
-    postButton.addEventListener("click", () => {
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
         const media = mediaUpload.files[0];
+        const postDestination = postType.value; // Get selected post destination
+
+        // Determine which endpoint to use
+        const endpoint = postDestination === "school" ? "/post" : "/post_community";
 
         // Validate title (5 words) and content (10 words)
         const isTitleValid = validateInput(titleInput, titleError, 5);
         const isContentValid = validateInput(contentInput, contentError, 10);
 
         if (!isTitleValid || !isContentValid) {
+            console.log("❌ Validation failed: Title or content is not valid.");
             return;
         }
 
-        const post = {
-            title,
-            content,
-            media: media ? media.name : null,
-            timestamp: new Date().toISOString()
-        };
+        // Create FormData object for sending data
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("owner", "User1"); // Change dynamically if needed
+        if (media) {
+            formData.append("image", media);
+        }
 
-        localStorage.setItem("post", JSON.stringify(post));
+        console.log("📤 Sending post data:", {
+            title: title,
+            content: content,
+            media: media ? media.name : "No media",
+            destination: postDestination
+        });
 
-        // Success indication
-        const successMessage = document.createElement("p");
-        successMessage.textContent = "Post saved successfully!";
-        successMessage.style.color = "green";
-        successMessage.style.fontWeight = "bold";
-        successMessage.style.textAlign = "center";
+        try {
+            const response = await fetch(`http://127.0.0.1:5001${endpoint}`, {
+                method: "POST",
+                body: formData,
+            });
 
-        titleInput.style.border = "2px solid green";
-        contentInput.style.border = "2px solid green";
+            const result = await response.json();
+            console.log("✅ Server response:", result);
 
+            if (response.ok) {
+                showSuccessMessage(`Post uploaded to ${postDestination} successfully!`);
+            } else {
+                console.error("❌ Server responded with an error:", response.statusText);
+                showSuccessMessage("Post saved, but server response was invalid.");
+            }
+        } catch (error) {
+            console.error("❌ Network error:", error);
+            showSuccessMessage("Post saved locally, but a network error occurred.");
+        }
+
+        // Clear inputs
         titleInput.value = "";
         contentInput.value = "";
         mediaUpload.value = "";
         uploadFeedback.style.display = "none";
+    });
 
-        // Hide the post button and show the success message
-        postButton.style.display = "none";
-        postButton.parentNode.appendChild(successMessage);
+    function showSuccessMessage(message) {
+        const existingMessage = document.querySelector(".success-message");
+        if (existingMessage) {
+            existingMessage.remove();
+        }
 
-        titleInput.style.transition = "box-shadow 0.5s ease";
-        contentInput.style.transition = "box-shadow 0.5s ease";
+        const successMessage = document.createElement("p");
+        successMessage.textContent = message;
+        successMessage.className = "success-message";
+        successMessage.style.color = "green";
+        successMessage.style.fontWeight = "bold";
+        successMessage.style.textAlign = "center";
+        successMessage.style.marginTop = "15px";
 
-        titleInput.style.boxShadow = "0 0 10px green";
-        contentInput.style.boxShadow = "0 0 10px green";
+        document.querySelector(".container").appendChild(successMessage);
 
         setTimeout(() => {
-            titleInput.style.boxShadow = "none";
-            contentInput.style.boxShadow = "none";
             successMessage.remove();
-            postButton.style.display = "block"; // Show the button again after the timeout
-        }, 3000);
-    });
+        }, 5000);
+    }
 });

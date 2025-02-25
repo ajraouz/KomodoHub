@@ -6,7 +6,7 @@
     <title>Post Page</title>
     <link rel="stylesheet" href="Post.css">
 </head>
-<body>
+<body> 
     <div class="navbar">
         <a href="HomePage.html">
             <img src="images/komodoLogo.png" alt="Logo" class="logo">
@@ -21,25 +21,41 @@
     
         <a href="LoginPage.html"><button class="login">Login</button></a>
     </div>
+
     <div class="container">
         <div class="create-post-title">Create the Post</div>
-        <div class="post-box">
-            <div class="profile-info">
-                <img src="images/default.png" alt="Profile" class="profile-img">
-                <div>
-                    <p class="username">User1</p>
-                    <p class="user-role">Member</p>
+        <form id="post-form" enctype="multipart/form-data">
+            <div class="post-box">
+                <div class="profile-info">
+                    <img src="images/default.png" alt="Profile" class="profile-img">
+                    <div>
+                        <p class="username">User1</p> <!-- Replace dynamically -->
+                        <p class="user-role">Member</p> <!-- Replace dynamically -->
+                    </div>
+                </div>
+
+                <!-- Dropdown to choose posting destination -->
+                <label for="post-type">Post to:</label>
+                <select name="post-type" id="post-type">
+                    <option value="school">School Library</option>
+                    <option value="community">Community Library</option>
+                </select>
+
+                <input type="text" name="title" id="title" placeholder="Title" required>
+                <textarea name="content" id="content" placeholder="Write your post here" required></textarea>
+                
+                <!-- Hidden owner field -->
+                <input type="hidden" name="owner" value="User1"> <!-- Replace dynamically -->
+
+                <div class="button-container">
+                    <label for="media-upload" class="media-btn">📷 Add media</label>
+                    <input type="file" id="media-upload" name="image" hidden>
+                    <button type="submit" id="post-button">Post</button>
                 </div>
             </div>
-            <input type="text" id="title" placeholder="Title">
-            <textarea id="content" placeholder="Write your post here"></textarea>
-            <div class="button-container">
-                <label for="media-upload" class="media-btn">📷 Add media</label>
-                <input type="file" id="media-upload" hidden>
-                <button id="post-button">Post</button>
-            </div>
-        </div>
+        </form>
     </div>
+
     <script src="Post.js"></script>
 </body>
 </html>
