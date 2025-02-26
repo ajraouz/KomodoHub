@@ -21,17 +21,22 @@
     <a href="LoginPage.html"><button class="login">Login</button></a>
 </div>
     
-
-  
   <div id="game-container">
     <h1>HANGMAN JUNGLE</h1>
-    
-    <!--  Hangman Figure -->
-    <pre id="hangman-figure"></pre>
-    
+
+    <!-- Hangman Image Wrapper -->
+    <div id="hangman-wrapper">
+        <img id="hangman-bg" src="Images/bgOFhangmanGame.jpg" alt="Hangman Background">
+        <img id="hangman-hand-left" src="Images/monkey_lefthand.png" alt="Monkey Left Hand" class="hidden">
+        <img id="hangman-head" src="Images/monkey_head.png" alt="Monkey Head" class="hidden">
+        <img id="hangman-hand-right" src="Images/monkey_righthand.png" alt="Monkey Right Hand" class="hidden">
+        <img id="hangman-body" src="Images/monkey_body.png" alt="Monkey Body" class="hidden">
+        <img id="hangman-foot-left" src="Images/monkey_leftfeet.png" alt="Monkey Left Foot" class="hidden">
+        <img id="hangman-foot-right" src="Images/monkey_rightfeet.png" alt="Monkey Right Foot" class="hidden">
+    </div>
+
     <!-- Word Display -->
     <div id="word-display"></div>
-    <!-- Attempts and Letters Tried -->
     <div class="info" id="attempts"></div>
     <div class="info" id="tried-letters"></div>
     
@@ -43,195 +48,147 @@
     <div id="message"></div>
     <button id="restart-button">Restart</button>
 
-    <!-- High Score Display (optional) -->
     <div id="highscore-display">
       High Score: <span id="high-score">0</span>
+    </div>
+
+    <!-- Hint Box  -->
+    <div id="library-hint" style="display: none;">
+      If you find words hard, visit the 
+      <a href="CommunityLibrary.html">Community Library</a> 
+      or <a href="SchoolLibrary.html">School Library</a> to learn animal names!
     </div>
   </div>
 
   <script>
-    
-    const words = ["Sumatran Tiger",
-      "Sumatran Elephant",
-      "Javan Rhinoceros",
-      "Banteng",
-      "Javan Gibbon",
-      "Orangutan",
-      "Bekantan",
-      "Komodo",
-      "Bali Mynah",
-      "Anoa",
-      "Babirusa",
-      "Javan Eagle",
-      "Tarsius"];
-
-    // hangman stages 
-    const hangmanStages = [
-      `
-         +---+
-         |   |
-             |
-             |
-             |
-        ========
-      `,
-      `
-         +---+
-         |   |
-         O   |
-             |
-             |
-        ========
-      `,
-      `
-         +---+
-         |   |
-         O   |
-         |   |
-             |
-        ========
-      `,
-      `
-         +---+
-         |   |
-         O   |
-        /|   |
-             |
-        ========
-      `,
-      `
-         +---+
-         |   |
-         O   |
-        /|\\  |
-             |
-        ========
-      `,
-      `
-         +---+
-         |   |
-         O   |
-        /|\\  |
-        /    |
-        ========
-      `,
-      `
-         +---+
-         |   |
-         O   |
-        /|\\  |
-        / \\  |
-        ========
-      `
+    const words = [
+        "sumatran tiger", "sumatran elephant", "javan rhinoceros",
+        "banteng", "javan gibbon", "orangutan", "bekantan",
+        "komodo", "bali myna", "anoa", "babirusa",
+        "javan eagle", "tarsius"
     ];
 
-    let wordToGuess      = "";
-    let guessedLetters   = [];
-    let attemptsRemaining= 6;
-    let lettersTried     = [];
-    let wrongGuesses     = 0;
-    let highScore        = 0;
+    let wordToGuess = "";
+    let guessedLetters = [];
+    let attemptsRemaining = 6;
+    let lettersTried = [];
+    let wrongGuesses = 0;
+    let highScore = 0;
 
-   
-    const hangmanFigure   = document.getElementById("hangman-figure");
-    const wordDisplay     = document.getElementById("word-display");
+    const wordDisplay = document.getElementById("word-display");
     const attemptsDisplay = document.getElementById("attempts");
     const triedLettersDiv = document.getElementById("tried-letters");
-    const guessInput      = document.getElementById("guess-input");
-    const guessButton     = document.getElementById("guess-button");
-    const messageDisplay  = document.getElementById("message");
-    const restartButton   = document.getElementById("restart-button");
-    const highScoreSpan   = document.getElementById("high-score");
+    const guessInput = document.getElementById("guess-input");
+    const guessButton = document.getElementById("guess-button");
+    const messageDisplay = document.getElementById("message");
+    const restartButton = document.getElementById("restart-button");
+    const highScoreSpan = document.getElementById("high-score");
+    const libraryHint = document.getElementById("library-hint");
+
+    const monkeyParts = [
+        document.getElementById("hangman-hand-left"),
+        document.getElementById("hangman-head"),
+        document.getElementById("hangman-hand-right"),
+        document.getElementById("hangman-body"),
+        document.getElementById("hangman-foot-left"),
+        document.getElementById("hangman-foot-right")
+    ];
 
     // Start a new game
     function initializeGame() {
-      wordToGuess = words[Math.floor(Math.random() * words.length)];
-      guessedLetters = Array(wordToGuess.length).fill("_");
-      attemptsRemaining = 6;
-      wrongGuesses = 0;
-      lettersTried = [];
-      hangmanFigure.textContent = hangmanStages[0];
-      messageDisplay.textContent = "";
-      guessInput.value = "";
-      guessInput.disabled = false;
-      guessButton.disabled = false;
-      restartButton.style.display = "none";
-      updateDisplay();
+        wordToGuess = words[Math.floor(Math.random() * words.length)];
+        guessedLetters = Array(wordToGuess.length).fill("_");
+        attemptsRemaining = 6;
+        wrongGuesses = 0;
+        lettersTried = [];
+        messageDisplay.textContent = "";
+        guessInput.value = "";
+        guessInput.disabled = false;
+        guessButton.disabled = false;
+        restartButton.style.display = "none";
+        libraryHint.style.display = "none";
+
+        // Hide all monkey parts
+        monkeyParts.forEach(part => part.classList.add("hidden"));
+
+        updateDisplay();
     }
+
     // Update the display
     function updateDisplay() {
-      wordDisplay.textContent = guessedLetters.join(" ");
-      attemptsDisplay.textContent = "Attempts Remaining: " + attemptsRemaining;
-      triedLettersDiv.textContent = "Letters Tried: " + lettersTried.join(", ");
-      highScoreSpan.textContent = highScore;
+        wordDisplay.textContent = guessedLetters.join(" ");
+        attemptsDisplay.textContent = "Attempts Remaining: " + attemptsRemaining;
+        triedLettersDiv.textContent = "Letters Tried: " + lettersTried.join(", ");
+        highScoreSpan.textContent = highScore;
     }
+
     // Handle a guess
     function processGuess() {
-      const guess = guessInput.value.toLowerCase();
-      guessInput.value = "";
-      if (!guess.match(/[a-z]/i)) {
-        messageDisplay.textContent = "Please enter a valid letter.";
-        return;
-      }
-      if (lettersTried.includes(guess)) {
-        messageDisplay.textContent = "You've already tried that letter.";
-        return;
-      }
-
-      lettersTried.push(guess);
-
-      if (wordToGuess.includes(guess)) {
-        // Reveal the guessed letter in all correct positions
-        for (let i = 0; i < wordToGuess.length; i++) {
-          if (wordToGuess[i] === guess) {
-            guessedLetters[i] = guess;
-          }
+        const guess = guessInput.value.toLowerCase();
+        guessInput.value = "";
+        
+        if (!guess.match(/[a-z]/i)) {
+            messageDisplay.textContent = "Please enter a valid letter.";
+            return;
         }
-        messageDisplay.textContent = "Good guess!";
-      } else {
-        attemptsRemaining--;
-        wrongGuesses++;
-        hangmanFigure.textContent = hangmanStages[wrongGuesses];
-        messageDisplay.textContent = "That letter is not in the word.";
-      }
+        if (lettersTried.includes(guess)) {
+            messageDisplay.textContent = "You've already tried that letter.";
+            return;
+        }
 
-      updateDisplay();
-      checkEndGame();
+        lettersTried.push(guess);
+
+        if (wordToGuess.includes(guess)) {
+            for (let i = 0; i < wordToGuess.length; i++) {
+                if (wordToGuess[i] === guess) {
+                    guessedLetters[i] = guess;
+                }
+            }
+            messageDisplay.textContent = "Good guess!";
+        } else {
+            if (wrongGuesses < monkeyParts.length) {
+                monkeyParts[wrongGuesses].classList.remove("hidden");
+            }
+            attemptsRemaining--;
+            wrongGuesses++;
+            messageDisplay.textContent = "That letter is not in the word.";
+        }
+
+        updateDisplay();
+        checkEndGame();
     }
-
     // Check for win or loss
     function checkEndGame() {
-      if (!guessedLetters.includes("_")) {
-        messageDisplay.textContent = "You win! The word was: " + wordToGuess;
-        if (attemptsRemaining > highScore) {
-          highScore = attemptsRemaining;
+        if (!guessedLetters.includes("_")) {
+            messageDisplay.textContent = "You win! The word was: " + wordToGuess;
+            if (attemptsRemaining > highScore) {
+                highScore = attemptsRemaining;
+            }
+            endGame(false);
+        } else if (attemptsRemaining <= 0) {
+            messageDisplay.textContent = "Game Over! The word was: " + wordToGuess;
+            endGame(true);
         }
-        endGame();
-      } else if (attemptsRemaining <= 0) {
-        messageDisplay.textContent = "Game Over! The word was: " + wordToGuess;
-        endGame();
-      }
+    }
+    function endGame(showHint) {
+        guessInput.disabled = true;
+        guessButton.disabled = true;
+        restartButton.style.display = "inline-block";
+        if (showHint) {
+            libraryHint.style.display = "block";
+        }
     }
 
-    // End the game
-    function endGame() {
-      guessInput.disabled = true;
-      guessButton.disabled = true;
-      restartButton.style.display = "inline-block";
-      updateDisplay();
-    }
-
-    // Event listeners
     guessButton.addEventListener("click", processGuess);
     guessInput.addEventListener("keyup", function(e) {
-      if (e.key === "Enter") {
-        processGuess();
-      }
+        if (e.key === "Enter") {
+            processGuess();
+        }
     });
     restartButton.addEventListener("click", initializeGame);
 
-    // Initialize on page load
     initializeGame();
   </script>
+
 </body>
 </html>
