@@ -47,6 +47,12 @@ def register():
         conn = sqlite3.connect('KH_Database.db', timeout=10)  # Increased timeout to avoid lock
         cursor = conn.cursor()
 
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            return jsonify({"error": "Username already exists. Please choose a different one."}), 400
+
         cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
                        (username, hashed_password, user_type))
         user_id = cursor.lastrowid
