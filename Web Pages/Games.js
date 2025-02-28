@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { name: "Hangman Jungle Game", img: "Images/Hangman_logo.png", link: "hangman.html" },
         { name: "Slide & Solve", img: "Images/Sliding_logo.png", link: "SlidingGame.html" },
         { name: "Jigsaw Puzzle", img: "Images/default.png", link: "JigsawGame.html" },
-        { name: "WordScapes", img: "Images/default.png", link: "WordFinderGame.html" },
+        { name: "WordScapes", img: "Images/Wordscapes_logo.png", link: "WordFinderGame.html" },
     ];
 
     games.forEach(game => {
