@@ -1,0 +1,360 @@
+/* General Body Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
+  
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo aligned with other buttons */
+.navbar .logo {
+  height: 80px;
+  margin-left: 20px;
+  display: flex;
+  position: absolute;
+  top: 18px;
+  left: 29px;
+  transition: all 0.3s;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 20px rgba(125, 245, 66, 0.8));
+}
+
+/* Center Navigation Tabs */
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+}
+
+.navbar button {
+  background: black;
+  border: 2px solid transparent;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.navbar a[href="Games.html"] button {
+  border: 2px solid rgb(105, 250, 105); 
+}
+
+/* Login Button */
+.navbar .login {
+  margin-left: auto;
+  margin-right: 20px;
+  transform: none;
+}
+
+.navbar button:hover {
+  transform: scale(1.1);
+}
+
+/* Logo hover effect */
+.navbar .logo:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+
+/* Main Game Container */
+.game-container {
+  display: flex;
+  justify-content: space-between; /* Grid on the left, letters on the right */
+  align-items: center;
+  width: 90%;
+  max-width: 900px;
+  margin: 50px auto; /* Moves everything down slightly */
+  gap: 50px; /* Adds spacing between grid and letter circle */
+  margin-top: 100px;
+}
+
+/* Word Grid (Left Side) */
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 50px);
+  gap: 5px;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.25); /* Light transparent white */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Word Grid Cells */
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+/* Right-Side Container (Controls + Letter Circle) */
+.right-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  left: -20px; /* Moves the entire right section slightly left */
+}
+
+/* Control Buttons (Shuffle & Hint) */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px; /* Space between buttons and letter wheel */
+  position: relative;
+}
+
+/* Styling for Shuffle and Hint Buttons */
+.control-btn {
+  width: 50px;
+  height: 50px;
+  background-color: black !important; /* Ensures black background */
+  border: 3px solid #00FF00; /* Green outline */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+  transition: all 0.2s ease-in-out;
+}
+
+.control-btn:hover {
+  background-color: #444;
+  box-shadow: 0 0 12px rgba(0, 255, 0, 1);
+}
+
+/* Move Hint Button Left */
+#hint-btn {
+  position: relative;
+  right: -60px;
+}
+
+/* Move Shuffle Button Left */
+#shuffle-btn {
+  position: relative;
+  left: -50px;
+}
+
+/* Letter Circle (Wheel) */
+.letter-circle {
+  position: relative;
+  width: 220px; /* Adjust width to fit the background */
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.11); /* Light transparent white */
+  border-radius: 50%;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3); /* Soft shadow */
+  border: 4px solid transparent;
+}
+
+/* Individual Letter Styling */
+.letter {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: black !important;
+  color: white;
+  border: 3px solid #00FF00; /* Green outline */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+}
+
+/* When a letter is selected */
+.letter.selected {
+  background-color: black !important;
+  border-color: black !important;
+  box-shadow: 0 0 15px #00FF00 !important; /* Green glow */
+}
+
+/* Completion Popup */
+.completion-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #90EE90; /* Light green */
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+/* Completion Popup Title */
+.completion-popup h2 {
+  margin-bottom: 15px;
+  color: black;
+}
+
+/* Popup Buttons */
+.completion-popup button {
+  margin: 5px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #008000; /* Green */
+  color: white;
+  border-radius: 5px;
+  transition: background 0.2s ease-in-out;
+}
+
+.completion-popup button:hover {
+  background-color: #006400; /* Darker green */
+}
+
+/* Drag Line Canvas */
+.drag-line-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 5; /* Ensures the line stays behind letters */
+}
+
+/* General Button Styling */
+button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#difficulty-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: url('Images/WordFinderDIff.webp') no-repeat center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: rgb(0, 1, 0);
+  color: white;
+  text-align: top;
+}
+
+#difficulty-container {
+  background: rgba(0, 0, 0, 0.5); 
+  padding: 50px;
+  border-radius: 10px; 
+  text-align: center;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3); 
+  width: 350px; 
+  max-width: 40%; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#difficulty-screen h2 {
+  font-size: 23px; 
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff; 
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5); 
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.difficulty-btn {
+  width: 200px;
+  padding: 15px;
+  font-size: 17px;
+  font-weight: bold;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 5px;
+
+}
+
+.easy {
+  background: rgb(40, 148, 40);
+  color: white;
+}
+
+.medium {
+  background: rgb(233, 171, 56);
+  color: white;
+}
+
+.hard {
+  background: rgb(163, 7, 7);
+  color: white;
+}
+
+.difficulty-btn:hover {
+  opacity: 0.8;
+}
+
+.back-button-container {
+  position: absolute;
+  top: 120px;
+  left: 90px;
+}
+
+#back-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #00b126;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background 0.2s ease-in-out;
+  margin-top: 20px;
+}
+
+#back-button:hover {
+  background-color: #006b1c;
+}

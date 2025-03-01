@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Puzzle Game</title>
+    <link rel="stylesheet" href="WordScapes.css">
+    <script defer src="WordScapes.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="HomePage.html">
+            <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+        </a>
+        <div class="nav-center">
+            <a href="CommunityLibrary.html"><button>Community Library</button></a>
+            <a href="SchoolLibrary.html"><button>School Library</button></a>
+            <a href="Post.html"><button>Post</button></a>
+            <a href="Games.html"><button>Games</button></a>
+        </div>
+        <a href="ProfilePrivateView.html"><button class="login">Profile</button></a>
+    </div>
+    <!-- Difficulty Selection Screen -->
+    <div id="difficulty-screen">
+        <div id="difficulty-container">
+            <h2>Select Your Difficulty</h2>
+            <button class="difficulty-btn easy" onclick="startGame('easy')">EASY</button>
+            <button class="difficulty-btn medium" onclick="startGame('medium')">MEDIUM</button>
+            <button class="difficulty-btn hard" onclick="startGame('hard')">HARD</button>
+        </div>
+    </div>
+
+    <!-- Main Game Container (Initially Hidden) -->
+    <div id="game-container" style="display: none;">
+        <div class="back-button-container">
+            <button id="back-button" onclick="goBack()">Back</button>
+        </div>
+
+        <div class="game-container">
+            <!-- Word Grid (Left) -->
+            <div class="word-grid"></div>
+
+            <!-- Right Container (Controls + Letter Circle) -->
+            <div class="right-container">
+                <!-- Control Buttons -->
+                <div class="controls">
+                    <button id="shuffle-btn" class="control-btn"><i class="fas fa-random"></i></button>
+                    <button id="hint-btn" class="control-btn"><i class="fas fa-lightbulb"></i></button>
+                </div>
+
+                <!-- Letter Circle -->
+                <div class="letter-circle"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
