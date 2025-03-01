@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
         { name: "Word Search Game", img: "Images/Wordsearch_logo.png", link: "WordSearchGame.html" },
         { name: "Hangman Jungle Game", img: "Images/Hangman_logo.png", link: "hangman.html" },
         { name: "Slide & Solve", img: "Images/Sliding_logo.png", link: "SlidingGame.html" },
-        { name: "Jigsaw Puzzle", img: "Images/default.png", link: "JigsawGame.html" },
-        { name: "WordScapes", img: "Images/Wordscapes_logo.png", link: "WordFinderGame.html" },
+        { name: "Jigsaw Puzzle Game", img: "Images/Jigsaw_logo.jpg", link: "JigsawGame.html" },
+        { name: "WordScapes", img: "Images/Wordscapes_logo.png", link: "WordScapes.html" },
     ];
 
     games.forEach(game => {
