@@ -361,7 +361,7 @@ const wordHintsEasy = {
   "TIGER": "A large carnivorous cat known for its stripes.",
   "TIRE": "To begin to feel as if you have no energy and want to rest or go to sleep.",
   "GET": "To obtain or acquire something.",
-  "TIE": "A formal accessory worn around the neck.",
+  "TIE": "A formal accessory worn around the neck often worn with a suit.",
   "TIER": "A level or a row in a hierarchy.",
   "RITE": "A ceremonial or religious act."
 };
