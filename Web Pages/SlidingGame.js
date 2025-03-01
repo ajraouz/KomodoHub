@@ -3,13 +3,20 @@ let tilePositions = [];  // Array that tracks where each tile belongs.
 let gridSize = 3;        // Default grid size is 3×3 (easy).
 let moves = 0;           // Tracks the number of moves made by the player.
 let gameActive = false;  // Whether the game is currently active or not.
+let currentImage = '';
 
 // Images used for each difficulty
-const images = {
-  easy:   'Images/SlidingImages/sliding_bali.png',
-  medium: 'Images/SlidingImages/sliding_tiger.png',
-  hard:   'Images/SlidingImages/sliding_rhino.png'
-};
+const images = [
+  'Images/SlidingImages/sliding_bali.png',
+  'Images/SlidingImages/sliding_tiger.png',
+  'Images/SlidingImages/sliding_rhino.png',
+  'Images/SlidingImages/sliding_anoa.png',
+  'Images/SlidingImages/sliding_tarsius.png',
+  'Images/SlidingImages/sliding_gibbon.png',
+  'Images/SlidingImages/sliding_celebes.png',
+  'Images/SlidingImages/sliding_orangutan.png',
+  'Images/SlidingImages/sliding_bekantan.png'
+];
 
 //Initializes the puzzle for the selected difficulty.
 function startGame(difficulty) {
@@ -26,6 +33,19 @@ function startGame(difficulty) {
   document.getElementById('puzzle-container').style.display = 'block';
   const puzzleContainer = document.getElementById('puzzle-container');
   puzzleContainer.style.display = 'grid';
+  
+  // Randomly select an image from the array
+  const randomIndex = Math.floor(Math.random() * images.length);
+  currentImage = images[randomIndex];  // Store the randomly selected image
+
+  // Update the reference image in the DOM
+  const referenceImgElement = document.getElementById("reference-img");
+  referenceImgElement.src = currentImage;
+
+  referenceImgElement.className = `reference-img ${difficulty}`;
+  const referenceContainer = document.getElementById("reference-container");
+  referenceContainer.className = `reference-container ${difficulty}`;
+
 
   // Clear any existing puzzle tiles
   puzzleContainer.innerHTML = '';
@@ -74,7 +94,7 @@ function startGame(difficulty) {
       const col = tileValue % gridSize;
 
       // Each puzzle is 300×300 overall, so each tile is a slice of that 300×300 image
-      tileElement.style.backgroundImage = `url('${images[difficulty]}')`;
+      tileElement.style.backgroundImage = `url('${currentImage}')`;
       tileElement.style.backgroundSize = '300px 300px';  
       tileElement.style.backgroundPosition = `-${col * (300 / gridSize)}px -${row * (300 / gridSize)}px`;
 
@@ -92,6 +112,9 @@ function startGame(difficulty) {
 
   // Mark the game as active
   gameActive = true;
+  // After the forEach that creates & appends tiles:
+  updatePuzzleUI();
+
 }
 
 //Attempts to move the clicked tile if it is adjacent to the empty tile. If moved, increments `moves` and checks win.
@@ -159,9 +182,20 @@ function updatePuzzleUI() {
 
       const row = Math.floor(tileValue / gridSize);
       const col = tileValue % gridSize;
-      tileElement.style.backgroundImage = `url('${images[difficulty]}')`;
-      tileElement.style.backgroundSize = '300px 300px';
-      tileElement.style.backgroundPosition = `-${col * (300 / gridSize)}px -${row * (300 / gridSize)}px`;
+      tileElement.style.backgroundImage = `url('${currentImage}')`;
+      // Decide which “backgroundDimension” to use:
+      let backgroundDimension;
+      if (difficulty === 'easy') {
+        backgroundDimension = 300;   // 3×3 => each tile is 100 px
+      } else if (difficulty === 'medium') {
+        backgroundDimension = 400;   // 4×4 => each tile is 100 px
+      } else { // hard
+        backgroundDimension = 500;   // 5×5 => each tile is 100 px
+      }
+
+      // Then apply it:
+      tileElement.style.backgroundSize = `${backgroundDimension}px ${backgroundDimension}px`;
+      tileElement.style.backgroundPosition = `-${col * (backgroundDimension / gridSize)}px -${row * (backgroundDimension / gridSize)}px`;
 
       // Optionally, label with number:
       // tileElement.textContent = tileValue + 1;
@@ -186,7 +220,30 @@ function checkWin() {
 //Displays the final score popup and sets the score text
 function showFinalScore() {
   gameActive = false; // Stop moves
+
+  // Get the difficulty class from puzzle container
+  let difficulty = "";
+  const puzzleContainer = document.getElementById("puzzle-container");
+  if (puzzleContainer.classList.contains("easy")) {
+      difficulty = "easy";
+  } else if (puzzleContainer.classList.contains("medium")) {
+      difficulty = "medium";
+  } else if (puzzleContainer.classList.contains("hard")) {
+      difficulty = "hard";
+  }
+
+  // Assign points based on difficulty
+  let points = 0;
+  if (difficulty === "easy") {
+      points = 10;
+  } else if (difficulty === "medium") {
+      points = 20;
+  } else if (difficulty === "hard") {
+      points = 30;
+  }
+
   document.getElementById('final-score-value').innerText = moves;
+  document.getElementById("final-points-value").innerText = points;
   document.getElementById("game-container").style.display = "none"; // Hide game
   document.getElementById('final-score-container').style.display = 'block';
   document.getElementById("puzzle-container").style.display = "none";

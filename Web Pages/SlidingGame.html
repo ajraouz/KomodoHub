@@ -43,9 +43,17 @@
             <h1 class="game-title">Slide & Solve</h1>
         </div>
 
-        <!-- Game Content -->
-        <div class="move-counter" id="game-container">Moves: <span id="move-count">0</span></div>
-        <div class="puzzle-container" id="puzzle-container"></div>
+        <!-- Side-by-side layout: Puzzle grid on left, Reference image on right -->
+        <div class="game-body">
+            <div class="game-content">
+                <div class="move-counter" id="game-container">Moves: <span id="move-count">0</span></div>
+                <div class="puzzle-container" id="puzzle-container"></div>
+            </div>
+            
+            <div class="reference-container" id="reference-container">
+                <img id="reference-img" class="reference-img" src="Images/SlidingImages/sliding_bali.png" alt="Reference Image"></div>
+            </div>              
+        </div>
         
         <button class="quit-button" onclick="quitGame()">Quit Game</button>
     </div>
@@ -54,7 +62,8 @@
     <div id="final-score-container" style="display: none; text-align: center;">
         <h1>🎉 Congratulations!! 🎉</h1>
         <h1>🏆 You solved the puzzle! 🏆</h1>
-        <h2 id="final-score">Your Final Score: <span id="final-score-value">0</span></h2>
+        <h2 id="final-score">Your Total Moves: <span id="final-score-value">0</span></h2>
+        <h2>Points Earned: <span id="final-points-value">0</span></h2>
         <button id="restart-button" onclick="restartGame()">Restart Game</button>
         <button id="cancel-button" onclick="cancelGame()">More Games</button>
     </div>
