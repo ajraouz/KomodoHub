@@ -1,0 +1,346 @@
+body {
+        text-align: center;
+        font-family: "Times New Roman", serif;
+        background-color: #f0f0f0;
+    }
+
+    /* Drag Indicator */
+    #dragIndicator {
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 12px;
+        z-index: 3000;
+        display: none;
+    }
+    /* Container for the puzzle area */
+    #game-container {
+        display: none;
+        position: relative;
+        margin: 0 auto;
+        padding-bottom: 60px;
+        box-sizing: content-box;
+        background-color: transparent;
+        box-shadow: none;
+    }
+
+
+    /* Puzzle title */
+    #game-container h1 {
+        margin-top: 105px;
+        margin-bottom: 5px;
+        font-family: "New Times Roman", serif;
+        font-size: 32px;
+        transform: translateX(10px);
+        font-weight: bolder;
+        text-shadow: 
+        0px 0px 10px rgba(255, 182, 193, 0.9),  
+        0px 0px 20px rgba(255, 182, 193, 0.7), 
+        0px 0px 30px rgba(255, 182, 193, 0.5);
+        animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        0% { text-shadow: 0px 0px 5px rgba(255, 182, 193, 0.8); } 
+        100% { text-shadow: 0px 0px 15px rgba(255, 182, 193, 1); } 
+    }
+    
+
+    /* Main puzzle canvas  */
+    canvas#puzzleCanvas {
+        border: 2px solid black;
+        cursor: pointer;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-color: rgba(255,255,255,0.5);
+        background-blend-mode: lighten;
+    }
+
+
+    /* Palette (piece box) */
+    #piece-box {
+        position: absolute;
+        top: 160px;
+        right: 80px;
+        width: 220px;
+        border: 2px solid rgba(0, 0, 0, 0.5); 
+        background: rgba(255, 255, 255, 0.2); 
+        padding: 5px;
+        box-shadow: none; 
+        z-index: 2000;
+    }
+    
+    #piece-box canvas {
+        display: block;
+        background-color: rgba(255, 255, 255, 0.1); 
+    }
+    
+    /* Toggle and Quit container */
+    #toggleContainer {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+        margin: 0;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 24px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #046104 !important;
+        animation: shine 1.2s infinite alternate;
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+
+    @keyframes shine {
+        0% { box-shadow: 0 0 5px 2px #ffffff; }
+        100% { box-shadow: 0 0 15px 5px #ffffff; }
+    }
+
+    #toggleLabel { 
+        font-weight: bold; 
+        color: rgb(226, 213, 62);
+    }
+
+
+    #exit-game-button {
+        margin-left: 30px; 
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: bold;
+        background: rgb(1,73,13);
+        color: white;
+        border: 2px solid rgb(156,38,38);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    
+    #exit-game-button:hover {
+        background: rgb(59,159,76);
+        transform: scale(1.05);
+    }
+    
+    #difficulty-screen {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background: url('Images/jigsaw_bg1.png') no-repeat center center;
+        background-size: contain; 
+        background-color: black; 
+        background-size: cover;
+        background-color: rgb(119,150,106);
+        color: white;
+        font-family: 'Times New Roman', Times, serif;
+        text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+    }
+    
+    #difficulty-container {
+        background: linear-gradient(135deg, #7d515e, #d096a3);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+        width: 340px;
+        max-width: 40%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 60px;
+        align-items: center;
+        border: 2px solid #c27ba0;
+        color: #80314d;
+        font-family: 'Times New Roman', serif;
+        animation: whiteShine 2s infinite alternate ease-in-out;
+    }
+
+    #difficulty-container h2 {
+        font-size: 23px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #ffffff;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .difficulty-btn {
+        width: 200px;
+        padding: 15px;
+        font-size: 17px;
+        font-weight: bold;
+        margin: 10px;
+        border: none;
+        cursor: pointer;
+        text-transform: uppercase;
+        border-radius: 5px;
+        font-family: 'Times New Roman', Times, serif;
+        transition: all 0.3s ease-in-out;
+    }
+    
+    /* Easy Button */
+    .easy {
+        background: rgb(40, 148, 40);
+        color: white;
+        box-shadow: 0 0 10px rgba(40, 148, 40, 0.6);
+    }
+    
+    .easy:hover {
+        background: rgb(50, 168, 50);
+        box-shadow: 0 0 20px rgba(40, 255, 40, 1), 0 0 30px rgba(40, 255, 40, 0.8);
+        transform: scale(1.05);
+    }
+    
+      /* Medium Button */
+    .medium {
+        background: rgb(233, 171, 56);
+        color: white;
+        box-shadow: 0 0 10px rgba(233, 171, 56, 0.6);
+    }
+    
+    .medium:hover {
+        background: rgb(255, 190, 70);
+        box-shadow: 0 0 20px rgba(255, 190, 70, 1), 0 0 30px rgba(255, 190, 70, 0.8);
+        transform: scale(1.05);
+    }
+    
+    /* Hard Button */
+    .hard {
+        background: rgb(163, 7, 7);
+        color: white;
+        box-shadow: 0 0 10px rgba(163, 7, 7, 0.6);
+    }
+    
+    .hard:hover {
+        background: rgb(190, 20, 20);
+        box-shadow: 0 0 20px rgba(255, 40, 40, 1), 0 0 30px rgba(255, 40, 40, 0.8);
+        transform: scale(1.05);
+    }
+    
+    @keyframes whiteShine {
+        0% { box-shadow: 0px 0px 10px 5px rgba(255,255,255,0.5); }
+        50% { box-shadow: 0px 0px 20px 10px rgba(255,255,255,0.8); }
+        100% { box-shadow: 0px 0px 30px 15px rgba(255,255,255,1); }
+    }
+
+    
+    .navbar {
+        display: flex;
+        align-items: center;
+        padding: 40px;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        z-index: 1000;
+        left: 15px;
+    }
+    .navbar .logo {
+        height: 80px;
+        margin-left: 20px;
+        display: flex;
+        position: absolute;
+        top: 18px;
+        left: 29px;
+        transition: all 0.3s;
+    }
+    .logo:hover {
+        filter: drop-shadow(0 0 20px rgba(125,245,66,0.8));
+    }
+    .nav-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 15px;
+    }
+    .navbar button {
+        background: black;
+        border: 2px solid transparent;
+        color: white;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .navbar a[href="Games.html"] button {
+        border: 2px solid rgb(105,250,105);
+    }
+
+    .navbar .login {
+        margin-left: auto;
+        margin-right: 20px;
+        transform: none;
+    }
+
+    .navbar button:hover {
+        transform: scale(1.1);
+    }
+
+    .navbar .logo:hover {
+        transform: scale(1.1);
+        transition: transform 0.2s ease-in-out;
+    }
+    
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: url('Images/jigsaw_bg2.png') no-repeat center center fixed;
+        background-size: cover;
+        overflow-x: hidden; 
+        width: 100vw; 
+        position: fixed; 
+    }
+    

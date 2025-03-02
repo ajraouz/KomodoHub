@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Jigsaw Puzzle</title>
+    <link rel="stylesheet" href="JigsawGame.css">
+    <script src="JigsawGame.js" defer></script>
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="HomePage.html" onclick="quitGame()">
+            <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+        </a>
+    
+        <div class="nav-center">
+            <a href="CommunityLibrary.html" onclick="quitGame()"><button>Community Library</button></a>
+            <a href="SchoolLibrary.html" onclick="quitGame()"><button>School Library</button></a>
+            <a href="Post.html" onclick="quitGame()"><button>Post</button></a>
+            <a href="Games.html" onclick="quitGame()"><button>Games</button></a>
+        </div>
+        <a href="ProfilePrivateView.html" onclick="quitGame()"><button class="login">Profile</button></a>
+        </div>
+    
+        <!-- Difficulty Selection Screen -->
+        <div id="difficulty-screen">
+            <!-- Navbar for Difficulty Screen -->
+            <div class="navbar">
+                <a href="HomePage.html" onclick="quitGame()">
+                    <img src="Images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
+                </a>
+                
+                <div class="nav-center">
+                    <a href="CommunityLibrary.html" onclick="quitGame()"><button>Community Library</button></a>
+                    <a href="SchoolLibrary.html" onclick="quitGame()"><button>School Library</button></a>
+                    <a href="Post.html" onclick="quitGame()"><button>Post</button></a>
+                    <a href="Games.html" onclick="quitGame()"><button>Games</button></a>
+                </div>
+        
+                <a href="ProfilePrivateView.html" onclick="quitGame()"><button class="login">Profile</button></a>
+            </div>
+        
+            <div id="difficulty-container">
+                <h2>Select your Difficulty</h2>
+                <button class="difficulty-btn easy" onclick="startGame('easy')">EASY</button>
+                <button class="difficulty-btn medium" onclick="startGame('medium')">MEDIUM</button>
+                <button class="difficulty-btn hard" onclick="startGame('hard')">HARD</button>
+            </div>
+        </div>
+        
+            
+            <!-- Game Container (jigsaw puzzle) -->
+            <div id="game-container">
+            <h1>Jigsaw Puzzle Game</h1>
+            <canvas id="puzzleCanvas" width="400" height="400"></canvas>
+            <img id="sourceImage" src="Images/jigsaw_easy.png" alt="Puzzle Image" style="display:none;"/>
+            
+            <!-- Bottom-right container for Hide toggle + Exit button -->
+            <div id="toggleContainer">
+                <!-- Hide Toggle -->
+                <label class="switch">
+                <input type="checkbox" id="toggleBackgroundCheckbox">
+                <span class="slider"></span>
+                </label>
+                <span id="toggleLabel">Hide: Off</span>
+                
+                <!-- Exit Button -->
+                <button id="exit-game-button" onclick="exitGame()">Quit Game</button>
+            </div>
+            </div>
+            
