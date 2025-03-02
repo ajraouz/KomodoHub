@@ -96,31 +96,36 @@
 
     // Start a new game
     function initializeGame() {
-        wordToGuess = words[Math.floor(Math.random() * words.length)];
-        guessedLetters = Array(wordToGuess.length).fill("_");
-        attemptsRemaining = 6;
-        wrongGuesses = 0;
-        lettersTried = [];
-        messageDisplay.textContent = "";
-        guessInput.value = "";
-        guessInput.disabled = false;
-        guessButton.disabled = false;
-        restartButton.style.display = "none";
-        libraryHint.style.display = "none";
-
-        // Hide all monkey parts
-        monkeyParts.forEach(part => part.classList.add("hidden"));
-
-        updateDisplay();
+      wordToGuess = words[Math.floor(Math.random() * words.length)];
+      
+      // Reveal spaces automatically in the displayed word
+      guessedLetters = wordToGuess.split("").map(letter => (letter === " " ? " " : "_"));
+  
+      attemptsRemaining = 6;
+      wrongGuesses = 0;
+      lettersTried = [];
+      messageDisplay.textContent = "";
+      guessInput.value = "";
+      guessInput.disabled = false;
+      guessButton.disabled = false;
+      restartButton.style.display = "none";
+      libraryHint.style.display = "none";
+  
+      // Hide all monkey parts
+      monkeyParts.forEach(part => {
+        part.classList.add("hidden");
+        part.classList.remove("fall");
+      });
+      updateDisplay();
     }
-
-    // Update the display
+    
     function updateDisplay() {
-        wordDisplay.textContent = guessedLetters.join(" ");
-        attemptsDisplay.textContent = "Attempts Remaining: " + attemptsRemaining;
-        triedLettersDiv.textContent = "Letters Tried: " + lettersTried.join(", ");
-        highScoreSpan.textContent = highScore;
+      wordDisplay.textContent = guessedLetters.join(""); 
+      attemptsDisplay.textContent = "Attempts Remaining: " + attemptsRemaining;
+      triedLettersDiv.textContent = "Letters Tried: " + lettersTried.join(", ");
+      highScoreSpan.textContent = highScore;
     }
+  
 
     // Handle a guess
     function processGuess() {
@@ -157,6 +162,7 @@
         updateDisplay();
         checkEndGame();
     }
+
     // Check for win or loss
     function checkEndGame() {
         if (!guessedLetters.includes("_")) {
@@ -167,9 +173,15 @@
             endGame(false);
         } else if (attemptsRemaining <= 0) {
             messageDisplay.textContent = "Game Over! The word was: " + wordToGuess;
+            
+            // Makes the whole monkey fall down 
+            monkeyParts.forEach(part => part.classList.remove("hidden"));
+            monkeyParts.forEach(part => part.classList.add("fall"));
+            
             endGame(true);
         }
     }
+
     function endGame(showHint) {
         guessInput.disabled = true;
         guessButton.disabled = true;

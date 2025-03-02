@@ -11,7 +11,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden; 
+  overflow: hidden;
+}
 
 /* Navbar */
 .navbar {
@@ -27,7 +28,7 @@ body {
   z-index: 1000;
 }
 
-/* Logo aligned with other buttons */
+/* Logo */
 .navbar .logo {
   height: 80px;
   margin-left: 20px;
@@ -42,7 +43,7 @@ body {
   filter: drop-shadow(0 0 20px rgba(125, 245, 66, 0.8));
 }
 
-/* Center Navigation Tabs */
+/* Center Navigation */
 .nav-center {
   position: absolute;
   left: 50%;
@@ -76,26 +77,20 @@ body {
   transform: scale(1.1);
 }
 
-/* Logo hover effect */
-.navbar .logo:hover {
-  transform: scale(1.1);
-  transition: transform 0.2s ease-in-out;
-}
 /* Hangman Image */
 #hangman-wrapper {
-    position: relative;
-    width: 200px; 
-    height: 200px;
-    margin: 12px auto;
+  position: relative;
+  width: 200px; 
+  height: 200px;
+  margin: 12px auto;
 }
 
-/* Background Image */
 #hangman-bg {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 /* Monkey Parts */
@@ -105,41 +100,35 @@ body {
 #hangman-head,
 #hangman-foot-left,
 #hangman-foot-right {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+  width: 70%;
+  height: 70%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .hidden {
-    display: none;
+  display: none;
 }
+
 /* Game Container */
 #game-container {
-    background: rgba(112, 161, 117, 0.68);  
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    max-width: 720px;
-    width: 85%;
-    margin-top: 85px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  background: rgba(112, 161, 117, 0.68);  
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  max-width: 720px;
+  width: 85%;
+  margin-top: 85px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
 }
-/* Game Title */
+
 h1 {
   font-size: 2em;
   margin-bottom: 10px;
-  color: #ffffff; 
+  color: #ffffff;
 }
 
-/* Hangman Figure */
-#hangman-figure {
-  font-size: 16px;
-  margin: 12px auto;
-  color: #f8f9fa; 
-}
-
-/* Word Display (Hidden Letters) */
+/* Word Display */
 #word-display {
   font-size: 1.9em;
   letter-spacing: 9px;
@@ -154,16 +143,7 @@ h1 {
   color: #f5ebc2; 
 }
 
-/* Input Container (Aligns Guess Input and Button) */
-.input-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-/* Guess Input Field */
+/* Input Field */
 #guess-input {
   padding: 9px;
   font-size: 1.2em;
@@ -176,7 +156,6 @@ h1 {
   font-weight: bold;
 }
 
-/* Input Field Focus Effect */
 #guess-input:focus {
   border-color: #ff5e00; 
   outline: none;
@@ -194,9 +173,8 @@ h1 {
   transition: background-color 0.3s, transform 0.2s;
 }
 
-/* Guess Button Hover Effect */
 #guess-button:hover {
-  background-color: #059669; 
+  background-color: #059669;
   transform: scale(1.05);
 }
 
@@ -206,7 +184,7 @@ h1 {
   padding: 10px 22px;
   font-size: 1.2em;
   border-radius: 8px;
-  background-color: #ff595e; 
+  background-color: #ff595e;
   color: white;
   cursor: pointer;
   display: none;
@@ -214,18 +192,19 @@ h1 {
   transition: background-color 0.3s, transform 0.2s;
 }
 
-/* Restart Button Hover Effect */
 #restart-button:hover {
-  background-color: #d62828; 
+  background-color: #d62828;
   transform: scale(1.05);
 }
 
-/* Message Box */
+/* Message */
 #message {
   margin-top: 12px;
   font-size: 1.2em;
+  font-weight: bold;
   min-height: 28px;
-  color: #ffd166; 
+  color: #62faff; 
+  -webkit-text-stroke: 0.5px black;
 }
 
 /* High Score Display */
@@ -238,11 +217,12 @@ h1 {
   padding: 6px 12px;
   border-radius: 5px;
 }
+
 /* Library Hint Box */
 #library-hint {
   position: absolute;
   right: 20px;
-  top:38%;
+  top: 38%;
   transform: translateY(-50%);
   width: 205px;
   padding: 15px;
@@ -262,4 +242,19 @@ h1 {
 
 #library-hint a:hover {
   text-decoration: underline;
+}
+/* FALL ANIMATION for monkey parts */
+.fall {
+  animation: fallAnimation 1.5s forwards ease-in;
+}
+
+@keyframes fallAnimation {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(63px);
+    opacity: 1;
+  }
 }
