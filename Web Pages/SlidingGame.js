@@ -4,6 +4,8 @@ let gridSize = 3;        // Default grid size is 3×3 (easy).
 let moves = 0;           // Tracks the number of moves made by the player.
 let gameActive = false;  // Whether the game is currently active or not.
 let currentImage = '';
+const moveSound = new Audio('Images/SlidingImages/slide.wav');
+const winSound = new Audio('Images/SlidingImages/win_achievement.wav');
 
 // Images used for each difficulty
 const images = [
@@ -127,6 +129,9 @@ function moveTile(tileIndex, gridSize) {
   // If the clicked tile is not adjacent, do nothing
   if (!isAdjacent(tileIndex, emptyIndex, gridSize)) return;
 
+  moveSound.currentTime = 0; // Reset sound to start for quick replays
+  moveSound.play();
+
   // Swap the tile with the empty tile
   [tilePositions[tileIndex], tilePositions[emptyIndex]] = [tilePositions[emptyIndex], tilePositions[tileIndex]];
 
@@ -139,6 +144,8 @@ function moveTile(tileIndex, gridSize) {
 
   // Check if the puzzle is solved
   if (checkWin()) {
+    winSound.play();
+    setTimeout(() => {}, 300);
     showFinalScore();
   }
 }
@@ -379,3 +386,83 @@ function swapAnyTwoNonBlankTiles(tiles) {
   }
 }
 
+function showAnimalInfo() {
+  // Get the current reference image element
+  var refImg = document.getElementById('reference-img');
+  // Extract the filename from the src (e.g., "sliding_bali.png")
+  var src = refImg.src;
+  var filename = src.substring(src.lastIndexOf('/') + 1);
+  
+  // Map filenames to arrays of fun facts for each animal
+  var animalFunFacts = {
+      'sliding_bali.png': [
+          "Rare Beauty: Native to Bali, Bali Myna is known for its pure white plumage and vivid blue markings.",
+          "Conservation Icon: Bali Myna is one of the world's rarest birds and a flagship species for conservation efforts in Indonesia.",
+          "Melodious Voice: Besides its beautiful appearance, the Bali Myna is admired for its clear, musical calls."
+      ],
+      'sliding_tiger.png': [
+          "Stealthy Hunter: Sumatran tiger subspecies is known for its agility and stealth, making it an expert at stalking prey.",
+          "Great Swimmer: Unlike many big cats, Sumatran tigers are excellent swimmers.",
+          "Unique Stripes: Sumatran tigers' distinctive stripe patterns help them blend into the dappled light of their forest habitat."
+      ],
+      'sliding_rhino.png': [
+          "Rarest of Them All: With only a handful left in the wild, the Javan rhinoceros is among the most endangered mammals on Earth.",
+          "Elusive Nature: Javan rhinoceros are solitary animals, known for their shy and reclusive behavior, making them difficult to spot.",
+          "Ancient Relic: Javan rhinoceros are considered living fossils, having roamed the Earth for millions of years."
+      ],
+      'sliding_anoa.png': [
+          "Dwarf Buffalo: Native to Sulawesi, Anoas are sometimes called dwarf buffalo due to their small size compared to other buffalo species.",
+          "Elusive Creatures: Anoas tend to be shy and elusive, preferring the dense undergrowth of their forest habitats.",
+          "Dual Species: There are two types—the mountain Anoa and the lowland Anoa—each adapted to different elevations."
+      ],
+      'sliding_tarsius.png': [
+          "Big-Eyed Marvels: Tarsius have enormous eyes relative to their body size, which gives them exceptional night vision.",
+          "Leaping Experts: Tarsius can leap several times their own body length, an ability that makes them agile hunters.",
+          "Nocturnal Life: Tarsius are tiny primates who are active at night, relying on their acute senses to navigate the dark."
+      ],
+      'sliding_gibbon.png': [
+          "Tree Acrobatics: Javan Gibbons are famous for their graceful swinging (brachiation) from tree to tree in the forest canopy.",
+          "Musical Communicators:  Javan Gibbons sing complex, melodious calls that help strengthen family bonds and mark their territory.",
+          "Long-Limbed:  Javan Gibbons' elongated arms are perfectly adapted for an arboreal lifestyle, enabling incredible speed and agility."
+      ],
+      'sliding_celebes.png': [
+          "Distinctive Crest: Native to Sulawesi (historically known as Celebes), Celebes Crested Macaques sport a unique crest of hair that sets them apart.",
+          "Social Butterflies: TCelebes Crested Macaques are highly social animals, engaging in regular grooming sessions that reinforce group bonds.",
+          "Playful Spirits: Celebes Crested Macaques' curious and playful behavior makes them a delight to observe in the wild."
+      ],
+      'sliding_orangutan.png': [
+          "Intelligent Foragers: Orangutans are renowned for their problem-solving skills and the use of simple tools to access food.",
+          "Arboreal Giants: Spending most of their lives in the treetops, Orangutans build nests each night for sleeping.",
+          "Strong Family Ties: Orangutans have a long childhood, during which young orangutans learn vital survival skills from their mothers."
+      ],
+      'sliding_bekantan.png': [
+          "Nose Knows: The male Bekantans are famous for their large, pendulous noses, which are believed to attract females and enhance vocalizations.",
+          "Avid Swimmers: Despite their unique appearance, bekantans are excellent swimmers and are often found near rivers.",
+          "Distinctive Look: Bekantans pot-bellied physique and long tails add to their quirky and endearing appearance."
+      ]
+  };
+
+  // Get the array of fun facts for the current filename
+  var factsArray = animalFunFacts[filename];
+  var infoText = "";
+
+  if (factsArray && factsArray.length > 0) {
+      // Randomly select one fun fact from the array
+      var randomIndex = Math.floor(Math.random() * factsArray.length);
+      infoText = factsArray[randomIndex];
+  } else {
+      infoText = "Information about this animal is not available.";
+  }
+  
+  // Set the text of the modal's info paragraph
+  document.getElementById('animal-info-text').innerText = infoText;
+  
+  // Display the modal (using flex as defined in CSS)
+  document.getElementById('animal-info-modal').style.display = 'flex';
+}
+
+
+function closeAnimalInfo() {
+  // Hide the modal
+  document.getElementById('animal-info-modal').style.display = 'none';
+}
