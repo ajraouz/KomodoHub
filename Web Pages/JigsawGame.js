@@ -255,23 +255,46 @@
 
         function onMouseUp() {
             if (!selectedPiece) return;
+            
             const correctX = selectedPiece.col * pieceWidth;
             const correctY = selectedPiece.row * pieceHeight;
             const dx = selectedPiece.x - correctX;
             const dy = selectedPiece.y - correctY;
             const distance = Math.sqrt(dx * dx + dy * dy);
+            
             if (distance < 20) {
-            selectedPiece.x = correctX;
-            selectedPiece.y = correctY;
-            selectedPiece.correct = true;
-            highlightPiece(selectedPiece);
-            } else {
-            selectedPiece.correct = false;
-            }
+                selectedPiece.x = correctX;
+                selectedPiece.y = correctY;
+                selectedPiece.correct = true;
+                highlightPiece(selectedPiece);
+                
+              // Check for any other piece (not correct) that is in the same cell.
+                pieces.forEach(piece => {
+                    if (piece !== selectedPiece && !piece.correct) {
+                    const centerX = piece.x + piece.width / 2;
+                    const centerY = piece.y + piece.height / 2;
+                    if (
+                        centerX >= correctX &&
+                        centerX <= correctX + pieceWidth &&
+                        centerY >= correctY &&
+                        centerY <= correctY + pieceHeight
+                    ) {
+                        // Reposition the wrong piece to a new random location within the canvas.
+                        piece.x = Math.random() * (canvas.width - piece.width);
+                        piece.y = Math.random() * (canvas.height - piece.height);
+                    }
+                    }
+                });
+                
+                } else {
+                selectedPiece.correct = false;
+                }
+            
             drawPieces();
             checkPuzzleComplete();
             selectedPiece = null;
         }
+        
 
         function highlightPiece(piece) {
             let shineAlpha = 1.0;
