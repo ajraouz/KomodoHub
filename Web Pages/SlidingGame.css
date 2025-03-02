@@ -396,3 +396,71 @@ body {
     width: 500px;
 }
  
+/* Container for the info button and title */
+.title-info-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Style for the "Do you know?" info button */
+.info-button {
+    background: #0099cc;
+    color: white;
+    border: none;
+    position: absolute;
+    padding: 8px 6px;
+    font-size: 16px;
+    top: 10px;
+    left: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    align-items: center;
+    margin-top: 20px;
+}
+.info-button:hover {
+    background: #0077aa;
+}
+
+/* Modal overlay styling */
+.info-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 9999; /* On top of other elements */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content box */
+.info-modal-content {
+    background: linear-gradient(180deg, rgb(105, 200, 162), rgb(244, 96, 108));
+    backdrop-filter: blur(10px);
+    margin: 10% auto;
+    padding: 20px;
+    width: 40%;
+    border-radius: 8px;
+    position: relative;
+    text-align: center;
+}
+
+/* Close button for the modal */
+.close-modal {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+}
+.close-modal:hover {
+    color: #000;
+}

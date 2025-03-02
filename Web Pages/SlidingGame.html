@@ -40,8 +40,20 @@
     <!-- Game Container (Hidden Initially) -->
     <div class="main-game-container" id="main-game-container" style="display: none;">
         <div class="game-header">
+            <button class="info-button" onclick="showAnimalInfo()">Do you know?</button>
             <button class="quit-button" onclick="quitGame()">Quit Game</button>
             <h1 class="game-title">Slide & Solve</h1>
+        </div>
+
+        <!-- Animal Info Modal (Hidden by default) -->
+        <div id="animal-info-modal" class="info-modal">
+            <div class="info-modal-content">
+            <span class="close-modal" onclick="closeAnimalInfo()">&times;</span>
+            <h2>Did You Know?</h2>
+            <p id="animal-info-text">
+                <!-- Info text will be inserted here dynamically -->
+            </p>
+            </div>
         </div>
 
         <!-- Side-by-side layout: Puzzle grid on left, Reference image on right -->
