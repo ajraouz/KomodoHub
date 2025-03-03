@@ -57,9 +57,13 @@ def register():
                        (username, hashed_password, user_type))
         user_id = cursor.lastrowid
 
+        # Load the default avatar image
+        with open('Web Pages/Images/default.png', 'rb') as avatar_file:
+            avatar_data = base64.b64encode(avatar_file.read()).decode('utf-8')  # Convert to base64 string
+
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
-                           (user_id, name, access_code, 0, 0, None))
+                           (user_id, name, access_code, 0, 0, avatar_data))
         elif user_type == "teacher":
             cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
                            (user_id, name, access_code, None))
