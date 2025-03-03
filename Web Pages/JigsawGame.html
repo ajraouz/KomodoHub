@@ -50,23 +50,25 @@
         </div>
         
             
-            <!-- Game Container (jigsaw puzzle) -->
-            <div id="game-container">
+    <!-- Game Container (jigsaw puzzle) -->
+        <div id="game-container">
             <h1>Jigsaw Puzzle Game</h1>
             <canvas id="puzzleCanvas" width="400" height="400"></canvas>
             <img id="sourceImage" src="Images/jigsaw_easy.png" alt="Puzzle Image" style="display:none;"/>
-            
-            <!-- Bottom-right container for Hide toggle + Exit button -->
+                
             <div id="toggleContainer">
                 <!-- Hide Toggle -->
                 <label class="switch">
-                <input type="checkbox" id="toggleBackgroundCheckbox">
-                <span class="slider"></span>
-                </label>
-                <span id="toggleLabel">Hide: Off</span>
-                
-                <!-- Exit Button -->
-                <button id="exit-game-button" onclick="exitGame()">Quit Game</button>
-            </div>
+                        <input type="checkbox" id="toggleBackgroundCheckbox">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="toggleLabel">Hide: Off</span>
+                    
+                    <!-- Exit Button -->
+                    <button id="exit-game-button" onclick="exitGame()">Quit Game</button>
+
+                    <!-- Scambled Button -->
+                    <button id="scramble-unsolved-button">Surface Unsolved Pieces</button>
+                </div>
             </div>
             
