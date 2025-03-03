@@ -84,20 +84,24 @@ function changePassword() {
         const passwordError = document.getElementById("passwordError");
         passwordError.textContent = "✅ Password updated successfully!";
         passwordError.style.color = "rgb(77, 247, 77)";
+        passwordError.style.display = "block"; // Make sure it's visible
+
         setTimeout(() => {
-            passwordError.style.display = "none"; // Hide message after 3 seconds
+            passwordError.textContent = "";  // Clear the message
+            passwordError.style.display = "block"; // Reset to default display (use block or inline as per your design)
+            passwordError.style.color = "red"; // Reset to default color for error
         }, 3000);
 
         // Clear the input field
         document.getElementById("newPassword").value = "";
-        passwordError.textContent = "";
     }
 }
+
 
 function logout() {
     if (confirm("Are you sure you want to log out?")) {
         alert("Logged out successfully.");
-        window.location.href = "login.html"; 
+        window.location.href = "loginPage.html"; 
     }
 }
 function deleteAccount() {
