@@ -32,7 +32,7 @@
 
         </form>
         <p class="redirect">
-            Don't have an account? <a href="/Web Pages/RegisterPage.html">Register</a>
+            Don't have an account? <a href="#" id="registerLink">Register</a>
         </p>
     </div>
     <script>
@@ -59,7 +59,7 @@
                 if (response.ok) {
                     alert(result.message);  // Display a success message (optional)
                     // Redirect to user dashboard based on user type
-                    window.location.href = 'HomePage.html';
+                    window.location.replace('/Web Pages/HomePage.html');
                 } else {
                     alert("Error: " + result.error);  // Display error message
                 }
@@ -67,6 +67,10 @@
                 console.error("Error:", error);
                 alert("An error occurred while logging in.");
             }
+        });
+        document.getElementById("registerLink").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default navigation
+            window.location.replace("/Web Pages/RegisterPage.html"); // Redirect without allowing back navigation
         });
     </script> 
 </body>
