@@ -446,11 +446,30 @@
                 toggleLabel.textContent = "Hide: Off";
             }
         });
+        const scrambleButton = document.getElementById("scramble-unsolved-button");
+        scrambleButton.addEventListener("click", () => {
+          // Reorder pieces so that unsolved pieces (piece.correct === false)
+          // are drawn last (on top)
+            pieces = pieces.filter(piece => piece.correct)
+                    .concat(pieces.filter(piece => !piece.correct));
+        drawPieces();
+        });
         }
 
-        function exitGame() {
-        if (confirm("Are you sure you want to quit the game? Your progress will be lost.")) {
-            document.getElementById("game-container").style.display = "none";
-            document.getElementById("difficulty-screen").style.display = "flex";
+        function quitGame() {
+            // Check if the game is in progress by checking the visibility of the game container
+            const gameContainer = document.getElementById('game-container');
+            if (gameContainer.style.display !== 'none') {
+                // Confirm with the user before quitting
+                if (confirm('Are you sure you want to quit the game? Your progress will be lost.')) {
+                    // Reset game state or redirect to Games page
+                    gameContainer.style.display = 'none';
+                    document.getElementById('difficulty-screen').style.display = 'flex';
+                    window.location.href = 'Games.html'; // Redirect to Games page
+                } else {
+                    // Prevent navigation if user cancels the quit
+                    event.preventDefault();
+                }
+            }
         }
-        }
+        

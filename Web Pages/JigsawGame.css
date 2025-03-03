@@ -15,6 +15,7 @@ body {
         z-index: 3000;
         display: none;
     }
+
     /* Container for the puzzle area */
     #game-container {
         display: none;
@@ -59,34 +60,62 @@ body {
     }
 
 
-    /* Palette (piece box) */
-    #piece-box {
-        position: absolute;
-        top: 160px;
-        right: 80px;
-        width: 220px;
-        border: 2px solid rgba(0, 0, 0, 0.5); 
-        background: rgba(255, 255, 255, 0.2); 
-        padding: 5px;
-        box-shadow: none; 
-        z-index: 2000;
-    }
-    
-    #piece-box canvas {
-        display: block;
-        background-color: rgba(255, 255, 255, 0.1); 
-    }
-    
-    /* Toggle and Quit container */
     #toggleContainer {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+    position: fixed;
+    bottom: 10px;
+    left: 390px; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 9999;
+}
+
+
+    /* Toggle label color */
+    #toggleLabel {
+        font-weight: bold;
+        color: rgb(226, 213, 62); 
     }
 
+    /* Quit Game button (deep green with red border) */
+    #exit-game-button {
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: bold;
+        background: rgb(1, 73, 13);         
+        color: white;
+        border: 2px solid rgb(156, 38, 38); 
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    #exit-game-button:hover {
+        background: rgb(59, 159, 76);
+        transform: scale(1.05);
+    }
+
+    /* Surface Unsolved Pieces button */
+    #scramble-unsolved-button {
+        padding: 8px 16px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background: transparent;
+        border: 2px solid rgb(227, 171, 217);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        font-family: 'Times New Roman', Times, serif;
+    }
+
+    #scramble-unsolved-button:hover {
+        background: rgba(62, 7, 53, 0.3);
+        transform: scale(1.05);
+    }
+
+    /* Toggle switch (unchanged) */
     .switch {
         position: relative;
         display: inline-block;
@@ -100,7 +129,7 @@ body {
         width: 0;
         height: 0;
     }
-    
+
     .slider {
         position: absolute;
         cursor: pointer;
@@ -130,15 +159,10 @@ body {
     input:checked + .slider:before {
         transform: translateX(26px);
     }
-
+    
     @keyframes shine {
         0% { box-shadow: 0 0 5px 2px #ffffff; }
         100% { box-shadow: 0 0 15px 5px #ffffff; }
-    }
-
-    #toggleLabel { 
-        font-weight: bold; 
-        color: rgb(226, 213, 62);
     }
 
 
@@ -283,6 +307,7 @@ body {
         z-index: 1000;
         left: 15px;
     }
+
     .navbar .logo {
         height: 80px;
         margin-left: 20px;
@@ -292,9 +317,11 @@ body {
         left: 29px;
         transition: all 0.3s;
     }
+
     .logo:hover {
         filter: drop-shadow(0 0 20px rgba(125,245,66,0.8));
     }
+
     .nav-center {
         position: absolute;
         left: 50%;
@@ -302,6 +329,7 @@ body {
         display: flex;
         gap: 15px;
     }
+    
     .navbar button {
         background: black;
         border: 2px solid transparent;
