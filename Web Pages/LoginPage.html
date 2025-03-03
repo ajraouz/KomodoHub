@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="LoginRegister.css">
+    <link rel="stylesheet" href="/Web Pages/LoginRegister.css">
+    <link rel="stylesheet" href="/Web Pages/Popup.css">
 </head>
 <body>
     <div class="navbar">
-        <a href="HomePage.html">
+        <a href="#" id="home">
             <img src="images/komodoLogo.png" alt="Logo" class="logo">
         </a>
     </div>
@@ -57,20 +58,46 @@
                 let result = await response.json();
 
                 if (response.ok) {
-                    alert(result.message);  // Display a success message (optional)
+                    //Stores in memory who is running the session
+                    localStorage.setItem("username", username);
+                    localStorage.setItem("userType", userType);
+
+                    showPopup("LOGIN SUCCESSFUL 🎉", "success", 1500);  // Call function to show animated pop-up
                     // Redirect to user dashboard based on user type
-                    window.location.replace('/Web Pages/HomePage.html');
+                    setTimeout(() => {
+                        window.location.replace('/Web Pages/HomePage.html');
+                    }, 1700);
                 } else {
-                    alert("Error: " + result.error);  // Display error message
+                    showPopup("" + result.error, "error", 1700);
                 }
             } catch (error) {
-                console.error("Error:", error);
-                alert("An error occurred while logging in.");
+                showPopup("An error occurred while logging in.", "error", 1700);
             }
         });
+
+        function showPopup(message, type, time) {
+            let popup = document.createElement("div");
+            popup.classList.add("popup", type);
+            popup.textContent = message;
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                popup.classList.add("show");
+            }, 10);
+            
+            setTimeout(() => {
+                popup.classList.remove("show");
+                setTimeout(() => popup.remove(), 500);
+            }, time);
+        }
+
         document.getElementById("registerLink").addEventListener("click", function (event) {
             event.preventDefault(); // Prevent default navigation
             window.location.replace("/Web Pages/RegisterPage.html"); // Redirect without allowing back navigation
+        });
+        document.getElementById("home").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default navigation
+            window.location.replace("/Web Pages/HomePage.html"); // Redirect without allowing back navigation
         });
     </script> 
 </body>

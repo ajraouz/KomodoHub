@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register to Komodo Hub</title>
     <link rel="stylesheet" href="/Web Pages/LoginRegister.css" type="text/css">
+    <link rel="stylesheet" href="/Web Pages/Popup.css">
 </head>
 <body>
     <div class="navbar">
-        <a href="/Web Pages/HomePage.html">
+        <a href="#" id="home">
             <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
         </a>
     </div>
@@ -36,7 +37,7 @@
 
         </form>
         <p class="redirect">
-            Already have an account? <a href="/Web Pages/LoginPage.html">Login</a>
+            Already have an account? <a href="#" id="loginLink">Login</a>
         </p>
     </div>
 
@@ -74,7 +75,7 @@
             let accessCode = document.getElementById('accessCode').value;
 
             if (password !== confirmPassword) {
-                alert("Passwords do not match!");
+                showPopup("Passwords do not match!", "error", 1500);
                 return;
             }
 
@@ -108,17 +109,42 @@
                 .then(async response => {
                     let result = await response.json(); // Parse JSON correctly
                     if (response.ok) {
-                        alert(result.message);
-                        window.location.replace('/Web Pages/LoginPage.html');  // Redirect to login page
+                        showPopup("WELCOME 🤩", "success", 1500);  // Call function to show animated pop-up
+                        setTimeout(() => {
+                            window.location.replace('/Web Pages/LoginPage.html');
+                        }, 1700);  // Redirect to login page
                     } else {
-                        alert("Error: " + result.error);
+                        showPopup("" + result.error, "error", 2200);
                     }
                 })
                 .catch(error => {
-                    console.error("Error:", error);
-                    alert("An error occurred while registering.");
+                    showPopup("An error occurred while logging in.", "error", 2200);
                 });
             }
+        });
+
+        function showPopup(message, type, time) {
+            let popup = document.createElement("div");
+            popup.classList.add("popup", type);
+            popup.textContent = message;
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                popup.classList.add("show");
+            }, 10);
+            
+            setTimeout(() => {
+                popup.classList.remove("show");
+                setTimeout(() => popup.remove(), 500);
+            }, time);
+        }
+        document.getElementById("loginLink").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default navigation
+            window.location.replace("/Web Pages/LoginPage.html"); // Redirect without allowing back navigation
+        });
+        document.getElementById("home").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default navigation
+            window.location.replace("/Web Pages/HomePage.html"); // Redirect without allowing back navigation
         });
     </script>
 </body>

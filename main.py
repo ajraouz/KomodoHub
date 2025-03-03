@@ -95,8 +95,14 @@ def complete_payment_registration():
         # Hash the password for security
         hashed_password = generate_password_hash(password)
 
-        conn = sqlite3.connect('KH_Database.db')
+        conn = sqlite3.connect('KH_Database.db', timeout=10)
         cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            return jsonify({"error": "Username already exists. Please choose a different one."}), 400
 
         # Insert the member into the database
         cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
@@ -129,10 +135,10 @@ def login():
         logging.debug(f"Login attempt for username: {username}, user type: {user_type}")
 
         if not username or not password or not user_type:
-            logging.error("Missing username, password, or user type.")
-            return jsonify({"error": "Missing username, password, or user type"}), 400
+            logging.error("Missing required fields.")
+            return jsonify({"error": "Missing required fields"}), 400
 
-        conn = sqlite3.connect('KH_Database.db')
+        conn = sqlite3.connect('KH_Database.db', timeout=10)
         cursor = conn.cursor()
 
         # Query the database for the user and their user type
@@ -142,7 +148,7 @@ def login():
 
         if not user:
             logging.error("User not found.")
-            return jsonify({"error": "Invalid username or password"}), 401
+            return jsonify({"error": "Username does not exist"}), 401
 
         user_id, hashed_password, db_user_type = user
 
@@ -154,7 +160,7 @@ def login():
         # Verify the password
         if not check_password_hash(hashed_password, password):
             logging.error("Incorrect password.")
-            return jsonify({"error": "Invalid username or password"}), 401
+            return jsonify({"error": "Invalid password"}), 400
 
         logging.info(f"User {username} logged in successfully as {user_type}.")
         return jsonify({
