@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Komodo Hub Payment</title>
-    <link rel="stylesheet" href="PaymentPage.css">
+    <link rel="stylesheet" href="/Web Pages/PaymentPage.css">
+    <link rel="stylesheet" href="/Web Pages/Popup.css">
 </head>
 <body>
 
@@ -161,19 +162,20 @@
                 .then(response => response.json())
                 .then(result => {
                     if (result.message) {
-                        alert(result.message);  // Registration successful
                         localStorage.removeItem('registrationData');  // Remove registration data after successful payment
-                        window.location.href = '/Web Pages/LoginPage.html';  // Redirect to login page
+                        showPopup("WELCOME 🤩", "success", 1500);
+                        setTimeout(() => {
+                            window.location.replace('/Web Pages/LoginPage.html');
+                        }, 1700);  // Redirect to login page
                     } else {
-                        alert("Error: " + result.error);
+                        showPopup("" + result.error, "error", 2200);
                     }
                 })
                 .catch(error => {
-                    console.error('Error completing payment and registration:', error);
-                    alert("There was an error completing your registration.");
+                    showPopup("There was an error completing your registration.", "error", 2200);
                 });
             } else {
-                alert("Please fill out all fields.");
+                showPopup("Please fill out all fields.", "error", 1500);
             }
         }
 
@@ -184,6 +186,22 @@
             if (words[0]) words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
             if (words[1]) words[1] = words[1].charAt(0).toUpperCase() + words[1].slice(1);
             event.target.value = words.join(" ");
+        }
+
+        function showPopup(message, type, time) {
+            let popup = document.createElement("div");
+            popup.classList.add("popup", type);
+            popup.textContent = message;
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                popup.classList.add("show");
+            }, 10);
+            
+            setTimeout(() => {
+                popup.classList.remove("show");
+                setTimeout(() => popup.remove(), 500);
+            }, time);
         }
     </script>
 
