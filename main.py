@@ -58,15 +58,21 @@ def register():
         user_id = cursor.lastrowid
 
         # Load the default avatar image
-        with open('Web Pages/Images/default.png', 'rb') as avatar_file:
-            avatar_data = base64.b64encode(avatar_file.read()).decode('utf-8')  # Convert to base64 string
+        with open('Web Pages/Images/default.png', 'rb'):
+            avatar_data = 'Web Pages/Images/default.png'
 
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
                            (user_id, name, access_code, 0, 0, avatar_data))
         elif user_type == "teacher":
-            cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
-                           (user_id, name, access_code, None))
+            cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Avatar) VALUES (?, ?, ?, ?)", 
+                           (user_id, name, access_code, avatar_data))
+        elif user_type == "principal":
+            cursor.execute("INSERT INTO school (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
+                           (user_id, name, avatar_data))
+        elif user_type == "admin":
+            cursor.execute("INSERT INTO admin (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
+                           (user_id, name, avatar_data))
 
         conn.commit()
         logging.info("User registered successfully.")
@@ -113,8 +119,12 @@ def complete_payment_registration():
                        (username, hashed_password, "member"))
         user_id = cursor.lastrowid
 
-        cursor.execute("INSERT INTO members (user_id, FullName) VALUES (?, ?)", 
-                       (user_id, name))
+        # Load the default avatar image
+        with open('Web Pages/Images/default.png', 'rb'):
+            avatar_data = 'Web Pages/Images/default.png'
+
+        cursor.execute("INSERT INTO members (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
+                       (user_id, name, avatar_data))
 
         # Commit changes and close connection
         conn.commit()

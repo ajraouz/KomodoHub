@@ -22,21 +22,28 @@ CREATE TABLE teachers (
     user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
     AccessCode INTEGER NOT NULL, 
-    Email TEXT,
+    Avatar BLOB,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE members (
     user_id INTEGER PRIMARY KEY, 
-    FullName TEXT NOT NULL, 
+    FullName TEXT NOT NULL,
+    Avatar BLOB, 
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE school (
     user_id INTEGER PRIMARY KEY, 
-    FullName TEXT NOT NULL, 
-    Location TEXT NOT NULL,
-    TotalMembers INTEGER NOT NULL,
+    FullName TEXT NOT NULL,
+    Avatar BLOB, 
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE admin (
+    user_id INTEGER PRIMARY KEY, 
+    FullName TEXT NOT NULL,
+    Avatar BLOB,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
