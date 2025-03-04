@@ -456,7 +456,7 @@
         });
         }
 
-        function quitGame() {
+        function exitGame() {
             // Check if the game is in progress by checking the visibility of the game container
             const gameContainer = document.getElementById('game-container');
             if (gameContainer.style.display !== 'none') {
@@ -465,7 +465,6 @@
                     // Reset game state or redirect to Games page
                     gameContainer.style.display = 'none';
                     document.getElementById('difficulty-screen').style.display = 'flex';
-                    window.location.href = 'Games.html'; // Redirect to Games page
                 } else {
                     // Prevent navigation if user cancels the quit
                     event.preventDefault();
