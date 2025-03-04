@@ -59,7 +59,7 @@ def register():
 
         # Load the default avatar image
         with open('Web Pages/Images/default.png', 'rb'):
-            avatar_data = 'Web Pages/Images/default.png'
+            avatar_data = 'Images/default.png'
 
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
@@ -121,7 +121,7 @@ def complete_payment_registration():
 
         # Load the default avatar image
         with open('Web Pages/Images/default.png', 'rb'):
-            avatar_data = 'Web Pages/Images/default.png'
+            avatar_data = 'Images/default.png'
 
         cursor.execute("INSERT INTO members (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
                        (user_id, name, avatar_data))
