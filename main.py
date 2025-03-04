@@ -317,7 +317,7 @@ def get_user_details():
     elif user_type == "teacher":
         cursor.execute("SELECT FullName, Avatar FROM teachers WHERE user_id = ?", (user_id,))
     elif user_type == "member":
-        cursor.execute("SELECT FullName FROM members WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar FROM members WHERE user_id = ?", (user_id,))
     else:
         conn.close()
         return jsonify({"error": "Unknown user type"}), 400
@@ -362,6 +362,8 @@ def update_avatar():
         cursor.execute("UPDATE students SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
     elif user_type == "teacher":
         cursor.execute("UPDATE teachers SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    elif user_type == "member":
+        cursor.execute("UPDATE members SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
     else:
         conn.close()
         return jsonify({"error": "Avatar updates not supported for this user type"}), 400
