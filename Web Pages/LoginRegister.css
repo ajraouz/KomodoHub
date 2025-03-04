@@ -100,15 +100,6 @@ input::placeholder, select {
 }
 
 
-.dropdown::before {
-    content: "Register as *   ";
-    font-size: 14px;
-    color: #5e6259;
-    margin-right: 2px;
-    flex-shrink: 0;
-    cursor: pointer; 
-}
-
 .dropdown select option {
     background: #b8cab3; 
     color: #333; 
@@ -261,3 +252,21 @@ input::placeholder, select {
     transition: transform 0.2s ease-in-out;
 }
 
+.password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.password-container input {
+    flex: 1;
+    padding-right: 30px; /* Avoid overlap with button */
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: -30px;
+}

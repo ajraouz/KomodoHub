@@ -31,32 +31,84 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Save the avatar when button is clicked
-    saveButton.addEventListener("click", function () {
-        if (!selectedAvatar) {
-            // Show error message if no avatar is selected
-            avatarMessage.textContent = "⚠️ Please select an avatar before saving.";
+saveButton.addEventListener("click", async function () {
+    if (!selectedAvatar) {
+        avatarMessage.textContent = "⚠️ Please select an avatar before saving.";
+        avatarMessage.style.color = "red";
+        avatarMessage.style.display = "block";
+        return;
+    }
+
+    // Create form data and include both avatar and username
+    let formData = new FormData();
+    formData.append("avatar", selectedAvatar);
+    formData.append("username", localStorage.getItem("username")); // Append username
+
+    try {
+        let response = await fetch("/update_avatar", {
+            method: "POST",
+            body: formData
+        });
+
+        let result = await response.json();
+        if (response.ok) {
+            avatarMessage.textContent = "✅ Avatar Updated!";
+            avatarMessage.style.color = "rgb(77, 247, 77)";
+            avatarMessage.style.display = "block";
+        } else {
+            avatarMessage.textContent = "⚠️ " + result.error;
             avatarMessage.style.color = "red";
             avatarMessage.style.display = "block";
-            return;
         }
-
-        // Save the selected avatar
-        localStorage.setItem("userAvatar", selectedAvatar);
-        avatarMessage.textContent = "✅ Avatar Saved!";
-        avatarMessage.style.color = "rgb(77, 247, 77)";
+    } catch (error) {
+        avatarMessage.textContent = "⚠️ Error updating avatar.";
+        avatarMessage.style.color = "red";
         avatarMessage.style.display = "block";
+    }
+});
+    
 
-        // Hide the message after 3 seconds
-        setTimeout(() => {
-            avatarMessage.style.display = "none";
-        }, 3000);
-    });
+
+        
 
     // Load saved avatar from localStorage
-    const savedAvatar = localStorage.getItem("userAvatar");
+const savedAvatar = localStorage.Item("userAvatar");
     if (savedAvatar) {
         profileAvatar.src = savedAvatar;
     }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    const username = localStorage.getItem("username"); // Retrieve username
+    if (!username) {
+        console.error("No username found in localStorage.");
+        return;
+    }
+
+    // Build form data with username
+    let formData = new FormData();
+    formData.append("username", username);
+
+    // Use POST to fetch user details
+    fetch('/get_user_details', {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // If server returned an error, handle it or log it
+        if (data.error) {
+            console.error("Error from server:", data.error);
+            return;
+        }
+        
+        // Update the DOM with the user details
+        document.getElementById("display-name").textContent      = data.name;
+        document.getElementById("display-username").textContent  = "@" + data.username;
+        document.getElementById("display-role").textContent      = data.role;
+        document.getElementById("profile-avatar").src            = data.avatar || "Images/default.png";
+    })
+    .catch(error => console.error("Error fetching user details:", error));
 });
 
 
@@ -84,20 +136,26 @@ function changePassword() {
         const passwordError = document.getElementById("passwordError");
         passwordError.textContent = "✅ Password updated successfully!";
         passwordError.style.color = "rgb(77, 247, 77)";
+        passwordError.style.display = "block"; // Make sure it's visible
+
         setTimeout(() => {
-            passwordError.style.display = "none"; // Hide message after 3 seconds
+            passwordError.textContent = "";  // Clear the message
+            passwordError.style.display = "block"; // Reset to default display (use block or inline as per your design)
+            passwordError.style.color = "red"; // Reset to default color for error
         }, 3000);
 
         // Clear the input field
         document.getElementById("newPassword").value = "";
-        passwordError.textContent = "";
     }
 }
 
+
 function logout() {
     if (confirm("Are you sure you want to log out?")) {
+        localStorage.removeItem("username")
+        localStorage.removeItem("userType")
         alert("Logged out successfully.");
-        window.location.href = "login.html"; 
+        window.location.href = "/Web Pages/LoginPage.html";
     }
 }
 function deleteAccount() {

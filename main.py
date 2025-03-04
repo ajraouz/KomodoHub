@@ -9,7 +9,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
-
+app.secret_key = "your_secret_key"
 CORS(app)  # Enable CORS for all routes
 
 logging.basicConfig(level=logging.DEBUG)
@@ -57,9 +57,13 @@ def register():
                        (username, hashed_password, user_type))
         user_id = cursor.lastrowid
 
+        # Load the default avatar image
+        with open('Web Pages/Images/default.png', 'rb') as avatar_file:
+            avatar_data = base64.b64encode(avatar_file.read()).decode('utf-8')  # Convert to base64 string
+
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
-                           (user_id, name, access_code, 0, 0, None))
+                           (user_id, name, access_code, 0, 0, avatar_data))
         elif user_type == "teacher":
             cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
                            (user_id, name, access_code, None))
@@ -95,8 +99,14 @@ def complete_payment_registration():
         # Hash the password for security
         hashed_password = generate_password_hash(password)
 
-        conn = sqlite3.connect('KH_Database.db')
+        conn = sqlite3.connect('KH_Database.db', timeout=10)
         cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            return jsonify({"error": "Username already exists. Please choose a different one."}), 400
 
         # Insert the member into the database
         cursor.execute("INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)", 
@@ -129,10 +139,10 @@ def login():
         logging.debug(f"Login attempt for username: {username}, user type: {user_type}")
 
         if not username or not password or not user_type:
-            logging.error("Missing username, password, or user type.")
-            return jsonify({"error": "Missing username, password, or user type"}), 400
+            logging.error("Missing required fields.")
+            return jsonify({"error": "Missing required fields"}), 400
 
-        conn = sqlite3.connect('KH_Database.db')
+        conn = sqlite3.connect('KH_Database.db', timeout=10)
         cursor = conn.cursor()
 
         # Query the database for the user and their user type
@@ -142,7 +152,7 @@ def login():
 
         if not user:
             logging.error("User not found.")
-            return jsonify({"error": "Invalid username or password"}), 401
+            return jsonify({"error": "Username does not exist"}), 401
 
         user_id, hashed_password, db_user_type = user
 
@@ -154,7 +164,7 @@ def login():
         # Verify the password
         if not check_password_hash(hashed_password, password):
             logging.error("Incorrect password.")
-            return jsonify({"error": "Invalid username or password"}), 401
+            return jsonify({"error": "Invalid password"}), 400
 
         logging.info(f"User {username} logged in successfully as {user_type}.")
         return jsonify({
@@ -268,7 +278,89 @@ def post_community_article():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-        
+
+@app.route('/get_user_details', methods=['POST'])
+def get_user_details():
+    
+    username = request.form.get('username')  # Fetch from session
+
+    if not username:
+        return jsonify({"error": "User not logged in"}), 401
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user basic details
+    cursor.execute("SELECT user_id, username, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found"}), 404
+
+    user_id = user[0]
+    user_type = user[2]
+
+    # Fetch FullName & Avatar from the correct table
+    if user_type == "student":
+        cursor.execute("SELECT FullName, Avatar FROM students WHERE user_id = ?", (user_id,))
+    elif user_type == "teacher":
+        cursor.execute("SELECT FullName, Avatar FROM teachers WHERE user_id = ?", (user_id,))
+    elif user_type == "member":
+        cursor.execute("SELECT FullName FROM members WHERE user_id = ?", (user_id,))
+    else:
+        conn.close()
+        return jsonify({"error": "Unknown user type"}), 400
+
+    profile_data = cursor.fetchone()
+    conn.close()
+
+    if not profile_data:
+        return jsonify({"error": "Profile data not found"}), 404
+
+    return jsonify({
+        "username": user[1],
+        "name": profile_data[0],
+        "role": user[2],
+        "avatar": profile_data[1]  # Default avatar
+    })
+
+@app.route('/update_avatar', methods=['POST'])
+def update_avatar():
+    username = request.form.get('username')  # Fetch from session
+    avatar = request.form.get("avatar")
+
+    if not username:
+        return jsonify({"error": "User not logged in"}), 401
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user_id and type
+    cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found"}), 404
+
+    user_id = user[0]
+    user_type = user[1]
+
+    # Update avatar in the correct table
+    if user_type == "student":
+        cursor.execute("UPDATE students SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    elif user_type == "teacher":
+        cursor.execute("UPDATE teachers SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    else:
+        conn.close()
+        return jsonify({"error": "Avatar updates not supported for this user type"}), 400
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Avatar updated successfully!"})
+
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")
     app.run(debug=False, port=5001)
