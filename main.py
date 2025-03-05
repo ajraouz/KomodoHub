@@ -9,7 +9,6 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
-app.secret_key = "your_secret_key"
 CORS(app)  # Enable CORS for all routes
 
 logging.basicConfig(level=logging.DEBUG)
@@ -288,6 +287,8 @@ def post_community_article():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# Alvisha's work start here
 
 @app.route('/get_user_details', methods=['POST'])
 def get_user_details():
@@ -407,6 +408,43 @@ def update_password():
 
     return jsonify({"success": "Password updated successfully!"})
 
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    username = request.form.get('username')
+    
+    if not username:
+        return jsonify({"error": "Username not provided."}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user_id and user_type from the users table
+    cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found."}), 404
+
+    user_id, user_type = user
+
+    # Delete record from the specialized table if applicable
+    if user_type == "student":
+        cursor.execute("DELETE FROM students WHERE user_id = ?", (user_id,))
+    elif user_type == "teacher":
+        cursor.execute("DELETE FROM teachers WHERE user_id = ?", (user_id,))
+    elif user_type == "member":
+        cursor.execute("DELETE FROM members WHERE user_id = ?", (user_id,))
+
+    # Finally, delete from the users table
+    cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Account deleted successfully!"})
+
+# Alvisha's work end here
 
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")

@@ -208,11 +208,46 @@ function logout() {
         window.location.href = "/Web Pages/LoginPage.html";
     }
 }
+
 function deleteAccount() {
-    if (confirm("Are you sure you want to delete your account?")) {
-        alert("Account deleted.");
+    // Confirm deletion with the user
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        return;
     }
+    
+    // Retrieve the username from the profile display 
+    let username = document.getElementById("display-username").textContent.trim();
+    if (username.startsWith('@')) {
+        username = username.substring(1);
+    }
+    
+    // Create a FormData object and append the username
+    const formData = new FormData();
+    formData.append('username', username);
+    
+    // Send a POST request to the delete_account endpoint
+    fetch('/delete_account', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Account deleted successfully!");
+            localStorage.removeItem("username");
+            localStorage.removeItem("userType");
+            // Redirect the user to the home page
+            window.location.href = "HomePage.html";
+        } else {
+            alert("Error deleting account: " + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while deleting the account.");
+    });
 }
+
 function togglePassword() {
     const passwordInput = document.getElementById("newPassword");
     const toggleIcon = document.querySelector(".toggle-password");
