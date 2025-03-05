@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Komodo Hub</title>
   <link rel="stylesheet" href="/Web Pages/HomePage.css" />
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginButton = document.querySelector(".login");
+        const storedUser = localStorage.getItem("username");
+    
+        if (storedUser) {
+            loginButton.textContent = "Profile";
+            loginButton.addEventListener("click", function () {
+                window.location.href = "/Web Pages/ProfilePrivateView.html"; // Redirect to login
+            });
+        } else {
+            loginButton.textContent = "Login";
+            loginButton.addEventListener("click", function () {
+                window.location.href = "/Web Pages/LoginPage.html"; // Redirect to login
+            });
+        }
+    });
+  </script>
 </head>
 <body>
 
@@ -18,7 +36,7 @@
         <a href="/Web Pages/Post.html"><button>Post</button></a>
         <a href="/Web Pages/Games.html"><button>Games</button></a>
     </div>
-    <a href="/Web Pages/LoginPage.html"><button class="login">Login</button></a>
+    <button class="login">Login</button>
 </div>
 
 
