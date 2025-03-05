@@ -9,7 +9,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
-
+app.secret_key = "your_secret_key"
 CORS(app)  # Enable CORS for all routes
 
 logging.basicConfig(level=logging.DEBUG)
@@ -58,15 +58,21 @@ def register():
         user_id = cursor.lastrowid
 
         # Load the default avatar image
-        with open('Web Pages/Images/default.png', 'rb') as avatar_file:
-            avatar_data = base64.b64encode(avatar_file.read()).decode('utf-8')  # Convert to base64 string
+        with open('Web Pages/Images/default.png', 'rb'):
+            avatar_data = 'Images/default.png'
 
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
                            (user_id, name, access_code, 0, 0, avatar_data))
         elif user_type == "teacher":
-            cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Email) VALUES (?, ?, ?, ?)", 
-                           (user_id, name, access_code, None))
+            cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Avatar) VALUES (?, ?, ?, ?)", 
+                           (user_id, name, access_code, avatar_data))
+        elif user_type == "principal":
+            cursor.execute("INSERT INTO school (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
+                           (user_id, name, avatar_data))
+        elif user_type == "admin":
+            cursor.execute("INSERT INTO admin (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
+                           (user_id, name, avatar_data))
 
         conn.commit()
         logging.info("User registered successfully.")
@@ -113,8 +119,12 @@ def complete_payment_registration():
                        (username, hashed_password, "member"))
         user_id = cursor.lastrowid
 
-        cursor.execute("INSERT INTO members (user_id, FullName) VALUES (?, ?)", 
-                       (user_id, name))
+        # Load the default avatar image
+        with open('Web Pages/Images/default.png', 'rb'):
+            avatar_data = 'Images/default.png'
+
+        cursor.execute("INSERT INTO members (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
+                       (user_id, name, avatar_data))
 
         # Commit changes and close connection
         conn.commit()
@@ -278,7 +288,91 @@ def post_community_article():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-        
+
+@app.route('/get_user_details', methods=['POST'])
+def get_user_details():
+    
+    username = request.form.get('username')  # Fetch from session
+
+    if not username:
+        return jsonify({"error": "User not logged in"}), 401
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user basic details
+    cursor.execute("SELECT user_id, username, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found"}), 404
+
+    user_id = user[0]
+    user_type = user[2]
+
+    # Fetch FullName & Avatar from the correct table
+    if user_type == "student":
+        cursor.execute("SELECT FullName, Avatar FROM students WHERE user_id = ?", (user_id,))
+    elif user_type == "teacher":
+        cursor.execute("SELECT FullName, Avatar FROM teachers WHERE user_id = ?", (user_id,))
+    elif user_type == "member":
+        cursor.execute("SELECT FullName, Avatar FROM members WHERE user_id = ?", (user_id,))
+    else:
+        conn.close()
+        return jsonify({"error": "Unknown user type"}), 400
+
+    profile_data = cursor.fetchone()
+    conn.close()
+
+    if not profile_data:
+        return jsonify({"error": "Profile data not found"}), 404
+
+    return jsonify({
+        "username": user[1],
+        "name": profile_data[0],
+        "role": user[2],
+        "avatar": profile_data[1]  # Default avatar
+    })
+
+@app.route('/update_avatar', methods=['POST'])
+def update_avatar():
+    username = request.form.get('username')  # Fetch from session
+    avatar = request.form.get("avatar")
+
+    if not username:
+        return jsonify({"error": "User not logged in"}), 401
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user_id and type
+    cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found"}), 404
+
+    user_id = user[0]
+    user_type = user[1]
+
+    # Update avatar in the correct table
+    if user_type == "student":
+        cursor.execute("UPDATE students SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    elif user_type == "teacher":
+        cursor.execute("UPDATE teachers SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    elif user_type == "member":
+        cursor.execute("UPDATE members SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    else:
+        conn.close()
+        return jsonify({"error": "Avatar updates not supported for this user type"}), 400
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Avatar updated successfully!"})
+
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")
     app.run(debug=False, port=5001)
