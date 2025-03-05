@@ -5,7 +5,7 @@ CREATE TABLE users (
     user_id INTEGER PRIMARY KEY, -- Auto-increments automatically in SQLite
     username TEXT UNIQUE NOT NULL, 
     password TEXT NOT NULL, 
-    user_type TEXT CHECK(user_type IN ('student', 'teacher', 'member', 'school', 'admin')) NOT NULL
+    user_type TEXT CHECK(user_type IN ('student', 'teacher', 'member', 'principal', 'admin')) NOT NULL
 );
 
 CREATE TABLE students (
