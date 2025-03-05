@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="/Web Pages/Popup.css">
 </head>
 <body>
-    <a href="#" id="home">
-        <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
-    </a>
+    <div class="navbar">
+        <a href="#" id="home">
+            <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
+        </a>
+    </div>
     <div class="form-container register-box">
         <h2 class="form-title">Register to Komodo Hub</h2>
         <form id="registerForm" action="/register" method="POST">
@@ -143,18 +145,18 @@
             else if (userType === 'student' || userType === 'teacher') {
                 // Students and teachers require an access code
                 if (!accessCode) {
-                    showPopup("Access code is required!", "error", 1500);
+                    showPopup("Access code is required!", "error", 1500, accessCode);
                     return;
                 }
                 if (userType === 'student'){
                     if (accessCode != 12345){
-                        showPopup("Invalid access code!", "error", 1500);
+                        showPopup("Invalid access code!", "error", 1500, accessCode);
                         return;
                     }
                 }
                 else if (userType === 'teacher'){
                     if (accessCode != 54321){
-                        showPopup("Invalid access code!", "error", 1500);
+                        showPopup("Invalid access code!", "error", 1500, accessCode);
                         return;
                     }
                 }
@@ -192,19 +194,35 @@
             }
         }
 
-        function showPopup(message, type, time) {
-            let popup = document.createElement("div");
-            popup.classList.add("popup", type);
+        function showPopup(message, type, time, errorField = null) {
+            let popup = document.getElementById("popupMessage");
+            
+            if (!popup) {
+                popup = document.createElement("div");
+                popup.id = "popupMessage";
+                popup.classList.add("popup");
+                document.querySelector('.form-container').appendChild(popup); // Attach below form
+            }
+
             popup.textContent = message;
-            document.body.appendChild(popup);
-            
+            popup.className = `popup ${type}`;
+            popup.style.display = "block";
+
+            if (errorField) {
+                errorField.classList.add("input-error");
+                errorField.focus();
+            }
+
             setTimeout(() => {
-                popup.classList.add("show");
+                popup.style.opacity = "1";
             }, 10);
-            
+
             setTimeout(() => {
-                popup.classList.remove("show");
-                setTimeout(() => popup.remove(), 500);
+                popup.style.opacity = "0";
+                setTimeout(() => popup.style.display = "none", 300);
+                if (errorField) {
+                    errorField.classList.remove("input-error");
+                }
             }, time);
         }
         document.getElementById("loginLink").addEventListener("click", function (event) {
