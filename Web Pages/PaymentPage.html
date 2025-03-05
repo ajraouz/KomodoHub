@@ -5,7 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Komodo Hub Payment</title>
     <link rel="stylesheet" href="/Web Pages/PaymentPage.css">
-    <link rel="stylesheet" href="/Web Pages/Popup.css">
+    <style>
+        .popup {
+            position: absolute;
+            top: 103%; /* Place the popup directly below the button */
+            left: 0;
+            width: 60%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 20px;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup.success {
+            background-color: green;
+        }
+
+        .popup.error {
+            background-color: red;
+        }
+    </style>
 </head>
 <body>
 
@@ -188,19 +212,35 @@
             event.target.value = words.join(" ");
         }
 
-        function showPopup(message, type, time) {
-            let popup = document.createElement("div");
-            popup.classList.add("popup", type);
+        function showPopup(message, type, time, errorField = null) {
+            let popup = document.getElementById("popupMessage");
+            
+            if (!popup) {
+                popup = document.createElement("div");
+                popup.id = "popupMessage";
+                popup.classList.add("popup");
+                document.querySelector('.container').appendChild(popup); // Attach below form
+            }
+
             popup.textContent = message;
-            document.body.appendChild(popup);
-            
+            popup.className = `popup ${type}`;
+            popup.style.display = "block";
+
+            if (errorField) {
+                errorField.classList.add("input-error");
+                errorField.focus();
+            }
+
             setTimeout(() => {
-                popup.classList.add("show");
+                popup.style.opacity = "1";
             }, 10);
-            
+
             setTimeout(() => {
-                popup.classList.remove("show");
-                setTimeout(() => popup.remove(), 500);
+                popup.style.opacity = "0";
+                setTimeout(() => popup.style.display = "none", 300);
+                if (errorField) {
+                    errorField.classList.remove("input-error");
+                }
             }, time);
         }
     </script>

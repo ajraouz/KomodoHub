@@ -163,24 +163,26 @@
                 formData.append('access_code', accessCode);
             }
             // Handle student or teacher registration immediately
-            fetch('/register', {
+            if (userType != 'member'){
+                fetch('/register', {
                 method: 'POST',
                 body: formData
-            })
-            .then(async response => {
-                let result = await response.json(); // Parse JSON correctly
-                if (response.ok) {
-                    showPopup("WELCOME 🤩", "success", 1500);  // Call function to show animated pop-up
-                    setTimeout(() => {
-                        window.location.replace('/Web Pages/LoginPage.html');
-                    }, 1700);  // Redirect to login page
-                } else {
-                    showPopup("" + result.error, "error", 2200);
-                }
-            })
-            .catch(error => {
-                showPopup("An error occurred while logging in.", "error", 2200);
-            });
+                })
+                .then(async response => {
+                    let result = await response.json(); // Parse JSON correctly
+                    if (response.ok) {
+                        showPopup("WELCOME 🤩", "success", 1500);  // Call function to show animated pop-up
+                        setTimeout(() => {
+                            window.location.replace('/Web Pages/LoginPage.html');
+                        }, 1700);  // Redirect to login page
+                    } else {
+                        showPopup("" + result.error, "error", 2200);
+                    }
+                })
+                .catch(error => {
+                    showPopup("An error occurred while logging in.", "error", 2200);
+                });
+            }
         });
 
         function togglePassword(fieldId, button) {
