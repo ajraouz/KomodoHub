@@ -375,6 +375,39 @@ def update_avatar():
 
     return jsonify({"success": "Avatar updated successfully!"})
 
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    # Get username and new password from the form data
+    username = request.form.get('username')
+    new_password = request.form.get('newPassword')
+    
+    if not username or not new_password:
+        return jsonify({"error": "Username or new password not provided."}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Verify that the user exists in the users table
+    cursor.execute("SELECT user_id FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found."}), 404
+
+    user_id = user[0]
+
+    # Hash the new password before storing it
+    hashed_password = generate_password_hash(new_password)
+
+    # Update the password in the users table
+    cursor.execute("UPDATE users SET password = ? WHERE user_id = ?", (hashed_password, user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Password updated successfully!"})
+
+
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")
     app.run(debug=False, port=5001)
