@@ -313,11 +313,11 @@ def get_user_details():
 
     # Fetch FullName & Avatar from the correct table
     if user_type == "student":
-        cursor.execute("SELECT FullName, Avatar FROM students WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM students WHERE user_id = ?", (user_id,))
     elif user_type == "teacher":
-        cursor.execute("SELECT FullName, Avatar FROM teachers WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM teachers WHERE user_id = ?", (user_id,))
     elif user_type == "member":
-        cursor.execute("SELECT FullName, Avatar FROM members WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM members WHERE user_id = ?", (user_id,))
     else:
         conn.close()
         return jsonify({"error": "Unknown user type"}), 400
@@ -332,7 +332,9 @@ def get_user_details():
         "username": user[1],
         "name": profile_data[0],
         "role": user[2],
-        "avatar": profile_data[1]  # Default avatar
+        "avatar": profile_data[1],  # Default avatar
+        "posts": profile_data[2],
+        "points": profile_data[3]
     })
 
 @app.route('/update_avatar', methods=['POST'])

@@ -107,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("display-username").textContent  = "@" + data.username;
         document.getElementById("display-role").textContent      = data.role;
         document.getElementById("profile-avatar").src            = data.avatar || "Images/default.png";
+        document.getElementById("posts").textContent             = data.posts;
+        document.getElementById("points").textContent            = data.points 
     })
     .catch(error => console.error("Error fetching user details:", error));
 });
