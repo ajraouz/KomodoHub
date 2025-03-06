@@ -52,7 +52,7 @@ saveButton.addEventListener("click", async function () {
 
         let result = await response.json();
         if (response.ok) {
-            avatarMessage.textContent = "✅ Avatar Updated!";
+            avatarMessage.textContent = "✅ Avatar updated successfully!";
             avatarMessage.style.color = "rgb(77, 247, 77)";
             avatarMessage.style.display = "block";
         } else {
@@ -107,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("display-username").textContent  = "@" + data.username;
         document.getElementById("display-role").textContent      = data.role;
         document.getElementById("profile-avatar").src            = data.avatar || "Images/default.png";
+        document.getElementById("posts").textContent             = data.posts;
+        document.getElementById("points").textContent            = data.points 
     })
     .catch(error => console.error("Error fetching user details:", error));
 });
@@ -132,21 +134,69 @@ function validatePassword() {
 }
 
 function changePassword() {
-    if (validatePassword()) {
-        const passwordError = document.getElementById("passwordError");
+    if (!validatePassword()) {
+      return;
+    }
+    
+    // Retrieve the new password from the input field
+    const newPassword = document.getElementById("newPassword").value;
+    
+    // Extract the username from the display element; adjust if stored elsewhere
+    let username = document.getElementById("display-username").textContent.trim();
+    if (username.startsWith('@')) {
+      username = username.substring(1);
+    }
+    
+    // Create a FormData object to send the username and new password to the server
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('newPassword', newPassword);
+    
+    // Send the POST request to the update password endpoint
+    fetch('/update_password', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      const passwordError = document.getElementById("passwordError");
+      
+      if (data.success) {
+        // Display success message
         passwordError.textContent = "✅ Password updated successfully!";
         passwordError.style.color = "rgb(77, 247, 77)";
         passwordError.style.display = "block"; // Make sure it's visible
 
-        setTimeout(() => {
-            passwordError.textContent = "";  // Clear the message
-            passwordError.style.display = "block"; // Reset to default display (use block or inline as per your design)
-            passwordError.style.color = "red"; // Reset to default color for error
-        }, 3000);
-
         // Clear the input field
         document.getElementById("newPassword").value = "";
-    }
+      } 
+      else {
+        // Display error message returned from the server
+        passwordError.textContent = "Error updating password: " + data.error;
+        passwordError.style.color = "red";
+        passwordError.style.display = "block";
+      }
+      
+      // Reset the message after 3 seconds
+      setTimeout(() => {
+        passwordError.textContent = ""; // Clear the message
+        passwordError.style.display = "block"; 
+        passwordError.style.color = "red"; // Reset to default error color
+      }, 3000);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      const passwordError = document.getElementById("passwordError");
+      passwordError.textContent = "An error occurred while updating the password.";
+      passwordError.style.color = "red";
+      passwordError.style.display = "block";
+      
+      setTimeout(() => {
+        passwordError.textContent = "";
+        passwordError.style.display = "block";
+        passwordError.style.color = "red";
+      }, 3000);
+    });
 }
 
 
@@ -158,11 +208,46 @@ function logout() {
         window.location.href = "/Web Pages/LoginPage.html";
     }
 }
+
 function deleteAccount() {
-    if (confirm("Are you sure you want to delete your account?")) {
-        alert("Account deleted.");
+    // Confirm deletion with the user
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        return;
     }
+    
+    // Retrieve the username from the profile display 
+    let username = document.getElementById("display-username").textContent.trim();
+    if (username.startsWith('@')) {
+        username = username.substring(1);
+    }
+    
+    // Create a FormData object and append the username
+    const formData = new FormData();
+    formData.append('username', username);
+    
+    // Send a POST request to the delete_account endpoint
+    fetch('/delete_account', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Account deleted successfully!");
+            localStorage.removeItem("username");
+            localStorage.removeItem("userType");
+            // Redirect the user to the home page
+            window.location.href = "HomePage.html";
+        } else {
+            alert("Error deleting account: " + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while deleting the account.");
+    });
 }
+
 function togglePassword() {
     const passwordInput = document.getElementById("newPassword");
     const toggleIcon = document.querySelector(".toggle-password");

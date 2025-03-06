@@ -9,7 +9,6 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__, template_folder='Web Pages', static_folder='Web Pages')
-app.secret_key = "your_secret_key"
 CORS(app)  # Enable CORS for all routes
 
 logging.basicConfig(level=logging.DEBUG)
@@ -288,6 +287,8 @@ def post_community_article():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# Alvisha's work start here
 
 @app.route('/get_user_details', methods=['POST'])
 def get_user_details():
@@ -313,11 +314,11 @@ def get_user_details():
 
     # Fetch FullName & Avatar from the correct table
     if user_type == "student":
-        cursor.execute("SELECT FullName, Avatar FROM students WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM students WHERE user_id = ?", (user_id,))
     elif user_type == "teacher":
-        cursor.execute("SELECT FullName, Avatar FROM teachers WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM teachers WHERE user_id = ?", (user_id,))
     elif user_type == "member":
-        cursor.execute("SELECT FullName, Avatar FROM members WHERE user_id = ?", (user_id,))
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM members WHERE user_id = ?", (user_id,))
     else:
         conn.close()
         return jsonify({"error": "Unknown user type"}), 400
@@ -332,7 +333,9 @@ def get_user_details():
         "username": user[1],
         "name": profile_data[0],
         "role": user[2],
-        "avatar": profile_data[1]  # Default avatar
+        "avatar": profile_data[1],  # Default avatar
+        "posts": profile_data[2],
+        "points": profile_data[3]
     })
 
 @app.route('/update_avatar', methods=['POST'])
@@ -372,6 +375,76 @@ def update_avatar():
     conn.close()
 
     return jsonify({"success": "Avatar updated successfully!"})
+
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    # Get username and new password from the form data
+    username = request.form.get('username')
+    new_password = request.form.get('newPassword')
+    
+    if not username or not new_password:
+        return jsonify({"error": "Username or new password not provided."}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Verify that the user exists in the users table
+    cursor.execute("SELECT user_id FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found."}), 404
+
+    user_id = user[0]
+
+    # Hash the new password before storing it
+    hashed_password = generate_password_hash(new_password)
+
+    # Update the password in the users table
+    cursor.execute("UPDATE users SET password = ? WHERE user_id = ?", (hashed_password, user_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Password updated successfully!"})
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    username = request.form.get('username')
+    
+    if not username:
+        return jsonify({"error": "Username not provided."}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user_id and user_type from the users table
+    cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found."}), 404
+
+    user_id, user_type = user
+
+    # Delete record from the specialized table if applicable
+    if user_type == "student":
+        cursor.execute("DELETE FROM students WHERE user_id = ?", (user_id,))
+    elif user_type == "teacher":
+        cursor.execute("DELETE FROM teachers WHERE user_id = ?", (user_id,))
+    elif user_type == "member":
+        cursor.execute("DELETE FROM members WHERE user_id = ?", (user_id,))
+
+    # Finally, delete from the users table
+    cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Account deleted successfully!"})
+
+# Alvisha's work end here
 
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")

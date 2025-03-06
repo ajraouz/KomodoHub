@@ -8,22 +8,24 @@
     <link rel="stylesheet" href="/Web Pages/Popup.css">
 </head>
 <body>
-    <a href="#" id="home">
-        <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
-    </a>
+    <div class="navbar">
+        <a href="#" id="home">
+            <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
+        </a>
+    </div>
     <div class="form-container register-box">
         <h2 class="form-title">Register to Komodo Hub</h2>
         <form id="registerForm" action="/register" method="POST">
             <input type="text" name="name" placeholder="Name *" required>
-            <input type="text" name="username" placeholder="Username *" required>
+            <input type="text" name="username" placeholder="Username *" oninput="this.value = this.value.replace(/\s/g, '')" required>
 
             <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Password *" required>
+                <input type="password" id="password" name="password" placeholder="Password *" oninput="this.value = this.value.replace(/\s/g, '')" required>
                 <button type="button" class="toggle-password" onclick="togglePassword('password', this)">👓</button>
             </div>
             
             <div class="password-container">
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password *" required>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm password *" oninput="this.value = this.value.replace(/\s/g, '')" required>
                 <button type="button" class="toggle-password" onclick="togglePassword('confirm_password', this)">👓</button>
             </div>
 
@@ -36,7 +38,7 @@
                 </select>
             </div>
     
-            <input id="accessCode" name="access_code" type="text" placeholder="Access code" required>
+            <input id="accessCode" name="access_code" type="text" placeholder="Access code" oninput="this.value = this.value.replace(/\D/g, '')" required>
 
             <img src="/Web Pages/Images/giphy.gif" alt="Loading animation" class="gif">
 
@@ -143,30 +145,44 @@
             else if (userType === 'student' || userType === 'teacher') {
                 // Students and teachers require an access code
                 if (!accessCode) {
-                    showPopup("Access code is required!", "error", 1500);
+                    showPopup("Access code is required!", "error", 1500, accessCode);
                     return;
+                }
+                if (userType === 'student'){
+                    if (accessCode != 12345){
+                        showPopup("Invalid access code!", "error", 1500, accessCode);
+                        return;
+                    }
+                }
+                else if (userType === 'teacher'){
+                    if (accessCode != 54321){
+                        showPopup("Invalid access code!", "error", 1500, accessCode);
+                        return;
+                    }
                 }
                 formData.append('access_code', accessCode);
             }
             // Handle student or teacher registration immediately
-            fetch('/register', {
+            if (userType != 'member'){
+                fetch('/register', {
                 method: 'POST',
                 body: formData
-            })
-            .then(async response => {
-                let result = await response.json(); // Parse JSON correctly
-                if (response.ok) {
-                    showPopup("WELCOME 🤩", "success", 1500);  // Call function to show animated pop-up
-                    setTimeout(() => {
-                        window.location.replace('/Web Pages/LoginPage.html');
-                    }, 1700);  // Redirect to login page
-                } else {
-                    showPopup("" + result.error, "error", 2200);
-                }
-            })
-            .catch(error => {
-                showPopup("An error occurred while logging in.", "error", 2200);
-            });
+                })
+                .then(async response => {
+                    let result = await response.json(); // Parse JSON correctly
+                    if (response.ok) {
+                        showPopup("WELCOME 🤩", "success", 1500);  // Call function to show animated pop-up
+                        setTimeout(() => {
+                            window.location.replace('/Web Pages/LoginPage.html');
+                        }, 1700);  // Redirect to login page
+                    } else {
+                        showPopup("" + result.error, "error", 2200);
+                    }
+                })
+                .catch(error => {
+                    showPopup("An error occurred while logging in.", "error", 2200);
+                });
+            }
         });
 
         function togglePassword(fieldId, button) {
@@ -180,19 +196,35 @@
             }
         }
 
-        function showPopup(message, type, time) {
-            let popup = document.createElement("div");
-            popup.classList.add("popup", type);
+        function showPopup(message, type, time, errorField = null) {
+            let popup = document.getElementById("popupMessage");
+            
+            if (!popup) {
+                popup = document.createElement("div");
+                popup.id = "popupMessage";
+                popup.classList.add("popup");
+                document.querySelector('.form-container').appendChild(popup); // Attach below form
+            }
+
             popup.textContent = message;
-            document.body.appendChild(popup);
-            
+            popup.className = `popup ${type}`;
+            popup.style.display = "block";
+
+            if (errorField) {
+                errorField.classList.add("input-error");
+                errorField.focus();
+            }
+
             setTimeout(() => {
-                popup.classList.add("show");
+                popup.style.opacity = "1";
             }, 10);
-            
+
             setTimeout(() => {
-                popup.classList.remove("show");
-                setTimeout(() => popup.remove(), 500);
+                popup.style.opacity = "0";
+                setTimeout(() => popup.style.display = "none", 300);
+                if (errorField) {
+                    errorField.classList.remove("input-error");
+                }
             }, time);
         }
         document.getElementById("loginLink").addEventListener("click", function (event) {
