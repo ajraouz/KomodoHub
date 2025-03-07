@@ -55,6 +55,12 @@ saveButton.addEventListener("click", async function () {
             avatarMessage.textContent = "✅ Avatar updated successfully!";
             avatarMessage.style.color = "rgb(77, 247, 77)";
             avatarMessage.style.display = "block";
+
+            // Hide the message after 3 seconds
+            setTimeout(() => {
+                avatarMessage.style.display = "none";
+            }, 3000);
+            
         } else {
             avatarMessage.textContent = "⚠️ " + result.error;
             avatarMessage.style.color = "red";
@@ -184,6 +190,11 @@ function changePassword() {
 
         // Clear the input field
         document.getElementById("newPassword").value = "";
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+            passwordError.style.display = "none";
+        }, 3000);
       } 
       else {
         // Display error message returned from the server

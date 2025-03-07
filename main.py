@@ -340,6 +340,20 @@ def get_user_details():
         # Count students
         cursor.execute("SELECT COUNT(*) FROM students")
         total_students = cursor.fetchone()[0]
+        
+    elif user_type == "principal":
+        # Fetch principal details from the school table.
+        cursor.execute("SELECT FullName, Avatar, COALESCE(TotalPosts, 0), COALESCE(TotalPoints, 0) FROM school WHERE user_id = ?",
+            (user_id,)
+        )
+        profile_data = cursor.fetchone()
+        
+        # Additionally, count the number of teachers and students for dynamic contributions.
+        cursor.execute("SELECT COUNT(*) FROM teachers")
+        teachers_count = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM students")
+        students_count = cursor.fetchone()[0]
+
     else:
         conn.close()
         return jsonify({"error": "Unknown user type"}), 400
@@ -362,7 +376,11 @@ def get_user_details():
         response_data["members"] = total_members
         response_data["staff"] = total_staff
         response_data["students"] = total_students
-
+        
+    elif user_type== "principal":
+        response_data["teachers"] = teachers_count
+        response_data["students"] = students_count
+        
     return jsonify(response_data)
 
 @app.route('/update_avatar', methods=['POST'])
@@ -396,6 +414,8 @@ def update_avatar():
         cursor.execute("UPDATE members SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
     elif user_type == "admin":
         cursor.execute("UPDATE admin SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    elif user_type == "principal":
+        cursor.execute("UPDATE school SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
     else:
         conn.close()
         return jsonify({"error": "Avatar updates not supported for this user type"}), 400
@@ -464,6 +484,10 @@ def delete_account():
         cursor.execute("DELETE FROM teachers WHERE user_id = ?", (user_id,))
     elif user_type == "member":
         cursor.execute("DELETE FROM members WHERE user_id = ?", (user_id,))
+    elif user_type == "admin":
+        cursor.execute("DELETE FROM admin WHERE user_id = ?", (user_id,))
+    elif user_type == "principal":
+        cursor.execute("DELETE FROM school WHERE user_id = ?", (user_id,))
 
     # Finally, delete from the users table
     cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
