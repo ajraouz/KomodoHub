@@ -324,7 +324,7 @@ function updateProgress() {
 
     // Update UI elements
     rankDisplay.innerText = currentRank;
-    nextRankDisplay.innerText = nextRank ? `Next Rank: ${nextRank}` : "Max Rank Achieved";
+    nextRankDisplay.innerText = nextRank ? `${nextRank}` : "Max Rank Achieved";
     progressBar.style.width = `${progressPercentage}%`;
 }
 

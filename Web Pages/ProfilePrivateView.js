@@ -60,7 +60,7 @@ saveButton.addEventListener("click", async function () {
             setTimeout(() => {
                 avatarMessage.style.display = "none";
             }, 3000);
-            
+
         } else {
             avatarMessage.textContent = "⚠️ " + result.error;
             avatarMessage.style.color = "red";
@@ -341,7 +341,7 @@ function updateProgress() {
 
     // Update UI elements
     rankDisplay.innerText = currentRank;
-    nextRankDisplay.innerText = nextRank ? `Next Rank: ${nextRank}` : "Max Rank Achieved";
+    nextRankDisplay.innerText = nextRank ? `${nextRank}` : "Max Rank Achieved";
     progressBar.style.width = `${progressPercentage}%`;
 }
 
