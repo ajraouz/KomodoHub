@@ -315,28 +315,55 @@ def get_user_details():
     # Fetch FullName & Avatar from the correct table
     if user_type == "student":
         cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM students WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
     elif user_type == "teacher":
         cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM teachers WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
     elif user_type == "member":
         cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM members WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
+    elif user_type == "admin":
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM admin WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
+        
+        # Count regular members
+        cursor.execute("SELECT COUNT(*) FROM members")
+        total_members = cursor.fetchone()[0]
+
+        # Count school staff (teachers + principals)
+        cursor.execute("SELECT COUNT(*) FROM teachers")
+        total_teachers = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM school")
+        total_principals = cursor.fetchone()[0]
+        total_staff = total_teachers + total_principals
+
+        # Count students
+        cursor.execute("SELECT COUNT(*) FROM students")
+        total_students = cursor.fetchone()[0]
     else:
         conn.close()
         return jsonify({"error": "Unknown user type"}), 400
 
-    profile_data = cursor.fetchone()
     conn.close()
 
     if not profile_data:
         return jsonify({"error": "Profile data not found"}), 404
 
-    return jsonify({
+    response_data = {
         "username": user[1],
         "name": profile_data[0],
         "role": user[2],
         "avatar": profile_data[1],  # Default avatar
         "posts": profile_data[2],
         "points": profile_data[3]
-    })
+    }
+    
+    if username == "AdminUser#404":
+        response_data["members"] = total_members
+        response_data["staff"] = total_staff
+        response_data["students"] = total_students
+
+    return jsonify(response_data)
 
 @app.route('/update_avatar', methods=['POST'])
 def update_avatar():
@@ -367,6 +394,8 @@ def update_avatar():
         cursor.execute("UPDATE teachers SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
     elif user_type == "member":
         cursor.execute("UPDATE members SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
+    elif user_type == "admin":
+        cursor.execute("UPDATE admin SET Avatar = ? WHERE user_id = ?", (avatar, user_id))
     else:
         conn.close()
         return jsonify({"error": "Avatar updates not supported for this user type"}), 400

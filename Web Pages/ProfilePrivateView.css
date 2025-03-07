@@ -372,3 +372,10 @@ h3 {
 .toggle-password:hover {
     color: #3b82f6; /* Highlight when hovered */
 }
+
+#membersContribution,
+#staffContribution,
+#studentsContribution {
+    text-align: left;
+    justify-content: flex-start; 
+}

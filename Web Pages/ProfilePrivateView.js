@@ -109,6 +109,21 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("profile-avatar").src            = data.avatar || "Images/default.png";
         document.getElementById("posts").textContent             = data.posts;
         document.getElementById("points").textContent            = data.points 
+
+        // If the user is an admin, show and update the "Members Involved" section
+        if (data.role.toLowerCase() === "admin") {
+            // Members Involved
+            document.getElementById("membersContribution").style.display = "block";
+            document.getElementById("members").innerText = data.members || "0";
+            
+            // School Staff Involved
+            document.getElementById("staffContribution").style.display = "block";
+            document.getElementById("staff").innerText = data.staff || "0";
+            
+            // Students Involved
+            document.getElementById("studentsContribution").style.display = "block";
+            document.getElementById("students").innerText = data.students || "0";
+        }
     })
     .catch(error => console.error("Error fetching user details:", error));
 });
