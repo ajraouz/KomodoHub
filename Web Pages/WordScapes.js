@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Function to start the game based on selected difficulty
 window.startGame = function (difficulty) {
   console.log("Selected difficulty:", difficulty);
 
@@ -10,81 +9,117 @@ window.startGame = function (difficulty) {
   selectedDifficulty = difficulty;
   initWordGrid();
   initLetterCircle();
-};
-
-
-// Function to start the game based on selected difficulty
-window.startGame = function (difficulty) {
-  console.log("Selected difficulty:", difficulty);
-
-  document.getElementById("difficulty-screen").style.display = "none";
-  document.getElementById("game-container").style.display = "block";
-  document.body.style.background = "url('images/wordfinderbackground.webp') no-repeat center center/cover";
-
-  selectedDifficulty = difficulty;
-  initWordGrid();
-  initLetterCircle();
-};
-
-
-// Function to start the game based on selected difficulty
-window.startGame = function (difficulty) {
-  console.log("Selected difficulty:", difficulty);
-
-  document.getElementById("difficulty-screen").style.display = "none";
-  document.getElementById("game-container").style.display = "block";
-  document.body.style.background = "url('images/wordfinderbackground.webp') no-repeat center center/cover";
-
-  selectedDifficulty = difficulty;
-  initWordGrid();
-  initLetterCircle();
-};
-// Function to go back to difficulty selection screen
-window.goBack = function () {
-  let gameContainer = document.getElementById("game-container");
-  let difficultyScreen = document.getElementById("difficulty-screen");
-
-  if (gameContainer && difficultyScreen) {
-      gameContainer.style.display = "none"; 
-      difficultyScreen.style.display = "flex"; 
-  } else {
-      console.error("Error: One or more elements not found.");
+  // Reveal Button Logic
+  const revealBtn = document.getElementById('reveal-btn');
+  const revealCounter = document.getElementById('reveal-counter'); // Get the counter element
+  let revealUses;
+  
+  // Set reveal limits based on difficulty
+  function setRevealLimit() {
+      if (selectedDifficulty === 'easy') {
+          revealUses = 5;
+      } else if (selectedDifficulty === 'medium') {
+          revealUses = 10;
+      } else if (selectedDifficulty === 'hard') {
+          revealUses = 15;
+      }
+      revealCounter.textContent = revealUses; // Display initial reveal count
   }
+  
+  // Function to reveal a random hidden letter
+  function revealLetter() {
+    if (revealUses > 0) {
+        // Find all word-related cells that are still hidden
+        const hiddenWordCells = [];
+
+        for (let word in words) {
+            words[word].forEach(index => {
+                const cell = wordGrid.querySelector(`[data-index='${index}']`);
+                if (cell.textContent === '') {
+                    hiddenWordCells.push({ cell, word, index });
+                }
+            });
+        }
+
+        if (hiddenWordCells.length > 0) {
+            // Pick a random hidden letter from the words
+            const randomSelection = hiddenWordCells[Math.floor(Math.random() * hiddenWordCells.length)];
+            const { cell, word, index } = randomSelection;
+
+            // Reveal the correct letter from the word
+            const letterIndex = words[word].indexOf(index);
+            cell.textContent = word[letterIndex]; // Correct letter
+            cell.style.backgroundColor = '#FFD700'; // Highlight in gold
+
+            // Reduce the number of available reveals
+            revealUses--;
+            revealCounter.textContent = revealUses; // Update counter display
+
+            if (revealUses === 0) {
+                revealBtn.disabled = true; // Disable button when no more uses left
+                revealBtn.style.opacity = "0.5";
+                revealCounter.style.backgroundColor = "red"; // Indicate no more reveals
+            }
+        }
+    }
+}
+
+  
+  // Set reveal limit when the game starts
+  setRevealLimit();
+  revealBtn.addEventListener('click', revealLetter);
+  
+
 };
+
+window.goBack = function () {
+  console.log("Returning to WordScapes.html...");
+
+  // Reset UI elements
+  document.getElementById("game-container").style.display = "none";
+  document.getElementById("difficulty-screen").style.display = "flex"; 
+
+  // Reload the page to fully reset everything
+  window.location.href = "WordScapes.html"; 
+};
+
 
 
 const wordsEasy = {
   "TIGER": [0, 1, 2, 3, 4],
-  "TIRE": [6, 7, 8, 9],
-  "GET": [12, 13, 14],
+  "TIRE": [0, 7, 14, 21],
+  "GET": [2 , 9, 16],
   "TIE": [18, 19, 20],
-  "TIER": [24, 25, 26, 27],
-  "RITE": [30, 31, 32, 33]
+  "TIER": [6, 13, 20, 27],
+  "RITE": [4, 11, 18, 25]
 };
 
 const wordsMedium = {
-    "LEOPARD": [0, 1, 2, 3, 4, 5, 6],
-    "ROPE": [7, 8, 9, 10],
-    "DROP": [14, 15, 16, 17],
-    "PALE": [21, 22, 23, 24],
-    "LEAP": [28, 29, 30, 31],
-    "DRAPE": [35, 36, 37, 38, 39],
-    "ORDEAL": [42, 43, 44, 45, 46, 47]
+    "TARSIUS": [14, 15, 16, 17, 18, 19, 20],
+    "RATS": [0, 7, 14, 21],
+    "STAIRS": [20, 27, 34, 41, 48, 55],
+    "STAR": [17, 24, 31, 38],
+    "SUITS": [51, 52, 53, 54, 55],
+    "RUST": [0, 1, 2, 3],
+    "AIR": [46, 53, 60]
 };
 
 const wordsHard = {
-    "ELEPHANT": [0, 1, 2, 3, 4, 5, 6, 7],
-    "PLANT": [8, 9, 10, 11, 12],
-    "PLANET": [16, 17, 18, 19, 20, 21],
-    "PELT": [24, 25, 26, 27],
-    "PETAL": [32, 33, 34, 35, 36],
-    "EATEN": [40, 41, 42, 43, 44],
-    "PATH": [48, 49, 50, 51],
-    "PEEL": [56, 57, 58, 59]
+    "ELEPHANT": [40, 41, 42, 43, 44, 45, 46, 47],
+    "PLANT": [43, 51, 59, 67, 75],
+    "PLANET": [22, 30, 38, 46, 54, 62],
+    "PELT": [4, 12, 20, 28],
+    "PETAL": [26, 27, 28, 29, 30],
+    "EATEN": [73, 74, 75, 76, 77],
+    "PATH": [4, 5, 6, 7],
+    "PEEL": [32, 40, 48, 56],
+    "PLANE": [8, 9, 10, 11, 12],
+    "ALE": [1, 9, 17],
+    "PAN": [58, 59, 60]
 };
 
 const lettersEasy = ['T', 'I', 'G', 'E', 'R'];
-const lettersMedium = ['L', 'E', 'O', 'P', 'A', 'R', 'D'];
+const lettersMedium = ['T', 'A', 'R', 'S', 'I', 'U', 'S'];
 const lettersHard = ['E', 'L', 'E', 'P', 'H', 'A', 'N', 'T'];
 
 
@@ -119,21 +154,24 @@ const lettersHard = ['E', 'L', 'E', 'P', 'H', 'A', 'N', 'T'];
       
       let totalCells;
       let gridSize;
+      wordGrid.classList.remove('hard-mode');
       if (selectedDifficulty === 'easy') {
           words = wordsEasy;
-          totalCells = 36;  // 5x5 Grid
-          gridSize = 6;
+          totalCells = 28;  
+          gridSize = 7;
       } else if (selectedDifficulty === 'medium') {
           words = wordsMedium;
-          totalCells = 49;  // 7x7 Grid
+          totalCells = 62;  
           gridSize = 7;
       } else if (selectedDifficulty === 'hard') {
           words = wordsHard;
-          totalCells = 64;  // 8x8 Grid
+          totalCells = 80;  
           gridSize = 8;
+          wordGrid.classList.add('hard-mode');
       }
   
       wordGrid.style.gridTemplateColumns = `repeat(${gridSize}, 50px)`;
+      
   
       for (let i = 0; i < totalCells; i++) {
           const cell = document.createElement('div');
@@ -141,7 +179,7 @@ const lettersHard = ['E', 'L', 'E', 'P', 'H', 'A', 'N', 'T'];
           cell.dataset.index = i;  // Helps track placement
   
           if (!Object.values(words).flat().includes(i)) {
-              cell.style.backgroundColor = 'black';
+              cell.style.backgroundColor = 'transparent';
           }
   
           wordGrid.appendChild(cell);
@@ -245,7 +283,7 @@ const lettersHard = ['E', 'L', 'E', 'P', 'H', 'A', 'N', 'T'];
     function drawConnectingLine(mouseX, mouseY) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
-      ctx.strokeStyle = "#00FF00"; // Green color (matches letter border)
+      ctx.strokeStyle = "#00FF00"; 
       ctx.lineWidth = 8;
   
       selectedLetterElements.forEach((letter, index) => {
@@ -319,35 +357,47 @@ const lettersHard = ['E', 'L', 'E', 'P', 'H', 'A', 'N', 'T'];
       }
     }
   
-    /**
-     * Displays the "Completed!!" popup with options to play again or find more games
-     */
-    function showCompletionPopup() {
-      const popup = document.createElement('div');
-      popup.classList.add('completion-popup');
-  
-      const message = document.createElement('h2');
-      message.textContent = "Completed!!";
-  
-      const playAgainBtn = document.createElement('button');
-      playAgainBtn.textContent = "Play Again!";
-      playAgainBtn.addEventListener('click', () => {
-        window.location.href = "WordScapes.html";
-      });
-  
-      const moreGamesBtn = document.createElement('button');
-      moreGamesBtn.textContent = "More Games?";
-      moreGamesBtn.addEventListener('click', () => {
-        window.location.href = "Games.html";
-      });
-  
-      popup.appendChild(message);
-      popup.appendChild(playAgainBtn);
-      popup.appendChild(moreGamesBtn);
-      document.body.appendChild(popup);
-    }
-  
-    // Event listeners
+/**
+ * Displays the "Completed!!" popup with points and options to play again or find more games
+ */
+function showCompletionPopup() {
+  const popup = document.createElement('div');
+  popup.classList.add('completion-popup');
+
+  const message = document.createElement('h2');
+  message.textContent = "🎉 You Won! 🎉";
+
+  // Calculate points based on difficulty
+  let points = 0;
+  if (selectedDifficulty === 'easy') {
+      points = 5;
+  } else if (selectedDifficulty === 'medium') {
+      points = 10;
+  } else if (selectedDifficulty === 'hard') {
+      points = 20;
+  }
+
+  const pointsDisplay = document.createElement('p');
+  pointsDisplay.textContent = `⭐ You earned: ${points} points! ⭐`;
+
+  const playAgainBtn = document.createElement('button');
+  playAgainBtn.textContent = "🔄 Play Again";
+  playAgainBtn.addEventListener('click', () => {
+      window.location.href = "WordScapes.html";
+  });
+
+  const moreGamesBtn = document.createElement('button');
+  moreGamesBtn.textContent = "🎮 More Games";
+  moreGamesBtn.addEventListener('click', () => {
+      window.location.href = "Games.html";
+  });
+
+  popup.appendChild(message);
+  popup.appendChild(pointsDisplay); // Add points display
+  popup.appendChild(playAgainBtn);
+  popup.appendChild(moreGamesBtn);
+  document.body.appendChild(popup);
+}
     shuffleBtn.addEventListener('click', shuffleLetters);
     hintBtn.addEventListener('click', provideHint);
   
@@ -362,18 +412,18 @@ const wordHintsEasy = {
   "TIRE": "To begin to feel as if you have no energy and want to rest or go to sleep.",
   "GET": "To obtain or acquire something.",
   "TIE": "A formal accessory worn around the neck often worn with a suit.",
-  "TIER": "A level or a row in a hierarchy.",
+  "TIER": "A level or a row in a hierarchy. often used to rank",
   "RITE": "A ceremonial or religious act."
 };
 
-const wordHintsMedium = {
-  "LEOPARD": "A spotted wild cat found in Africa and Asia.",
-  "ROPE": "A strong, thick cord made of fibers.",
-  "DROP": "To let something fall.",
-  "PALE": "Lighter in color or lacking intensity.",
-  "LEAP": "To jump high or far.",
-  "DRAPE": "A piece of cloth hanging over something.",
-  "ORDEAL": "A difficult or painful experience."
+const wordHintsMedium = {  
+  "TARSIUS": "A small primate with big eyes, known for jumping between trees.",  
+  "RATS": "Rodents often found in cities and sewers.",  
+  "STAR": "A bright object in the night sky, like the Sun.",  
+  "STAIRS": "Steps used to go up or down in a building.",  
+  "AIR": "What we breathe to stay alive.",  
+  "RUST": "A reddish-brown coating that forms on iron when it gets wet.",  
+  "SUIT": "A formal outfit often worn for work or special occasions."  
 };
 
 const wordHintsHard = {
@@ -382,12 +432,14 @@ const wordHintsHard = {
   "PLANET": "A celestial body orbiting a star.",
   "PELT": "The fur or skin of an animal.",
   "PETAL": "A single piece of a flower.",
-  "EATEN": "The past tense of consuming food.",
+  "EATEN": "A past tense of consuming food.",
   "PATH": "A track or route to follow.", 
-  "PEEL": "To tear something."
+  "PEEL": "To cut/tear something, often used when referring to fruits or vegetables",
+  "PLANE": "A flying vehicle with wings.",  
+  "ALE": "A type of drink, like beer.", 
+  "PAN": "A kitchen tool used for cooking food." 
 };
 
-// Function to provide a hint based on the selected difficulty level
 function provideHint() {
   let hints;
   if (selectedDifficulty === 'easy') {
@@ -403,9 +455,39 @@ function provideHint() {
 
   if (remainingWords.length > 0) {
       const randomWord = remainingWords[Math.floor(Math.random() * remainingWords.length)]; // Pick a random remaining word
-      alert(`Hint: ${hints[randomWord]}`);
+      showHintPopup(hints[randomWord]); // Call function to display popup
   } else {
-      alert('All words found!');
+      showHintPopup("All words found!");
+  }
+}
+function showHintPopup(hintText) {
+  // Remove any existing hint popups before creating a new one
+  const existingPopup = document.querySelector('.hint-popup');
+  if (existingPopup) {
+      existingPopup.remove();
+  }
+
+  // Create the hint popup container
+  const popup = document.createElement('div');
+  popup.classList.add('hint-popup');
+
+  // Create the hint text
+  const hintMessage = document.createElement('p');
+  hintMessage.textContent = hintText;
+
+  popup.appendChild(hintMessage);
+  document.body.appendChild(popup);
+
+  // Close popup when clicking anywhere on the screen
+  setTimeout(() => {
+      document.addEventListener('click', closeHintPopup, { once: true });
+  }, 100);
+}
+
+function closeHintPopup() {
+  const popup = document.querySelector('.hint-popup');
+  if (popup) {
+      popup.remove();
   }
 }
 
@@ -414,3 +496,4 @@ function provideHint() {
     initLetterCircle();
   });
   
+
