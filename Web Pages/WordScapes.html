@@ -22,7 +22,7 @@
         </div>
         <a href="ProfilePrivateView.html"><button class="login">Profile</button></a>
     </div>
-    <!-- Difficulty Selection Screen -->
+
     <div id="difficulty-screen">
         <div id="difficulty-container">
             <h2>Select Your Difficulty</h2>
@@ -32,25 +32,20 @@
         </div>
     </div>
 
-    <!-- Main Game Container (Initially Hidden) -->
     <div id="game-container" style="display: none;">
         <div class="back-button-container">
             <button id="back-button" onclick="goBack()">Back</button>
         </div>
 
         <div class="game-container">
-            <!-- Word Grid (Left) -->
             <div class="word-grid"></div>
-
-            <!-- Right Container (Controls + Letter Circle) -->
             <div class="right-container">
-                <!-- Control Buttons -->
                 <div class="controls">
                     <button id="shuffle-btn" class="control-btn"><i class="fas fa-random"></i></button>
                     <button id="hint-btn" class="control-btn"><i class="fas fa-lightbulb"></i></button>
+                    <button id="reveal-btn" class="control-btn"><i class="fas fa-eye"></i></button>
+                    <span id="reveal-counter">10</span>
                 </div>
-
-                <!-- Letter Circle -->
                 <div class="letter-circle"></div>
             </div>
         </div>
