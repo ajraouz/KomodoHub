@@ -43,7 +43,7 @@ def register():
 
         hashed_password = generate_password_hash(password)
 
-        conn = sqlite3.connect('KH_Database.db', timeout=10)  # Increased timeout to avoid lock
+        conn = sqlite3.connect('KH_Database.db', timeout=30)  # Increased timeout to avoid lock
         cursor = conn.cursor()
 
         cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
