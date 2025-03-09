@@ -423,7 +423,7 @@ const wordHintsMedium = {
   "STAIRS": "Steps used to go up or down in a building.",  
   "AIR": "What we breathe to stay alive.",  
   "RUST": "A reddish-brown coating that forms on iron when it gets wet.",  
-  "SUIT": "A formal outfit often worn for work or special occasions."  
+  "SUITS": "A formal outfit often worn for work or special occasions."  
 };
 
 const wordHintsHard = {
