@@ -5,96 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Komodo Hub</title>
   <link rel="stylesheet" href="/Web Pages/HomePage.css" />
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const loginButton = document.querySelector(".login");
-        const storedUser = localStorage.getItem("username");
-    
-        if (storedUser) {
-            loginButton.textContent = "Profile";
-            loginButton.addEventListener("click", function () {
-                window.location.href = "/Web Pages/ProfilePrivateView.html"; // Redirect to login
-            });
-        } else {
-            loginButton.textContent = "Login";
-            loginButton.addEventListener("click", function () {
-                window.location.href = "/Web Pages/LoginPage.html"; // Redirect to login
-            });
-        }
-    });
-  </script>
+  <script src="/Web Pages/Main.js"></script>
 </head>
 <body>
 
+<!-- Navbar -->
 <div class="navbar">
-    <a href="/Web Pages/HomePage.html">
-        <img src="/Web Pages/images/komodoLogo.png" alt="Logo" class="logo">
-    </a>
-    <div class="nav-center">
-        <a href="/Web Pages/CommunityLibrary.html"><button>Community Library</button></a>
-        <a href="/Web Pages/SchoolLibrary.html"><button>School Library</button></a>
-        <a href="/Web Pages/Post.html"><button>Post</button></a>
-        <a href="/Web Pages/Games.html"><button>Games</button></a>
-    </div>
-    <button class="login">Login</button>
+  <a href="/Web Pages/HomePage.html">
+    <img src="/Web Pages/Images/komodoLogo.png" alt="Logo" class="logo">
+  </a>
+  <div class="nav-center">
+    <a href="/Web Pages/CommunityLibrary.html"><button>Community Library</button></a>
+    <a href="/Web Pages/SchoolLibrary.html"><button>School Library</button></a>
+    <a href="/Web Pages/Post.html"><button>Post</button></a>
+    <a href="/Web Pages/Games.html"><button>Games</button></a>
+  </div>
+  <button class="login">Login</button>
 </div>
 
+<!-- MAIN GREEN BOX -->
+<div class="main">
+  <div class="main-content">
+    <h2>Join the Conservation Movement – Protect Endangered Species!</h2>
+    <p>
+      Komodo Hub is a national digital platform supporting animal conservation efforts 
+      and connecting communities, schools, and conservationists to protect Indonesia’s 
+      unique wildlife. Through education, community involvement, and interactive 
+      conservation programs, we empower people to make a real impact.
+    </p>
+    <p class="short-text">
+      It helps to learn, share your posts, play games, and contribute to the 
+      protection of endangered animals. Join us in making a difference!
+    </p>
+    <img src="/Web Pages/Images/hometiger.jpg" alt="Tiger" class="tiger-image">
+  </div>
+</div>
 
-
-  <div class="main">
-    <div class="main-content">
-      <div class="main-text">
-        <strong>Join the Conservation Movement – Protect Endangered Species!</strong><br><br>
-        Komodo Hub is a national digital platform supporting animal conservation efforts and connecting communities, 
-        schools, and conservationists to protect Indonesia’s unique wildlife. Through education, community involvement, 
-        and interactive conservation programs, we empower people to make a real impact.<br><br>
-        <p>
-        It helps to learn, share your posts, play games, and contribute to the protection of endangered animals. 
-        Join us in making a difference.
-        </p>
+<!-- FEATURE BOXES (Learn, Share, Play) -->
+<div class="feature-row">
+  <div class="feature-box">
+    <img src="/Web Pages/Images/learn.webp" alt="Learn Icon" class="feature-icon">
+    <div class="feature-text">
+      <h3>Learn</h3>
+      <p>Explore Indonesia’s endangered species through our extensive library!</p>
     </div>
-    </div>
-    <img src="/Web Pages/Images/hometiger.jpg" alt="Tiger" class="right-image" />
   </div>
 
-  <!-- Footer -->
-  <div class="footer">
-
-    <!-- Follow us -->
-    <div class="footer-item follow">
-      <p>Follow us on:</p>
-      <div class="social-icons">
-        <a href="#"><img src="/Web Pages/Images/facebook.png" alt="Facebook" /></a>
-        <a href="#"><img src="/Web Pages/Images/insta.jpeg" alt="Instagram" /></a>
-        <a href="#"><img src="/Web Pages/Images/x.png" alt="X" /></a>
-        <a href="#"><img src="/Web Pages/Images/linkedin.png" alt="LinkedIn" /></a>
-      </div>
+  <div class="feature-box">
+    <img src="/Web Pages/Images/posts.jpg" alt="Share" class="feature-icon">
+    <div class="feature-text">
+      <h3>Share</h3>
+      <p>Post your conservation ideas and endangered species sightings!</p>
     </div>
-
-    <!-- Address -->
-    <div class="footer-item address">
-      <p>Komodo Hub</p>
-      <p>Priory Street,</p>
-      <p>Indonesia, IN15DO</p>
-    </div>
-
-    <!-- Contact -->
-    <div class="footer-item contact">
-      <p>Contact Details:</p>
-      <p>komodohub@gmail.com</p>
-      <p>+62 1234567890</p>
-    </div>
-
-    <!-- Disclaimers -->
-    <div class="footer-item disclaimers">
-      <p>©2025 Komodo Hub® is a nonprofit</p>
-      <p>organization. All rights reserved.</p>
-      <p>Privacy Policy | Terms of Use | State</p>
-      <p>Disclosures</p>
-      <p>Default cookies</p>
-    </div>
-
   </div>
+
+  <div class="feature-box">
+    <img src="/Web Pages/Images/play.webp" alt="Games " class="feature-icon">
+    <div class="feature-text">
+      <h3>Play</h3>
+      <p>Engage in fun quizzes and interactive games related to animals!</p>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <!-- Follow us -->
+  <div class="footer-item follow">
+    <p>Follow us on:</p>
+    <div class="social-icons">
+      <a href="#"><img src="/Web Pages/Images/facebook.png" alt="Facebook" /></a>
+      <a href="#"><img src="/Web Pages/Images/insta.jpeg" alt="Instagram" /></a>
+      <a href="#"><img src="/Web Pages/Images/x.png" alt="X" /></a>
+      <a href="#"><img src="/Web Pages/Images/linkedin.png" alt="LinkedIn" /></a>
+    </div>
+  </div>
+
+  <!-- Address -->
+  <div class="footer-item address">
+    <p>Komodo Hub</p>
+    <p>Priory Street,</p>
+    <p>Indonesia, IN15DO</p>
+  </div>
+
+  <!-- Contact -->
+  <div class="footer-item contact">
+    <p>Contact Details:</p>
+    <p>komodohub@gmail.com</p>
+    <p>+62 1234567890</p>
+  </div>
+
+  <!-- Disclaimers -->
+  <div class="footer-item disclaimers">
+    <p>©2025 Komodo Hub® is a nonprofit</p>
+    <p>organization. All rights reserved.</p>
+    <p>Privacy Policy | Terms of Use | State</p>
+    <p>Disclosures</p>
+    <p>Default cookies</p>
+  </div>
+</div>
 
 </body>
 </html>
