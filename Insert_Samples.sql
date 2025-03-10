@@ -1,3 +1,6 @@
+INSERT INTO AccessCode (UserType, Code) VALUES ('student', 12345);
+INSERT INTO AccessCode (UserType, Code) VALUES ('teacher', 54321);
+
 INSERT INTO users (username, password, user_type)
 VALUES ('CovSchool', '12345', 'school');
 
