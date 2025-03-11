@@ -130,6 +130,14 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("studentsContribution").style.display = "block";
             document.getElementById("students").innerText = data.students || "0";
         }
+
+         // show access code section only for teacher user type
+        if (data.role === "teacher") {
+            document.getElementById("access-code-section").style.display = "block";
+        } else {
+            document.getElementById("access-code-section").style.display = "none";
+        }
+
     })
     .catch(error => console.error("Error fetching user details:", error));
 });
@@ -226,12 +234,13 @@ function changePassword() {
 }
 
 
-function logout() {
+function logout(event) {
+    event.preventDefault();
     if (confirm("Are you sure you want to log out?")) {
         localStorage.removeItem("username")
         localStorage.removeItem("userType")
         alert("Logged out successfully.");
-        window.location.href = "/Web Pages/LoginPage.html";
+        window.location.href = "/Web Pages/HomePage.html";
     }
 }
 
@@ -353,4 +362,63 @@ function addPoints(newPoints) {
 
     pointsElement.innerText = updatedPoints;
     updateProgress();
+}
+
+function validateStudentAccessCode() {
+    const accessCodeInput = document.getElementById("newStudentAccessCode");
+    const messageElement = document.getElementById("studentAccessCodeMessage");
+    const newAccessCode = accessCodeInput.value.trim();
+    
+    if (newAccessCode.length < 5) {
+        messageElement.textContent = "⚠️ Access code must be at least 5 characters.";
+        messageElement.style.color = "red";
+        return false;
+    } else {
+        messageElement.textContent = "";
+        return true;
+    }
+}
+
+function changeStudentAccessCode() {
+    const accessCodeInput = document.getElementById("newStudentAccessCode");
+    const newAccessCode = accessCodeInput.value.trim();
+    const messageElement = document.getElementById("studentAccessCodeMessage");
+
+    // Validate the new access code length
+    if (!validateStudentAccessCode()) {
+        return;
+    }
+    
+    // Create URL-encoded form data and append the username from localStorage
+    const formData = new URLSearchParams();
+    formData.append('newStudentAccessCode', newAccessCode);
+    formData.append('username', localStorage.getItem("username")); // Append username
+
+    fetch('/update_student_access_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+         if (data.success) {
+            messageElement.textContent = "✅ Student access code updated successfully!";
+            messageElement.style.color = "rgb(77, 247, 77)";
+            // Clear the input field after a successful update
+            accessCodeInput.value = "";
+            setTimeout(() => { messageElement.textContent = ""; }, 5000);
+         } else {
+            messageElement.textContent = "Failed to update student access code: " + data.error;
+            messageElement.style.color = "red";
+            setTimeout(() => { messageElement.textContent = ""; }, 5000);
+         }
+    })
+    .catch(error => {
+         console.error("Error updating student access code:", error);
+         messageElement.textContent = "Error updating student access code.";
+         messageElement.style.color = "red";
+         setTimeout(() => { messageElement.textContent = ""; }, 5000);
+    });
 }
