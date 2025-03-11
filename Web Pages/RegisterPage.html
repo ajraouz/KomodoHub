@@ -59,17 +59,17 @@
             // Show/hide access code field based on selection
             if (selectedValue === 'student' || selectedValue === 'teacher') {
                 accessCodeInput.style.display = 'block';
-                accessCodeInput.required = true;
+                accessCodeInput.setAttribute('required', 'true');
                 button.textContent = 'Register';
             }
             else if (selectedValue === 'member') {
                 accessCodeInput.style.display = 'none';
-                accessCodeInput.required = false;
+                accessCodeInput.removeAttribute('required');
                 button.textContent = 'Go to Payment Page';
             }
             else {
                 accessCodeInput.style.display = 'none';
-                accessCodeInput.required = false;
+                accessCodeInput.removeAttribute('required');
             }
         });
 
