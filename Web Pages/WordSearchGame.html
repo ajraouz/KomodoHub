@@ -69,7 +69,8 @@
     </div>
 
     <script>
-        let currentDifficulty = null;
+        let currentDifficulty = 0;
+        let gameEnded = false;
 
         function goBack() {
         const gameContainer = document.getElementById("game-container");
@@ -94,9 +95,14 @@
 
         //Ends the game, shows the win screen with your final score
         function endGame(score) {
-        document.getElementById("game-container").style.display = "none";
-        document.getElementById("win-screen").style.display = "flex";
-        document.getElementById("final-score").textContent = score;
+            if (gameEnded) return;
+            gameEnded = true;
+            document.getElementById("game-container").style.display = "none";
+            document.getElementById("win-screen").style.display = "flex";
+            document.getElementById("final-score").textContent = score;
+
+            currentUsername = localStorage.getItem("username");
+            updateScoreInDB(currentUsername, score);
         }
 
         function initializeGame(difficulty) {
@@ -361,12 +367,21 @@
 
             // If all words are found, show win screen
             if (foundWords.size === words.length) {
-            let score = (difficulty === "easy") ? 5 : (difficulty === "medium") ? 10 : 15;
-            setTimeout(() => endGame(score), 500);
+                if (currentDifficulty === "easy") {
+                    let score = 5;
+                    setTimeout(() => endGame(score), 500);
+                } else if (currentDifficulty === "medium") {
+                    let score = 10;
+                    setTimeout(() => endGame(score), 500);
+                } else {
+                    let score = 15;
+                setTimeout(() => endGame(score), 500);
+            }
             }
         }
+    }
 
-        let currentDifficulty = null;
+        
 
         function goBack() {
             const confirmBox = document.createElement("div");
@@ -420,7 +435,6 @@
                 document.body.removeChild(confirmBox);
             });
         }
-    }
 
         function goBack() {
         // Show a confirmation pop-up first:
@@ -434,6 +448,27 @@
             console.error("Error: One or more elements not found.");
             }
         }
+        }
+
+        function updateScoreInDB(username, score) {
+            fetch('/update_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `username=${encodeURIComponent(username)}&score=${encodeURIComponent(score)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error updating score:', data.error);
+                } else {
+                    console.log('Score updated successfully:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
 
     </script>

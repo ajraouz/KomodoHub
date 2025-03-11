@@ -330,7 +330,10 @@
                 } else if (currentDifficulty === 'hard') {
                     score = 20;
                 }
-                
+
+        
+
+
 
                 // Create the second popup dynamically
                 const popup = document.createElement("div");
@@ -425,6 +428,8 @@
         
                 // Append the popup to the document
                 document.body.appendChild(popup);    
+                currentUsername = localStorage.getItem("username");
+                updateScoreInDB(currentUsername, score);
             }
         }
 
@@ -471,4 +476,28 @@
                 }
             }
         }
+
+        function updateScoreInDB(username, score) {
+            fetch('/update_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `username=${encodeURIComponent(username)}&score=${encodeURIComponent(score)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error updating score:', data.error);
+                } else {
+                    console.log('Score updated successfully:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
         
+                
+        
+
