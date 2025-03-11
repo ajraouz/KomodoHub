@@ -184,11 +184,6 @@ def login():
 
         user_id, hashed_password, db_user_type = user
 
-        # Check if the selected user type matches the database user type
-        if db_user_type.lower() != user_type.lower():
-            logging.error("Incorrect user type selection.")
-            return jsonify({"error": "Invalid user type selection"}), 401
-
         # Verify the password
         if not check_password_hash(hashed_password, password):
             logging.error("Incorrect password.")
