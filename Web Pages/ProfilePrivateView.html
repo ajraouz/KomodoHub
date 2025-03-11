@@ -87,7 +87,16 @@
             </div>
         
             <p><strong>🎖 Next Rank: </strong><span class="next-rank" id="next-rank">Advanced </span></p>
-            
+
+            <div id="access-code-section" class="access-code-section">
+                <h3>Change Student's Access Code</h3>
+                <div class="access-code-container">
+                    <input type="text" id="newStudentAccessCode" placeholder="Enter new student access code" oninput="validateStudentAccessCode()">
+                </div>
+                <p id="studentAccessCodeMessage" class="error-message"></p>
+                <button onclick="changeStudentAccessCode()" class="btn green">Update Student Access Code</button>
+            </div>
+                  
             <button onclick="deleteAccount()" class="delete-button">🗑 Delete Account</button>
         </div>                        
     </div>
