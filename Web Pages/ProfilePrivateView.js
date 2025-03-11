@@ -226,12 +226,13 @@ function changePassword() {
 }
 
 
-function logout() {
+function logout(event) {
+    event.preventDefault();
     if (confirm("Are you sure you want to log out?")) {
         localStorage.removeItem("username")
         localStorage.removeItem("userType")
         alert("Logged out successfully.");
-        window.location.href = "/Web Pages/LoginPage.html";
+        window.location.href = "/Web Pages/HomePage.html";
     }
 }
 
