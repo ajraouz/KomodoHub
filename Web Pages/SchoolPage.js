@@ -114,6 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("points").textContent                       = data.points;
             document.getElementById("teachers").textContent                     = data.teachers;
             document.getElementById("students").textContent                     = data.students;
+
+            updateProgress();  
         })
         .catch(error => console.error("Error fetching user details:", error));
     });
@@ -291,7 +293,7 @@ function getCurrentRank(points) {
     let nextThreshold = rankThresholds[1].points;
 
     for (let i = 0; i < rankThresholds.length; i++) {
-        if (points >= rankThresholds[i].points) {
+        if (points > rankThresholds[i].points) {
             currentRank = rankThresholds[i].rank;
             currentThreshold = rankThresholds[i].points;
 
