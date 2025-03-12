@@ -190,6 +190,31 @@ function endGame() {
     document.getElementById("game-container").style.display = "none"; // Hide game
     document.getElementById("final-score-container").style.display = "block"; // Show final score
     document.getElementById("final-score").innerText = "Your Final Score: " + score;
+
+    const currentUsername = localStorage.getItem("username");
+    updateScoreInDB(currentUsername, score);
+}
+
+// Function to update the score in the database
+function updateScoreInDB(username, score) {
+    fetch('/update_score', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `username=${encodeURIComponent(username)}&score=${encodeURIComponent(score)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error updating score:', data.error);
+        } else {
+            console.log('Score updated successfully:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 function restartGame() {
