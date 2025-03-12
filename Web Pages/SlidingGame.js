@@ -256,6 +256,9 @@ function showFinalScore() {
   document.getElementById("puzzle-container").style.display = "none";
   document.getElementById('main-game-container').style.display = 'none';
   document.getElementById('game-container').style.display = 'none';
+
+  currentUsername = localStorage.getItem("username");
+  updateScoreInDB(currentUsername, points);
 }
 
 function goBack() {
@@ -465,4 +468,25 @@ function showAnimalInfo() {
 function closeAnimalInfo() {
   // Hide the modal
   document.getElementById('animal-info-modal').style.display = 'none';
+}
+
+function updateScoreInDB(username, score) {
+  fetch('/update_score', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `username=${encodeURIComponent(username)}&score=${encodeURIComponent(score)}`
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.error) {
+          console.error('Error updating score:', data.error);
+      } else {
+          console.log('Score updated successfully:', data.message);
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 }
