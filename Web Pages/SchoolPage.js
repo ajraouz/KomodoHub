@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Save the avatar when button is clicked
     saveButton.addEventListener("click", async function () {
         if (!selectedAvatar) {
-            avatarMessage.textContent = "⚠️ Please select an avatar before saving.";
+            avatarMessage.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Please select an avatar before saving.';
             avatarMessage.style.color = "red";
             avatarMessage.style.display = "block";
             return;
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
             let result = await response.json();
             if (response.ok) {
-                avatarMessage.textContent = "✅ Avatar updated successfully!";
+                avatarMessage.innerHTML = '<img src="Images/icons/success.png" alt="Success Icon" class="icon"> Avatar updated successfully!';
                 avatarMessage.style.color = "rgb(77, 247, 77)";
                 avatarMessage.style.display = "block";
 
@@ -61,12 +61,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     avatarMessage.style.display = "none";
                 }, 3000);
             } else {
-                avatarMessage.textContent = "⚠️ " + result.error;
+                avatarMessage.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> ' + result.error;
                 avatarMessage.style.color = "red";
                 avatarMessage.style.display = "block";
             }
         } catch (error) {
-            avatarMessage.textContent = "⚠️ Error updating avatar.";
+            avatarMessage.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Error updating avatar.';
             avatarMessage.style.color = "red";
             avatarMessage.style.display = "block";
         }
@@ -130,7 +130,7 @@ function validatePassword() {
     const hasSpecialChar = /[-_!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!minLength || !hasUpperCase || !hasNumber || !hasSpecialChar) {
-        passwordError.textContent = "⚠️ Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.";
+        passwordError.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.';
         passwordError.style.color = "red";
         return false;
     } else {
@@ -169,7 +169,7 @@ function changePassword() {
       
       if (data.success) {
         // Display success message
-        passwordError.textContent = "✅ Password updated successfully!";
+        passwordError.innerHTML = '<img src="Images/icons/success.png" alt="Success Icon" class="icon"> Password updated successfully!';
         passwordError.style.color = "rgb(77, 247, 77)";
         passwordError.style.display = "block";  // Ensure it's visible
 
@@ -266,10 +266,10 @@ function togglePassword() {
 
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        toggleIcon.textContent = "👁️"; // Change icon to "hide" mode
+        toggleIcon.src = "Images/icons/shownpassword.png";  // Change icon to "hide" mode
     } else {
         passwordInput.type = "password";
-        toggleIcon.textContent = "🙈"; // Change icon to "show" mode
+        toggleIcon.src = "Images/icons/hiddenpassword.png"; // Change icon to "show" mode
     }
 }
 
@@ -397,7 +397,7 @@ function validateTeacherAccessCode() {
     const newAccessCode = accessCodeInput.value.trim();
     
     if (newAccessCode.length < 5) {
-        messageElement.textContent = "⚠️ Access code must be at least 5 characters.";
+        messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must be at least 5 characters.';
         messageElement.style.color = "red";
         return false;
     } else {
@@ -413,7 +413,7 @@ function changeTeacherAccessCode() {
 
     // Validate the new access code length
     if (newAccessCode.length < 5) {
-        messageElement.textContent = "⚠️ Access code must be at least 5 characters.";
+        messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must be at least 5 characters.';
         messageElement.style.color = "red";
         setTimeout(() => { messageElement.textContent = ""; }, 5000);
         return;
@@ -436,7 +436,7 @@ function changeTeacherAccessCode() {
     .then(response => response.json())
     .then(data => {
          if (data.success) {
-            messageElement.textContent = "✅ Teacher access code updated successfully!";
+            messageElement.innerHTML = '<img src="Images/icons/success.png" alt="Success Icon" class="icon"> Teacher access code updated successfully!';
             messageElement.style.color = "rgb(77, 247, 77)";
             // Clear the input field after a successful update
             accessCodeInput.value = "";

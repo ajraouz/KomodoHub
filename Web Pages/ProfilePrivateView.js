@@ -52,7 +52,7 @@ saveButton.addEventListener("click", async function () {
 
         let result = await response.json();
         if (response.ok) {
-            avatarMessage.innerHTML = '<img src="Images/ions/success.png" alt="Success Icon" class="icon"> Avatar updated successfully!';
+            avatarMessage.innerHTML = '<img src="Images/icons/success.png" alt="Success Icon" class="icon"> Avatar updated successfully!';
             avatarMessage.style.color = "rgb(77, 247, 77)";
             avatarMessage.style.display = "block";
 
