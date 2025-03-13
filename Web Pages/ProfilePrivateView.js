@@ -153,9 +153,14 @@ function validatePassword() {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[-_!@#$%^&*(),.?":{}|<>]/.test(password);
+    const noSpaces = !(/\s/.test(password)); // Ensure no spaces
 
-    if (!minLength || !hasUpperCase || !hasNumber || !hasSpecialChar) {
-        passwordError.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.';
+    if (!minLength || !hasUpperCase || !hasNumber || !hasSpecialChar || !noSpaces) {
+        let errorMessage = "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.";
+        if (!noSpaces) {
+            errorMessage = "Password must not contain any spaces.";
+        }
+        passwordError.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> ' + errorMessage;
         passwordError.style.color = "red";
         return false;
     } else {
@@ -369,10 +374,17 @@ function addPoints(newPoints) {
 function validateStudentAccessCode() {
     const accessCodeInput = document.getElementById("newStudentAccessCode");
     const messageElement = document.getElementById("studentAccessCodeMessage");
-    const newAccessCode = accessCodeInput.value.trim();
-    
+    const newAccessCode = accessCodeInput.value; 
+
+    // Check if the access code is at least 5 characters long.
     if (newAccessCode.length < 5) {
         messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must be at least 5 characters.';
+        messageElement.style.color = "red";
+        return false;
+    } 
+    // Check for any whitespace character
+    if (/\s/.test(newAccessCode)) {
+        messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must not contain any spaces.';
         messageElement.style.color = "red";
         return false;
     } else {

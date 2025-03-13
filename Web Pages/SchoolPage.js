@@ -128,9 +128,14 @@ function validatePassword() {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSpecialChar = /[-_!@#$%^&*(),.?":{}|<>]/.test(password);
+    const noSpaces = !(/\s/.test(password)); // Returns true if no spaces are found
 
-    if (!minLength || !hasUpperCase || !hasNumber || !hasSpecialChar) {
-        passwordError.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.';
+    if (!minLength || !hasUpperCase || !hasNumber || !hasSpecialChar || !noSpaces) {
+        let errorMessage = "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.";
+        if (!noSpaces) {
+            errorMessage = "Password must not contain any spaces.";
+        }
+        passwordError.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> ' + errorMessage;
         passwordError.style.color = "red";
         return false;
     } else {
@@ -183,7 +188,7 @@ function changePassword() {
       } 
       else {
         // Display error message returned from the server
-        passwordError.textContent = "Error updating password: " + data.error;
+        passwordError.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Error updating password: ' + data.error;
         passwordError.style.color = "red";
         passwordError.style.display = "block";
       }
@@ -394,10 +399,17 @@ if (rankElement.innerText === 'Beginner') {
 function validateTeacherAccessCode() {
     const accessCodeInput = document.getElementById("newTeacherAccessCode");
     const messageElement = document.getElementById("teacherAccessCodeMessage");
-    const newAccessCode = accessCodeInput.value.trim();
-    
+    const newAccessCode = accessCodeInput.value; 
+
+    // Check if the access code is at least 5 characters long.
     if (newAccessCode.length < 5) {
         messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must be at least 5 characters.';
+        messageElement.style.color = "red";
+        return false;
+    } 
+    // Check for any whitespace characters
+    else if (/\s/.test(newAccessCode)) {
+        messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must not contain any spaces.';
         messageElement.style.color = "red";
         return false;
     } else {
@@ -406,22 +418,18 @@ function validateTeacherAccessCode() {
     }
 }
 
+
 function changeTeacherAccessCode() {
+    if (!validateTeacherAccessCode()) {
+        // If validation fails, exit the function.
+        return;
+    }
+    
     const accessCodeInput = document.getElementById("newTeacherAccessCode");
     const newAccessCode = accessCodeInput.value.trim();
     const messageElement = document.getElementById("teacherAccessCodeMessage");
 
-    // Validate the new access code length
-    if (newAccessCode.length < 5) {
-        messageElement.innerHTML = '<img src="Images/icons/error.png" alt="Error Icon" class="icon"> Access code must be at least 5 characters.';
-        messageElement.style.color = "red";
-        setTimeout(() => { messageElement.textContent = ""; }, 5000);
-        return;
-    } else {
-        messageElement.textContent = "";
-    }
-    
-    // Create URL-encoded form data and append the username from localStorage
+    // Proceed with form submission since validation passed.
     const formData = new URLSearchParams();
     formData.append('newTeacherAccessCode', newAccessCode);
     formData.append('username', localStorage.getItem("username")); // Append username
