@@ -38,7 +38,7 @@
                 </select>
             </div>
     
-            <input id="accessCode" name="access_code" type="text" placeholder="Access code" oninput="this.value = this.value.replace(/\D/g, '')" required>
+            <input id="accessCode" name="access_code" type="text" placeholder="Access code" oninput="this.value = this.value.replace(/\D/g, '')" style="display: none;">
 
             <img src="/Web Pages/Images/giphy.gif" alt="Loading animation" class="gif">
 
@@ -59,7 +59,7 @@
             // Show/hide access code field based on selection
             if (selectedValue === 'student' || selectedValue === 'teacher') {
                 accessCodeInput.style.display = 'block';
-                accessCodeInput.required = true;
+                accessCodeInput.setAttribute('required', 'true');
                 button.textContent = 'Register';
             }
             else if (selectedValue === 'member') {
@@ -69,7 +69,7 @@
             }
             else {
                 accessCodeInput.style.display = 'none';
-                accessCodeInput.required = false;
+                accessCodeInput.removeAttribute('required');
             }
         });
 
@@ -198,7 +198,7 @@
                 return false;
             }
         }
-        
+
         function togglePassword(fieldId, button) {
             let passwordField = document.getElementById(fieldId);
             if (passwordField.type === "password") {
