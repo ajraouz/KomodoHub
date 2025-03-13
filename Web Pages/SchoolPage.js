@@ -387,3 +387,67 @@ if (rankElement.innerText === 'Beginner') {
         setTimeout(() => confettiElement.remove(), 3000);
     });
 }
+
+function validateTeacherAccessCode() {
+    const accessCodeInput = document.getElementById("newTeacherAccessCode");
+    const messageElement = document.getElementById("teacherAccessCodeMessage");
+    const newAccessCode = accessCodeInput.value.trim();
+    
+    if (newAccessCode.length < 5) {
+        messageElement.textContent = "⚠️ Access code must be at least 5 characters.";
+        messageElement.style.color = "red";
+        return false;
+    } else {
+        messageElement.textContent = "";
+        return true;
+    }
+}
+
+function changeTeacherAccessCode() {
+    const accessCodeInput = document.getElementById("newTeacherAccessCode");
+    const newAccessCode = accessCodeInput.value.trim();
+    const messageElement = document.getElementById("teacherAccessCodeMessage");
+
+    // Validate the new access code length
+    if (newAccessCode.length < 5) {
+        messageElement.textContent = "⚠️ Access code must be at least 5 characters.";
+        messageElement.style.color = "red";
+        setTimeout(() => { messageElement.textContent = ""; }, 5000);
+        return;
+    } else {
+        messageElement.textContent = "";
+    }
+    
+    // Create URL-encoded form data and append the username from localStorage
+    const formData = new URLSearchParams();
+    formData.append('newTeacherAccessCode', newAccessCode);
+    formData.append('username', localStorage.getItem("username")); // Append username
+
+    fetch('/update_teacher_access_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData.toString()
+    })
+    .then(response => response.json())
+    .then(data => {
+         if (data.success) {
+            messageElement.textContent = "✅ Teacher access code updated successfully!";
+            messageElement.style.color = "rgb(77, 247, 77)";
+            // Clear the input field after a successful update
+            accessCodeInput.value = "";
+            setTimeout(() => { messageElement.textContent = ""; }, 5000);
+         } else {
+            messageElement.textContent = "Failed to update teacher access code: " + data.error;
+            messageElement.style.color = "red";
+            setTimeout(() => { messageElement.textContent = ""; }, 5000);
+         }
+    })
+    .catch(error => {
+         console.error("Error updating teacher access code:", error);
+         messageElement.textContent = "Error updating teacher access code.";
+         messageElement.style.color = "red";
+         setTimeout(() => { messageElement.textContent = ""; }, 5000);
+    });
+}

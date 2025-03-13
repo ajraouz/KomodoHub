@@ -71,6 +71,14 @@
                 </div>
                 <p id="passwordError" class="error-message"></p>
                 <button onclick="changePassword()" class="btn green">Update Password</button>
+
+                <h3>Change Teacher's Access Code</h3>
+                <div class="password-container">
+                    <input type="text" id="newTeacherAccessCode" placeholder="Enter new teacher access code" oninput="validateTeacherAccessCode()">
+                </div>
+                <p id="teacherAccessCodeMessage" class="error-message"></p>
+                <button onclick="changeTeacherAccessCode()" class="btn green">Update Teacher Access Code</button>
+
             </div>
 
             <!-- Contributions Container -->
