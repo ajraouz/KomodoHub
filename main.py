@@ -552,6 +552,42 @@ def update_teacher_access_code():
 
     return jsonify({"success": "Teacher access code updated successfully!"})
 
+@app.route('/update_student_access_code', methods=['POST'])
+def update_student_access_code():
+    username = request.form.get('username')
+    if not username:
+        return jsonify({"error": "User not logged in."}), 401
+
+    # Get the new student access code from the form data
+    new_access_code = request.form.get('newStudentAccessCode')
+    if not new_access_code:
+        return jsonify({"error": "New student access code not provided."}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user_id and user_type for the logged in user
+    cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found."}), 404
+
+    user_id, user_type = user
+
+    # Verify that the logged in user is a teacher
+    if user_type != "teacher":
+        conn.close()
+        return jsonify({"error": "Unauthorized, only teachers can update student access code."}), 401
+
+    # Update the student access code in the AccessCode table for UserType "student"
+    cursor.execute("UPDATE AccessCode SET Code = ? WHERE UserType = ?", (new_access_code, "student"))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Student access code updated successfully!"})
+
 # Alvisha's work end here
 
 if __name__ == '__main__':
