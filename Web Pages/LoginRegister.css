@@ -254,12 +254,13 @@ input::placeholder, select {
 
 .password-container {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     position: relative;
 }
 
 .password-container input {
-    flex: 1;
+    flex: none;
+    width: 100%;
     padding-right: 30px; /* Avoid overlap with button */
 }
 
@@ -274,4 +275,47 @@ input::placeholder, select {
     display: none !important;
     visibility: hidden;
     pointer-events: none;
+}
+
+.eye {
+    width: 17px; 
+    height: 17px; 
+    margin-left: 12px;
+}
+
+.error-message-username {
+    color: rgb(165, 17, 17);
+    font-size: 12px;
+    margin-top: -20px;
+    margin-left: -20px; 
+    width: 100%;
+    white-space: nowrap;
+}
+
+.error-message {
+    color:rgb(165, 17, 17);
+    font-size: 12px;
+    margin-top: -20px;
+    margin-left: -20px; 
+    width: 100%;
+    white-space: nowrap;
+}
+
+
+.error-message2 {
+    color: rgb(165, 17, 17);
+    font-size: 12px;
+    margin-top: -20px;
+    margin-left: -74px; 
+    width: 100%;
+    white-space: nowrap;
+}
+
+.error-message-code {
+    color: rgb(165, 17, 17);
+    font-size: 12px;
+    margin-top: -19px;
+    margin-left: -86px; 
+    width: 100%;
+    white-space: nowrap;
 }
