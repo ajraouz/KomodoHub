@@ -115,6 +115,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("profile-avatar").src            = data.avatar || "Images/default.png";
         document.getElementById("posts").textContent             = data.posts;
         document.getElementById("points").textContent            = data.points 
+                
+        updateProgress();  
 
         // If the user is an admin, show and update the "Members Involved" section
         if (data.role.toLowerCase() === "admin") {
@@ -316,7 +318,7 @@ function getCurrentRank(points) {
     let nextThreshold = rankThresholds[1].points;
 
     for (let i = 0; i < rankThresholds.length; i++) {
-        if (points >= rankThresholds[i].points) {
+        if (points > rankThresholds[i].points) {
             currentRank = rankThresholds[i].rank;
             currentThreshold = rankThresholds[i].points;
 
