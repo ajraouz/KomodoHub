@@ -36,7 +36,6 @@ def register():
         name = request.form.get('name')
         password = request.form.get('password')
         user_type = request.form.get('user_type')
-        access_code = request.form.get('access_code') if user_type in ['student', 'teacher'] else None
 
         if not username or not name or not password or not user_type:
             return jsonify({"error": "Missing required fields"}), 400
@@ -61,17 +60,17 @@ def register():
             avatar_data = 'Images/default.png'
 
         if user_type == "student":
-            cursor.execute("INSERT INTO students (user_id, FullName, AccessCode, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?, ?)", 
+            cursor.execute("INSERT INTO students (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
                            (user_id, name, access_code, 0, 0, avatar_data))
         elif user_type == "teacher":
-            cursor.execute("INSERT INTO teachers (user_id, FullName, AccessCode, Avatar) VALUES (?, ?, ?, ?)", 
-                           (user_id, name, access_code, avatar_data))
+            cursor.execute("INSERT INTO teachers (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
+                           (user_id, name, access_code, 0, 0, avatar_data))
         elif user_type == "principal":
-            cursor.execute("INSERT INTO school (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
-                           (user_id, name, avatar_data))
+            cursor.execute("INSERT INTO school (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
+                           (user_id, name, 0, 0, avatar_data))
         elif user_type == "admin":
-            cursor.execute("INSERT INTO admin (user_id, FullName, Avatar) VALUES (?, ?, ?)", 
-                           (user_id, name, avatar_data))
+            cursor.execute("INSERT INTO admin (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
+                           (user_id, name, 0, 0, avatar_data))
 
         conn.commit()
         logging.info("User registered successfully.")
@@ -89,6 +88,26 @@ def register():
         if conn:
             conn.close()  # Ensuring the connection is always closed
 
+@app.route('/validate-access', methods=['POST'])
+def validate_access():
+    data = request.json
+    user_type = data.get("userType")
+    access_code = data.get("accessCode")
+
+    conn = sqlite3.connect('KH_Database.db', timeout=30)
+    cursor = conn.cursor()
+
+    # Query to check if the access code is valid
+    cursor.execute("SELECT * FROM AccessCode WHERE userType = ? AND Code = ?",
+                   (user_type, access_code))
+    result = cursor.fetchone()
+    
+    conn.close()
+
+    if result:
+        return jsonify({"success": True, "message": "Access code valid"}), 200
+    else:
+        return jsonify({"success": False, "message": "Invalid access code"}), 400
 
 @app.route('/complete_payment_registration', methods=['POST'])
 def complete_payment_registration():

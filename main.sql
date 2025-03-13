@@ -11,7 +11,6 @@ CREATE TABLE users (
 CREATE TABLE students (
     user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
-    AccessCode INTEGER NOT NULL, 
     TotalPoints INTEGER DEFAULT 0, 
     TotalPosts INTEGER DEFAULT 0, 
     Avatar BLOB,
@@ -21,7 +20,6 @@ CREATE TABLE students (
 CREATE TABLE teachers (
     user_id INTEGER PRIMARY KEY, 
     FullName TEXT NOT NULL, 
-    AccessCode INTEGER NOT NULL, 
     TotalPoints INTEGER DEFAULT 0, 
     TotalPosts INTEGER DEFAULT 0, 
     Avatar BLOB,
@@ -83,4 +81,9 @@ CREATE TABLE School_Post(
     Date TEXT,
     Time TEXT,
     FOREIGN KEY (Owner) REFERENCES users(username) ON DELETE CASCADE
+);
+
+CREATE TABLE AccessCode(  
+    UserType TEXT CHECK(UserType IN ('student', 'teacher')) PRIMARY KEY,
+    Code INTEGER NOT NULL
 );
