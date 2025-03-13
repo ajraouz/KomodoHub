@@ -516,6 +516,42 @@ def delete_account():
 
     return jsonify({"success": "Account deleted successfully!"})
 
+@app.route('/update_teacher_access_code', methods=['POST'])
+def update_teacher_access_code():
+    username = request.form.get('username')
+    if not username:
+        return jsonify({"error": "User not logged in."}), 401
+
+    # Get the new teacher access code from the form data
+    new_access_code = request.form.get('newTeacherAccessCode')
+    if not new_access_code:
+        return jsonify({"error": "New teacher access code not provided."}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # Fetch user_id and user_type for the logged in user
+    cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found."}), 404
+
+    user_id, user_type = user
+
+    # Verify that the logged in user is a principal
+    if user_type != "principal":
+        conn.close()
+        return jsonify({"error": "Unauthorized, only principals can update teacher access code."}), 401
+
+    # Update the teacher access code in the AccessCode table for UserType "teacher"
+    cursor.execute("UPDATE AccessCode SET Code = ? WHERE UserType = ?", (new_access_code, "teacher"))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": "Teacher access code updated successfully!"})
+
 # Alvisha's work end here
 
 if __name__ == '__main__':
