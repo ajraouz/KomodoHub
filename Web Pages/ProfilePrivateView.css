@@ -378,3 +378,70 @@ h3 {
     text-align: left;
     justify-content: flex-start; 
 }
+
+/* Access Code Section within Contributions Container */
+.access-code-section {
+    text-align: left;
+    margin-top: 120px;
+    padding: 0px;
+}
+
+.access-code-section h3 {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #00e654;
+    margin-bottom: 20px;
+    text-transform: none;
+
+}
+
+.access-code-section .access-code-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.access-code-section .access-code-container input {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.access-code-section .access-code-container input:focus {
+    border: 1px solid #3b82f6;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.access-code-section .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.access-code-section .btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s ease;
+}
+
+.access-code-section .btn.green {
+    background-color: #069e34;
+}
+
+.access-code-section .btn.green:hover {
+    background-color: #0a7635;
+}
+#studentAccessCodeMessage::before {
+    content: "";
+}
