@@ -61,10 +61,10 @@ def register():
 
         if user_type == "student":
             cursor.execute("INSERT INTO students (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
-                           (user_id, name, access_code, 0, 0, avatar_data))
+                           (user_id, name, 0, 0, avatar_data))
         elif user_type == "teacher":
             cursor.execute("INSERT INTO teachers (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
-                           (user_id, name, access_code, 0, 0, avatar_data))
+                           (user_id, name, 0, 0, avatar_data))
         elif user_type == "principal":
             cursor.execute("INSERT INTO school (user_id, FullName, TotalPoints, TotalPosts, Avatar) VALUES (?, ?, ?, ?, ?)", 
                            (user_id, name, 0, 0, avatar_data))
