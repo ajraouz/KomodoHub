@@ -204,50 +204,104 @@ def login():
     except Exception as e:
         logging.exception("An error occurred during login.")
         return jsonify({"error": str(e)}), 500
+# Shayan's work starts here
 
 @app.route('/articles', methods=['GET'])
 def get_articles():
     conn = sqlite3.connect("KH_Database.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT ID, Owner, Title, Image, Content, Date, Time FROM School_Post")
+
+    # Fetch all posts along with user details
+    cursor.execute("""
+        SELECT sp.ID, sp.Owner, sp.Title, sp.Image, sp.Content, sp.Date, sp.Time, 
+                u.user_type, 
+                (
+                    SELECT Avatar FROM students WHERE students.user_id = u.user_id
+                    UNION
+                    SELECT Avatar FROM teachers WHERE teachers.user_id = u.user_id
+                    UNION
+                    SELECT Avatar FROM members WHERE members.user_id = u.user_id
+                    UNION
+                    SELECT Avatar FROM school WHERE school.user_id = u.user_id
+                    UNION
+                    SELECT Avatar FROM admin WHERE admin.user_id = u.user_id
+                ) AS Avatar
+        FROM School_Post sp
+        JOIN users u ON sp.Owner = u.username
+    """)
 
     articles = []
     for row in cursor.fetchall():
-        article_id, member, title, image, content, date, time = row
+        article_id, username, title, image, content, date, time, role, avatar = row  
         image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}" if image else None
+
+        # Only use avatar if it exists in the database (no fallback to default)
+        avatar_url = f"{avatar}" if avatar else None
+
         articles.append({
             "id": article_id,
-            "member": member,
+            "username": username, 
             "title": title,
             "image": image_base64,
             "content": content,
             "date": date,
             "time": time,
-            "member_type": "Teacher"
+            "role": role,
+            "profile_image": avatar_url  
         })
 
     conn.close()
     return jsonify(articles)
 
+
 @app.route('/community_articles', methods=['GET'])
 def get_community_articles():
     conn = sqlite3.connect("KH_Database.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT ID, Owner, Title, Image, Content, Date, Time FROM Community_Post")
+    # Fetch all posts along with user details
+    cursor.execute("""
+        SELECT sp.ID, sp.Owner, sp.Title, sp.Image, sp.Content, sp.Date, sp.Time, 
+                u.user_type, 
+                COALESCE(
+                    (SELECT Avatar FROM students WHERE students.user_id = u.user_id),
+                    (SELECT Avatar FROM teachers WHERE teachers.user_id = u.user_id),
+                    (SELECT Avatar FROM members WHERE members.user_id = u.user_id),
+                    (SELECT Avatar FROM school WHERE school.user_id = u.user_id),
+                    (SELECT Avatar FROM admin WHERE admin.user_id = u.user_id),
+                    'Images/default.png'
+                ) AS Avatar
+        FROM Community_Post sp
+        JOIN users u ON sp.Owner = u.username
+        LEFT JOIN students s ON u.user_id = s.user_id
+        LEFT JOIN teachers t ON u.user_id = t.user_id
+        LEFT JOIN members m ON u.user_id = m.user_id
+        LEFT JOIN school sch ON u.user_id = sch.user_id
+        LEFT JOIN admin a ON u.user_id = a.user_id
+    """)
 
     articles = []
     for row in cursor.fetchall():
-        article_id, member, title, image, content, date, time = row
+        article_id, username, title, image, content, date, time, role, avatar = row  
         image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}" if image else None
+
+        if avatar and (avatar.startswith("http://") or avatar.startswith("https://")):
+            avatar_url = avatar  
+        elif avatar:
+            avatar_url = f"{avatar}"  
+        else:
+            avatar_url = None  
+
+
         articles.append({
             "id": article_id,
-            "member": member,
+            "username": username, 
             "title": title,
             "image": image_base64,
             "content": content,
             "date": date,
             "time": time,
-            "member_type": "Member"
+            "role": role,
+            "profile_image": avatar_url  
         })
 
     conn.close()
@@ -307,6 +361,68 @@ def post_community_article():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+import logging
+@app.route('/delete_post', methods=['POST'])
+def delete_post():
+    try:
+        data = request.get_json()
+        post_id = data.get("id")
+        username = data.get("owner")  # The user requesting the deletion
+
+        if not post_id or not username:
+            return jsonify({"error": "Invalid request data"}), 400
+
+        # Connect to database
+        conn = sqlite3.connect("KH_Database.db")
+        cursor = conn.cursor()
+
+        # Get the post owner and role
+        cursor.execute("""
+            SELECT sp.Owner, u.user_type 
+            FROM School_Post sp
+            JOIN users u ON sp.Owner = u.username
+            WHERE sp.ID = ?
+        """, (post_id,))
+        
+        post = cursor.fetchone()
+        if not post:
+            conn.close()
+            return jsonify({"error": "Post not found"}), 404
+
+        post_owner, post_role = post
+
+        # Fetch the role of the requesting user
+        cursor.execute("SELECT user_type FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+        
+        if not user:
+            conn.close()
+            return jsonify({"error": "User not found"}), 404
+
+        user_role = user[0]
+
+        # **Role-Based Deletion Authorization**
+        authorized = (
+            user_role == "admin" or  
+            (user_role == "principal" and (username == post_owner or post_role in ["teacher", "student"])) or  
+            (user_role == "teacher" and (username == post_owner or post_role == "student")) or  
+            (user_role in ["student", "member"] and username == post_owner) 
+        )
+
+        if not authorized:
+            conn.close()
+            return jsonify({"error": "Unauthorized to delete this post"}), 403
+
+        # If authorized, delete the post
+        cursor.execute("DELETE FROM School_Post WHERE ID = ?", (post_id,))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Post deleted successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+# Shayan's work ends here
 # Alvisha's work start here
 
 @app.route('/get_user_details', methods=['POST'])
