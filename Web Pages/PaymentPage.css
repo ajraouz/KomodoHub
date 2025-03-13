@@ -16,6 +16,7 @@ body {
     border-radius: 15px;
     backdrop-filter: blur(100px);
     padding-right: 30px;
+    align-items: flex-start;
 }
 
 .payment-box, .summary-box {
@@ -25,6 +26,11 @@ body {
     width: 350px;
     font-family: 'Times New Roman', Times, serif;
 }
+
+.payment-summary, .ticket-background, .ticket-background2 {
+    transition: height 0.2s ease-in-out;
+}
+
 
 .payment-box h1, .summary-box h3 {
     color: #1a3f1e;
@@ -54,7 +60,7 @@ label {
 
 input {
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 0px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
     margin-top: 5px;
@@ -63,7 +69,7 @@ input {
 
 .card-details {
     display: flex;
-    gap: 10px;
+    gap: 13px;
 }
 
 .card-details div {
@@ -71,7 +77,12 @@ input {
 }
 
 .card-details div input {
-    width: 95%;
+    width: 94.6%;
+}
+
+.card-number-input {
+    width: 100.2%;
+    box-sizing: border-box;
 }
 
 button {
@@ -89,6 +100,26 @@ button:hover {
     background: #015401;
     transition: background-color 0.3s ease;
 }
+
+.popup {
+    position: absolute;
+    top: 100%;
+    left: 5%;
+    width: 25%; 
+    padding: 10px; 
+    font-size: 14px; 
+    color: white;
+    border-radius: 2px; 
+}
+
+.popup.success {
+    background-color: green;
+}
+
+.popup.error {
+    background-color: rgb(131, 7, 7);
+}
+
 
 .ticket-background {
     position: absolute;
@@ -186,5 +217,77 @@ button:hover {
 }
 
 input.invalid {
-    border-color: red;
+    border-color: rgb(204, 43, 43) !important;
+    border-width: 2px !important;
+    border-style: solid !important;
 }
+
+
+.error-message {
+    color: rgb(165, 17, 17);
+    font-size: 12px;
+    margin-top: 0px;
+    margin-left: 0px; 
+    width: 100%;
+    white-space: nowrap;
+}
+
+.payment-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background:linear-gradient(145deg, #7ba962, #9cbc89);;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    width: 300px;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    font-family: 'Times New Roman', Times, serif; 
+    border: 3px solid transparent;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    animation: shiny-border 3s infinite linear;
+}
+
+@keyframes shiny-border {
+    0% {
+        border-color: rgba(34, 139, 34, 0.5); /* Darker green */
+        box-shadow: 0 0 10px rgba(34, 139, 34, 0.5);
+    }
+    50% {
+        border-color: rgba(34, 139, 34, 0.9); /* Brighter dark green */
+        box-shadow: 0 0 15px rgba(34, 139, 34, 0.9);
+    }
+    100% {
+        border-color: rgba(34, 139, 34, 0.5); /* Darker green */
+        box-shadow: 0 0 10px rgba(34, 139, 34, 0.5);
+    }
+}
+
+.popup-content h2 {
+        margin-top: 0;
+        color: #136715;
+        font-size: 25px;
+        font-family: 'Times New Roman', Times, serif; 
+    }
+
+    .popup-content p {
+        margin: 5px 0;
+        font-size: 16px;
+        color: #ffffff;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5); 
+        font-weight: bold; 
+        line-height: 1.5; 
+        font-family: 'Times New Roman', Times, serif; 
+    }
+
+    .popup-content strong {
+        font-size: 20px; 
+        color: #ffffff; 
+    }
