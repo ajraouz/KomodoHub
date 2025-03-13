@@ -590,6 +590,63 @@ def update_student_access_code():
 
 # Alvisha's work end here
 
+# Riya's work starts here
+
+@app.route('/update_score', methods=['POST'])
+def update_score():
+    try:
+        username = request.form.get('username')
+        score = request.form.get('score')
+        logging.debug(f"Received score update request: username={username}, score={score}")
+        
+        if not username or score is None:
+            return jsonify({"error": "Missing parameters"}), 400
+        try:
+            score = int(score)
+        except ValueError:
+            return jsonify({"error": "Invalid score value"}), 400
+
+        conn = sqlite3.connect('KH_Database.db', timeout=30)
+        cursor = conn.cursor()
+        
+        # Retrieve the user's id and type
+        cursor.execute("SELECT user_id, user_type FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"error": "User not found"}), 404
+
+        user_id, user_type = user
+
+        # Determine the correct table to update based on user type
+        if user_type == "student":
+            table = "students"
+        elif user_type == "teacher":
+            table = "teachers"
+        elif user_type == "member":
+            table = "members"
+        elif user_type == "admin":
+            table = "admin"
+        elif user_type == "principal":
+            table = "school"
+        else:
+            conn.close()
+            return jsonify({"error": "User type not supported for score updates"}), 400
+
+        # Update the TotalPoints by adding the new score to the existing score
+        cursor.execute(f"UPDATE {table} SET TotalPoints = TotalPoints + ? WHERE user_id = ?", (score, user_id))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Score updated successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+# Riya's work ends here
+
+
+
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5001/")
     app.run(debug=False, port=5001)
