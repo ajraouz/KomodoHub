@@ -79,7 +79,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     background: rgba(255, 255, 255, 0.683);
     padding: 20px;
     border-radius: 10px;
@@ -110,7 +110,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     box-sizing: border-box;
-    width: 700px; /* Make it flexible */
+    width: 850px; 
 }
 
 .profile-info {
@@ -129,15 +129,19 @@ body {
     font-size: 18px;
     font-weight: bold;
 }
-
-.user-role {
+.name {
+    font-size: 20px;
+    font-family: bold;
+    margin-bottom: -15px;
+}
+.role {
     font-size: 14px;
     margin-top: -15px;
     color: gray;
 }
 
 input[type="text"], textarea {
-    width: 100%; /* Ensures input fields don't overflow */
+    width: 100%; 
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -167,6 +171,39 @@ textarea {
     cursor: pointer;
     font-size: 16px;
     text-align: center;
+}
+/* Styling for the dropdown menu to match the title text box */
+#post-type {
+    width: 100%;
+    padding: 10px; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background: #fff; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    cursor: pointer;
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    outline: none; 
+}
+
+/* Adding a dropdown arrow */
+#post-type {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23333" d="M2 4L0 0h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+#post-type:hover, 
+#post-type:focus {
+    border-color: green; 
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.5); 
+}
+
+select::-ms-expand {
+    display: none; 
 }
 
 #post-button {
