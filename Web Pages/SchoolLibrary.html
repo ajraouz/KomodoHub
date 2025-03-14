@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Komodo Hub</title>
+    <title>Komodo Hub - School Library</title>
+    
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="SchoolLibrary.css">
 </head>
 <body> 
+
+    <!--NAVBAR-->
     <div class="navbar">
         <a href="HomePage.html">
-            <img src="images/komodoLogo.png" alt="Logo" class="logo">
+            <img src="images/komodoLogo.png" alt="Komodo Hub Logo" class="logo">
         </a>
         
         <div class="nav-center">
@@ -17,27 +21,37 @@
             <a href="SchoolLibrary.html"><button class="school-btn">School Library</button></a>
             <a href="Post.html"><button>Post</button></a>
             <a href="Games.html"><button>Games</button></a>
-          </div>
+        </div>
         <button class="login">Login</button>
     </div>
 
+    <!--MAIN CONTENT-->
     <div class="content-wrapper">
         <div class="container" id="container">
             <!-- Cards will be dynamically inserted here -->
         </div>
     </div>
 
+    <!-- MODAL (POST DETAILS) -->
     <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    
     <div class="modal" id="modal">
+        
+        <!-- Modal Header (User Profile & Timestamp) -->
         <div class="modal-header">
-            <a id="modal-profile-link" href="" class="profile-link">
-                <img id="modal-profile" src="" alt="Profile" class="profile-img">
+            
+            <!-- Profile Link -->
+            <a id="modal-profile-link" href="ProfilePublicView.html?username=alv123" class="profile-link">
+                <img id="modal-profile" src="images/default.png" alt="Profile" class="profile-img">
             </a>
+
+            <!-- Profile & Timestamp Info -->
             <div class="modal-info">
                 <div id="modal-profile-info" class="profile-info">
                     <span id="modal-username" class="username"></span>
                     <span id="modal-role" class="role"></span>
                 </div>
+
                 <div id="modal-timestamp-container">
                     <button id="delete-post-btn" class="delete-post-btn" style="display: none;">Delete</button>
                     <div id="modal-timestamp" class="timestamp">
@@ -47,6 +61,8 @@
                 </div>                                          
             </div>
         </div>
+
+        <!-- Delete Confirmation Modal -->
         <div class="delete-modal-overlay" id="delete-modal-overlay"></div>
         <div class="delete-modal" id="delete-modal">
             <h3>Confirm Delete</h3>
@@ -55,8 +71,9 @@
             <button id="cancel-delete-btn">Cancel</button>
         </div>
 
+        <!-- Modal Content (Post Details) -->
         <div class="modal-content">
-            <img id="modal-image" src="" alt="Animal Image">
+            <img id="modal-image" src="images/default.png" alt="Post Image">
             <h3 id="modal-title"></h3>
             <p id="modal-content"></p>
         </div>
@@ -64,6 +81,9 @@
         <button onclick="closeModal()">Close</button>
     </div>
 
+
     <script src="SchoolLibrary.js"></script>
+    <script src="Protect.js"></script>
+
 </body>
 </html>
