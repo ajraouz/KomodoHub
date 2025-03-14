@@ -3,197 +3,205 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function fetchArticles() {
-    fetch("/articles")  
+    fetch("/articles")
         .then(response => response.json())
         .then(data => {
-            const container = document.querySelector(".container"); 
-
+            const container = document.querySelector(".container");
             data.forEach(article => {
                 const card = createCard(article);
-                container.prepend(card);  
-            });            
+                container.prepend(card);
+            });
         })
         .catch(error => console.error("Error fetching articles:", error));
 }
 
 function createCard(article) {
-    const card = document.createElement('div');
-    card.classList.add('card');
+    const card = document.createElement("div");
+    card.classList.add("card");
     card.setAttribute("data-id", article.id);
-    card.onclick = function() {
+    card.onclick = function () {
         showModal(article);
     };
 
-    const userRole = localStorage.getItem('userRole');  // Get current user
-    const loggedInUser = localStorage.getItem('username'); 
+    const cardHeader = createCardHeader(article);
+    const img = createCardImage(article);
+    const title = createCardTitle(article);
+    const content = createCardContent(article);
 
-    // Create delete button if user has permission
-    if (
-        userRole === 'admin' || 
-        (userRole === 'principal' && (article.role === 'teacher' || article.role === 'student')) ||
-        (userRole === 'teacher' && article.role === 'student') ||
-        (loggedInUser === article.username)
-    ) {
-    }
-
-    // Card Header
-    const cardHeader = document.createElement('div');
-    cardHeader.classList.add('card-header');
-
-    // Profile picture link to PublicProfileView.html
-    const profileLink = document.createElement('a');
-    profileLink.href = "ProfilePublicView.html";
-    profileLink.classList.add('profile-link');
-
-    const profileImg = document.createElement('img');
-    profileImg.classList.add('profile-img');
-
-    if (article.profile_image && article.profile_image.trim()) {
-        let cleanUrl = article.profile_image;
-    
-        // Forcefully remove any duplicate occurrences of the base URL
-        cleanUrl = cleanUrl.replace(/(http:\/\/127.0.0.1:5001\/)+/g, "http://127.0.0.1:5001/");
-        cleanUrl = cleanUrl.replace(/\/Web Pages\/Web Pages\//g, "/Web Pages/");
-    
-        profileImg.src = cleanUrl;
-    } else {
-        profileImg.style.display = "none"; 
-    }
-    
-
-    profileImg.alt = 'Profile';
-    profileLink.appendChild(profileImg);
-
-    const cardInfo = document.createElement('div');
-    cardInfo.classList.add('card-info');
-
-    const profileInfo = document.createElement('div');
-    profileInfo.classList.add('profile-info');
-
-    const usernameSpan = document.createElement('span');
-    usernameSpan.classList.add('username');
-    usernameSpan.innerText = article.username;
-
-    const roleSpan = document.createElement('span');
-    roleSpan.classList.add('role');
-    roleSpan.innerText = article.role;
-
-    profileInfo.appendChild(usernameSpan);
-    profileInfo.appendChild(roleSpan);
-
-    const timestamp = document.createElement('div');
-    timestamp.classList.add('timestamp');
-    const date = document.createElement('span');
-    date.classList.add('date');
-    date.innerText = article.date;
-    const time = document.createElement('span');
-    time.classList.add('time');
-    time.innerText = article.time;
-
-    timestamp.appendChild(date);
-    timestamp.appendChild(time);
-
-    cardInfo.appendChild(profileInfo);
-    cardInfo.appendChild(timestamp);
-    cardHeader.appendChild(profileLink);
-    cardHeader.appendChild(cardInfo);
-
-    // Card Image
-    const img = document.createElement('img');
-    img.src = article.image ? article.image : 'images/default.png';  
-    img.alt = article.title;
-
-    // Card Title
-    const title = document.createElement('h3');
-    title.innerText = article.title;
-
-    // Card Content
-    const content = document.createElement('p');
-    content.innerText = article.content.substring(0, 100) + '...';
-
-    // Append elements to the card
-    card.appendChild(cardHeader);
-    card.appendChild(img);
-    card.appendChild(title);
-    card.appendChild(content);
-
-    return card; 
+    card.append(cardHeader, img, title, content);
+    return card;
 }
 
-// Function to show the modal when a card is clicked
-function showModal(article) {
-    const modal = document.getElementById('modal');
-    const overlay = document.getElementById('overlay');
-    const title = document.getElementById('modal-title');
-    const content = document.getElementById('modal-content');
-    const image = document.getElementById('modal-image');
-    const profile = document.getElementById('modal-profile');
-    const username = document.getElementById('modal-username');
-    const role = document.getElementById('modal-role');
-    const date = document.getElementById('modal-date');
-    const time = document.getElementById('modal-time');
-    const profileLink = document.getElementById('modal-profile-link'); 
+/** 
+ * Create Card Header (Profile Picture & Info)
+ * */
+function createCardHeader(article) {
+    const cardHeader = document.createElement("div");
+    cardHeader.classList.add("card-header");
 
-    title.innerText = article.title;
-    content.innerText = article.content;
+    // Profile Picture Link
+    const profileLink = document.createElement("a");
+    if (article.userType=="principal"){
+        profileLink.href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
 
-    // FEnsure base64 image is handled correctly
-    image.src = article.image && article.image.startsWith("data:image") ? article.image : 'images/default.png';
-
-    if (article.profile_image && article.profile_image.trim()) {
-        let cleanUrl = article.profile_image;
-    
-        // Forcefully remove any duplicate occurrences of the base URL
-        cleanUrl = cleanUrl.replace(/(http:\/\/127.0.0.1:5001\/)+/g, "http://127.0.0.1:5001/");
-        cleanUrl = cleanUrl.replace(/\/Web Pages\/Web Pages\//g, "/Web Pages/");
-    
-        profile.src = cleanUrl;
-    } else {
-        profile.style.display = "none"; 
     }
+    else{
+        profileLink.href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
+    }
+    profileLink.classList.add("profile-link");
+
+    const profileImg = document.createElement("img");
+    profileImg.classList.add("profile-img");
+    profileImg.alt = "Profile";
+    profileImg.src = article.profile_image && article.profile_image !== "null" ? sanitizeImageUrl(article.profile_image) : "Images/default.png";
     
+    profileLink.appendChild(profileImg);
+
+    
+    // Ensure a valid profile image is shown, fallback to default if missing
+    profileImg.src = article.profile_image && article.profile_image !== "null" ? sanitizeImageUrl(article.profile_image) : "Images/default.png";
+    
+    profileLink.appendChild(profileImg);
     
 
-    username.innerText = article.username;
-    role.innerText = article.role;
+    // Profile Info
+    const profileInfo = document.createElement("div");
+    profileInfo.classList.add("profile-info");
+
+    const usernameSpan = document.createElement("span");
+    usernameSpan.classList.add("username");
+    usernameSpan.innerText = article.name || article.username;
+
+    const roleSpan = document.createElement("span");
+    roleSpan.classList.add("role");
+    roleSpan.innerText = article.userType;  // <-- Updated to match backend
+
+    profileInfo.append(usernameSpan, roleSpan);
+
+    // Timestamp
+    const timestamp = document.createElement("div");
+    timestamp.classList.add("timestamp");
+
+    const date = document.createElement("span");
+    date.classList.add("date");
     date.innerText = article.date;
+
+    const time = document.createElement("span");
+    time.classList.add("time");
     time.innerText = article.time;
 
-    const deleteButton = document.getElementById("delete-post-btn");
-    const userRole = localStorage.getItem('userRole');  
-    const loggedInUser = localStorage.getItem('username');
+    timestamp.append(date, time);
 
-    // Show the delete button only if user has permission
-    if (
-        userRole === 'admin' || 
-        (userRole === 'principal' && (article.role === 'teacher' || article.role === 'student')) ||
-        (userRole === 'teacher' && article.role === 'student') ||
-        (loggedInUser === article.username)
-    ) {
-        deleteButton.style.display = "inline-block";
-        console.log("Opening modal for article ID:", article.id);  
+    const cardInfo = document.createElement("div");
+    cardInfo.classList.add("card-info");
+    cardInfo.append(profileInfo, timestamp);
 
-        if (!article.id) {
-            console.error(" Missing post ID for deletion.");
-            return;
-        }
+    cardHeader.append(profileLink, cardInfo);
+    return cardHeader;
+}
+
+function createCardImage(article) {
+    const img = document.createElement("img");
+    img.src = article.image ? article.image : "images/default.png";
+    img.alt = article.title;
+    return img;
+}
+
+function createCardTitle(article) {
+    const title = document.createElement("h3");
+    title.innerText = article.title;
+    return title;
+}
+
+function createCardContent(article) {
+    const content = document.createElement("p");
+    content.innerText = article.content.substring(0, 100) + "...";
+    return content;
+}
+
+function showModal(article) {
+    document.getElementById("modal-title").innerText = article.title;
+    document.getElementById("modal-content").innerText = article.content;
+    document.getElementById("modal-image").src = article.image.startsWith("data:image") ? article.image : "images/default.png";
+    // Update the modal profile image source with a valid fallback
+    document.getElementById("modal-profile").src = article.profile_image && article.profile_image !== "null" 
+    ? sanitizeImageUrl(article.profile_image) 
+    : "Images/default.png";
+
+    // Dynamically update the href of the existing modal-profile-link
+    if (article.userType === "principal") {
+    document.getElementById("modal-profile-link").href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
+    } else {
+    document.getElementById("modal-profile-link").href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
+    }
+
+    document.getElementById("modal-username").innerText = article.name || article.username;
+    document.getElementById("modal-role").innerText = article.userType;  
+    document.getElementById("modal-date").innerText = article.date;
+    document.getElementById("modal-time").innerText = article.time;
     
+    const profileLink = document.createElement("a");
+
+    // 🔹 Pass user_id and role for accurate profile retrieval
+    if (article.userType=="principal"){
+        profileLink.href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
+
+    }
+    else{
+        profileLink.href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
+    }
+    profileLink.classList.add("profile-link");
+    
+    const profileImg = document.createElement("img");
+    profileImg.classList.add("profile-img");
+    profileImg.alt = "Profile";
+    
+    // Ensure valid profile image, fallback to default
+    profileImg.src = article.profile_image && article.profile_image !== "null" ? sanitizeImageUrl(article.profile_image) : "Images/default.png";
+    
+    profileLink.appendChild(profileImg);
+    
+
+    handleDeleteButton(article);
+
+    // Show Modal
+    document.getElementById("modal").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+}
+
+/** 
+ * Handle Delete Button Visibility
+ * */
+function handleDeleteButton(article) {
+    const deleteButton = document.getElementById("delete-post-btn");
+    const userType = localStorage.getItem("userType");  
+    const loggedInUser = localStorage.getItem("username");
+
+    console.log(`DEBUG: Checking delete permission for ${loggedInUser} (${userType}) on post by ${article.username} (${article.userType})`);
+
+    const canDelete =
+    userType === "admin" ||
+    (userType === "principal" && (loggedInUser === article.username || ["teacher", "student"].includes(article.userType))) ||
+    (userType === "teacher" && (loggedInUser === article.username || article.userType === "student")) ||
+    ((userType === "student" || userType === "member") && loggedInUser === article.username);
+
+    console.log(`DEBUG: Checking delete permission for ${loggedInUser} (${userType}) on post by ${article.username} (${article.userType})`);
+    console.log(`DEBUG: canDelete = ${canDelete}`);
+
+    deleteButton.style.display = canDelete ? "inline-block" : "none";
+
+    if (canDelete) {
         deleteButton.onclick = function (event) {
             event.stopPropagation();
             confirmDelete(article.id);
-        };        
-    } else {
-        deleteButton.style.display = "none"; // Hide for unauthorized users
+        };
     }
-
-
-
-    // Set profile link in modal
-    profileLink.href = "ProfilePublicView.html";  
-
-    modal.style.display = 'block';
-    overlay.style.display = 'block';
 }
+
+
+/** 
+ * Confirm Delete Modal
+ *  */
 function confirmDelete(postId) {
     document.getElementById("delete-modal-overlay").style.display = "block";
     document.getElementById("delete-modal").style.display = "block";
@@ -203,13 +211,7 @@ function confirmDelete(postId) {
         closeDeleteModal();
     };
 
-    document.getElementById("cancel-delete-btn").onclick = function () {
-        closeDeleteModal();
-    };
-}
-function closeDeleteModal() {
-    document.getElementById("delete-modal-overlay").style.display = "none";
-    document.getElementById("delete-modal").style.display = "none";
+    document.getElementById("cancel-delete-btn").onclick = closeDeleteModal;
 }
 
 function closeDeleteModal() {
@@ -220,12 +222,7 @@ function closeDeleteModal() {
 function deletePost(postId) {
     const username = localStorage.getItem("username");
 
-    console.log("🔍 Attempting to delete post...");
-    console.log("Post ID:", postId);
-    console.log("Username:", username);
-
     if (!postId || !username) {
-        console.error("❌ Missing data in delete request.");
         alert("Error: Missing data. Please refresh and try again.");
         return;
     }
@@ -233,43 +230,40 @@ function deletePost(postId) {
     fetch("http://127.0.0.1:5001/delete_post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            id: postId,   
-            owner: username 
-        }),
+        body: JSON.stringify({ id: postId, owner: username }),
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            console.log("Post deleted successfully.");
-
-            removePostFromUI(postId);  // Remove post from UI
-            closeModal(); // 
-        } else {
-            console.error("Delete error:", data.error);
-            alert("Failed to delete post: " + data.error);
-        }
-    })
-    .catch(error => console.error("Network request error:", error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                removePostFromUI(postId);
+                closeModal();
+            } else {
+                alert("Failed to delete post: " + data.error);
+            }
+        })
+        .catch(error => console.error("Network request error:", error));
 }
 
-// Function to remove post from UI without refreshing
 function removePostFromUI(postId) {
-    const container = document.getElementById("container");
-    const posts = container.getElementsByClassName("card");
+    const posts = document.querySelectorAll(".card");
 
-    for (let i = 0; i < posts.length; i++) {
-        if (posts[i].getAttribute("data-id") === postId.toString()) {
-            posts[i].remove();
-            break;
+    posts.forEach(post => {
+        if (post.getAttribute("data-id") === postId.toString()) {
+            post.remove();
         }
-    }
+    });
 }
-
 
 function closeModal() {
-    const modal = document.getElementById('modal');
-    const overlay = document.getElementById('overlay');
-    modal.style.display = 'none';
-    overlay.style.display = 'none';
+    document.getElementById("modal").style.display = "none";
+    document.getElementById("overlay").style.display = "none";
 }
+
+function sanitizeImageUrl(url) {
+    if (!url || typeof url !== "string") return "images/default.png";
+
+    return url
+        .replace(/(http:\/\/127.0.0.1:5001\/)+/g, "http://127.0.0.1:5001/")
+        .replace(/\/Web Pages\/Web Pages\//g, "/Web Pages/");
+}
+
