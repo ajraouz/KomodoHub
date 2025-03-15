@@ -39,7 +39,6 @@ function createCardHeader(article) {
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("card-header");
 
-    // Profile Picture Link
     const profileLink = document.createElement("a");
     if (article.userType=="principal"){
         profileLink.href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
@@ -123,7 +122,6 @@ function showModal(article) {
     document.getElementById("modal-title").innerText = article.title;
     document.getElementById("modal-content").innerText = article.content;
     document.getElementById("modal-image").src = article.image.startsWith("data:image") ? article.image : "images/default.png";
-    // Update the modal profile image source with a valid fallback
     document.getElementById("modal-profile").src = article.profile_image && article.profile_image !== "null" 
     ? sanitizeImageUrl(article.profile_image) 
     : "Images/default.png";
@@ -142,7 +140,7 @@ function showModal(article) {
     
     const profileLink = document.createElement("a");
 
-    // 🔹 Pass user_id and role for accurate profile retrieval
+    // Pass user_id and role for accurate profile retrieval
     if (article.userType=="principal"){
         profileLink.href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
 
@@ -163,7 +161,6 @@ function showModal(article) {
     
 
     handleDeleteButton(article);
-
     // Show Modal
     document.getElementById("modal").style.display = "block";
     document.getElementById("overlay").style.display = "block";
@@ -179,13 +176,21 @@ function handleDeleteButton(article) {
 
     console.log(`DEBUG: Checking delete permission for ${loggedInUser} (${userType}) on post by ${article.username} (${article.userType})`);
 
-    const canDelete =
-    userType === "admin" ||
-    (userType === "principal" && (loggedInUser === article.username || ["teacher", "student"].includes(article.userType))) ||
-    (userType === "teacher" && (loggedInUser === article.username || article.userType === "student")) ||
-    ((userType === "student" || userType === "member") && loggedInUser === article.username);
+    let canDelete = false;
 
-    console.log(`DEBUG: Checking delete permission for ${loggedInUser} (${userType}) on post by ${article.username} (${article.userType})`);
+    if (userType === "admin") {
+        canDelete = true;
+    } else if (userType === "principal") {
+        canDelete = (loggedInUser === article.username || article.userType === "teacher" || article.userType === "student");
+        if (article.username === "school" || article.userType === "principal") {
+            canDelete = true;
+        }
+    } else if (userType === "teacher") {
+        canDelete = (loggedInUser === article.username || article.userType === "student");
+    } else if (userType === "student" || userType === "member") {
+        canDelete = (loggedInUser === article.username);
+    }
+
     console.log(`DEBUG: canDelete = ${canDelete}`);
 
     deleteButton.style.display = canDelete ? "inline-block" : "none";
@@ -197,8 +202,6 @@ function handleDeleteButton(article) {
         };
     }
 }
-
-
 /** 
  * Confirm Delete Modal
  *  */
@@ -266,4 +269,3 @@ function sanitizeImageUrl(url) {
         .replace(/(http:\/\/127.0.0.1:5001\/)+/g, "http://127.0.0.1:5001/")
         .replace(/\/Web Pages\/Web Pages\//g, "/Web Pages/");
 }
-
