@@ -18,8 +18,7 @@
             <a href="Post.html"><button class="post-btn">Post</button></a>
             <a href="Games.html"><button>Games</button></a>
         </div>
-    
-        <a href="LoginPage.html"><button class="login">Login</button></a>
+        <a href="ProfilePrivateView.html"><button class="login">Profile</button></a>
     </div>
 
     <div class="container">
@@ -29,10 +28,11 @@
                 <div class="profile-info">
                     <img src="images/default.png" alt="Profile" class="profile-img">
                     <div>
-                        <p class="username">User1</p> <!-- Replace dynamically -->
-                        <p class="user-role">Member</p> <!-- Replace dynamically -->
+                        <h2 class="name" id="display-name">Loading...</h2> 
+                        <p class="username" id="display-username">@loading</p>
+                        <p class="role"><span id="display-role">Loading...</span></p>
                     </div>
-                </div>
+                </div>                
 
                 <!-- Dropdown to choose posting destination -->
                 <label for="post-type">Post to:</label>
@@ -45,7 +45,7 @@
                 <textarea name="content" id="content" placeholder="Write your post here" required></textarea>
                 
                 <!-- Hidden owner field -->
-                <input type="hidden" name="owner" value="User1"> <!-- Replace dynamically -->
+                <input type="hidden" name="owner" id="post-owner"> 
 
                 <div class="button-container">
                     <label for="media-upload" class="media-btn">📷 Add media</label>

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Public Profile - Komodo Hub</title>
     <link rel="stylesheet" href="ProfilePrivateView.css">
-    <script defer src="ProfilePrivateView.js"></script>
+    <script defer src="ProfilePublicView.js"></script>
+    <script src="Main.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -21,7 +22,7 @@
             <a href="Games.html"><button>Games</button></a>
         </div>
     
-        <a href="ProfilePrivateView.html"><button class="logout-button">Profile</button></a>
+        <button class="login">Profile</button>
     </div>
 
     <div class="main-container">
@@ -30,26 +31,71 @@
             <div class="profile-container">
                 <img id="profile-avatar" src="Images/default.png" alt="Profile Picture">  
                 <div class="profile-info">
-                    <h2 class="name">Alvisha Aslam</h2> <!-- Name -->
-                    <p class="username">@alv123</p>
-                    <p class="role"><strong>Role:</strong> Student</p> <!-- Role -->
+                    <h2 id="profile-name" class="name">Loading...</h2>
+                    <p id="profile-username" class="username">@Loading..</p>
+                    <p id="profile-role" class="role"><strong>Role:</strong> Loading..</p>
                 </div>
             </div>
 
             <!-- Contributions Section -->
             <div class="contributions-container">
                 <h3>Contributions</h3>
-                <p><strong>📜 Posts: </strong> <span id="posts">10</span></p>
-                <p><strong>⭐ Points: </strong> <span id="points">550</span></p>
-                <p><strong>🎖 Rank: </strong> <span id="rank">Beginner</span></p>
-
+                
+                <p>
+                    <strong>
+                      <img src="Images/icons/scroll.png" alt="Posts Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Posts:
+                    </strong>
+                    <span id="posts">Loading...</span>
+                </p>
+                  
+                <p>
+                    <strong>
+                      <img src="Images/icons/star.png" alt="Points Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Points:
+                    </strong>
+                    <span id="points">Loading...</span>
+                </p>
+                  
+                <p id="membersContribution" style="display: none;">
+                    <strong>
+                      <img src="Images/icons/member.png" alt="Members Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Members Involved:
+                    </strong>
+                    <span id="members">Loading...</span>
+                </p>
+                  
+                <p id="staffContribution" style="display: none;">
+                    <strong>
+                      <img src="Images/icons/school.png" alt="School Staff Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> School Staff Involved:
+                    </strong>
+                    <span id="staff">Loading...</span>
+                </p>
+                  
+                <!-- New Students Involved -->
+                <p id="studentsContribution" style="display: none;">
+                    <strong>
+                      <img src="Images/icons/student.png" alt="Students Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Students Involved:
+                    </strong>
+                    <span id="students">Loading...</span>
+                </p>
+    
+                <p>
+                    <strong>
+                      <img src="Images/icons/rank.png" alt="Rank Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Rank:
+                    </strong>
+                    <span id="rank">Loading...</span>
+                </p>
+                  
                 <!-- Progress Bar -->
                 <div class="progress-bar">
                     <div class="progress" id="progress"></div>
                 </div>
-
-                <p class="next-rank" id="next-rank">Next Rank: Advanced</p>
-            </div>
+            
+                <p>
+                    <strong>
+                      <img src="Images/icons/rank.png" alt="Next Rank Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Next Rank:
+                    </strong>
+                    <span class="next-rank" id="next-rank">Loading...</span>
+                </p>
+                  
         </div>
     </div>
 </body>

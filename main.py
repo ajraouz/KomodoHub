@@ -204,50 +204,121 @@ def login():
     except Exception as e:
         logging.exception("An error occurred during login.")
         return jsonify({"error": str(e)}), 500
-
+# Shayan's work starts here
 @app.route('/articles', methods=['GET'])
 def get_articles():
     conn = sqlite3.connect("KH_Database.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT ID, Owner, Title, Image, Content, Date, Time FROM School_Post")
+
+    cursor.execute("""
+        SELECT sp.ID, 
+            COALESCE(s.FullName, t.FullName, m.FullName, sch.FullName, a.FullName, u.username) AS name,
+            sp.Title, 
+            sp.Image, 
+            sp.Content, 
+            sp.Date, 
+            sp.Time, 
+            u.user_id, 
+            u.user_type AS userType, 
+            COALESCE(
+                s.Avatar, 
+                t.Avatar, 
+                m.Avatar, 
+                sch.Avatar, 
+                a.Avatar, 
+                'Images/default.png'
+            ) AS Avatar
+        FROM School_Post sp
+        JOIN users u ON sp.Owner = u.username
+        LEFT JOIN students s ON u.user_id = s.user_id
+        LEFT JOIN teachers t ON u.user_id = t.user_id
+        LEFT JOIN members m ON u.user_id = m.user_id
+        LEFT JOIN school sch ON u.user_id = sch.user_id
+        LEFT JOIN admin a ON u.user_id = a.user_id
+    """)
+
 
     articles = []
     for row in cursor.fetchall():
-        article_id, member, title, image, content, date, time = row
-        image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}" if image else None
+        (article_id, username, title, image, content, date, time, user_id, user_type, avatar) = row  
+
+        if image:
+            try:
+                image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}"
+            except Exception as e:
+                print(f"Error encoding image: {e}")
+                image_base64 = None
+        else:
+            image_base64 = None
+
+        print(f"DEBUG: Fetching article - Owner: {username}, userType: {user_type}, Title: {title}")
+
         articles.append({
             "id": article_id,
-            "member": member,
+            "username": username,
+            "user_id": user_id,
             "title": title,
             "image": image_base64,
             "content": content,
             "date": date,
             "time": time,
-            "member_type": "Teacher"
+            "userType": user_type if user_type else "Unknown",  
+            "profile_image": avatar if avatar else "Images/default.png"
         })
 
     conn.close()
+    
+    print(f"DEBUG: Total Articles Fetched: {len(articles)}")  # ✅ Debugging Output
     return jsonify(articles)
 
 @app.route('/community_articles', methods=['GET'])
 def get_community_articles():
     conn = sqlite3.connect("KH_Database.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT ID, Owner, Title, Image, Content, Date, Time FROM Community_Post")
+    # Fetch all posts along with user details
+    cursor.execute("""
+        SELECT sp.ID, sp.Owner, sp.Title, sp.Image, sp.Content, sp.Date, sp.Time, 
+                u.user_type, 
+                COALESCE(
+                    (SELECT Avatar FROM students WHERE students.user_id = u.user_id),
+                    (SELECT Avatar FROM teachers WHERE teachers.user_id = u.user_id),
+                    (SELECT Avatar FROM members WHERE members.user_id = u.user_id),
+                    (SELECT Avatar FROM school WHERE school.user_id = u.user_id),
+                    (SELECT Avatar FROM admin WHERE admin.user_id = u.user_id),
+                    'Images/default.png'
+                ) AS Avatar
+        FROM Community_Post sp
+        JOIN users u ON sp.Owner = u.username
+        LEFT JOIN students s ON u.user_id = s.user_id
+        LEFT JOIN teachers t ON u.user_id = t.user_id
+        LEFT JOIN members m ON u.user_id = m.user_id
+        LEFT JOIN school sch ON u.user_id = sch.user_id
+        LEFT JOIN admin a ON u.user_id = a.user_id
+    """)
 
     articles = []
     for row in cursor.fetchall():
-        article_id, member, title, image, content, date, time = row
+        article_id, username, title, image, content, date, time, role, avatar = row  
         image_base64 = f"data:image/png;base64,{base64.b64encode(image).decode('utf-8')}" if image else None
+
+        if avatar and (avatar.startswith("http://") or avatar.startswith("https://")):
+            avatar_url = avatar  
+        elif avatar:
+            avatar_url = f"{avatar}"  
+        else:
+            avatar_url = None  
+
+
         articles.append({
             "id": article_id,
-            "member": member,
+            "username": username, 
             "title": title,
             "image": image_base64,
             "content": content,
             "date": date,
             "time": time,
-            "member_type": "Member"
+            "userType": role, 
+            "profile_image": avatar_url  
         })
 
     conn.close()
@@ -307,7 +378,73 @@ def post_community_article():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-# Alvisha's work start here
+import logging
+@app.route('/delete_post', methods=['POST'])
+def delete_post():
+    try:
+        data = request.get_json()
+        post_id = data.get("id")
+        username = data.get("owner")  # The user requesting the deletion
+
+        if not post_id or not username:
+            return jsonify({"error": "Invalid request data"}), 400
+
+        conn = sqlite3.connect("KH_Database.db")
+        cursor = conn.cursor()
+
+        # Get post owner and the post's userType (aliased correctly)
+        cursor.execute("""
+            SELECT sp.Owner, u.user_type AS userType 
+            FROM School_Post sp
+            JOIN users u ON sp.Owner = u.username
+            WHERE sp.ID = ?
+        """, (post_id,))
+        
+        post = cursor.fetchone()
+        if not post:
+            conn.close()
+            return jsonify({"error": "Post not found"}), 404
+
+        post_owner, post_userType = post
+
+        # Fetch the requesting user's userType using the correct column
+        cursor.execute("SELECT user_type AS userType FROM users WHERE username = ?", (username,))
+        user = cursor.fetchone()
+        
+        if not user:
+            conn.close()
+            return jsonify({"error": "User not found"}), 404
+
+        userType = user[0]
+
+        # Debug log to trace deletion attempt
+        print(f"DEBUG: Deletion Request by {username} ({userType}) on Post by {post_owner} ({post_userType})")
+
+        # Role-Based Deletion Authorization
+        authorized = (
+            userType == "admin" or  
+            (userType == "principal" and (username == post_owner or post_userType in ["teacher", "student"])) or  
+            (userType == "teacher" and (username == post_owner or post_userType in ["student"])) or  
+            (userType in ["student", "member"] and username == post_owner) 
+        )
+        if not authorized:
+            conn.close()
+            return jsonify({"error": "Unauthorized to delete this post"}), 403
+
+        # Delete the post if authorized
+        cursor.execute("DELETE FROM School_Post WHERE ID = ?", (post_id,))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "Post deleted successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Shayan's work ends here
+
+
+##### Alvisha's work start here ##### 
 
 @app.route('/get_user_details', methods=['POST'])
 def get_user_details():
@@ -588,7 +725,144 @@ def update_student_access_code():
 
     return jsonify({"success": "Student access code updated successfully!"})
 
-# Alvisha's work end here
+@app.route('/api/getUserProfile', methods=['GET'])
+def getUserProfile():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # First, fetch basic user details
+    cursor.execute("SELECT username, user_type FROM users WHERE user_id = ?", (user_id,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found"}), 404
+
+    username, user_type = user
+
+    # For admin, fetch profile data and additional counts
+    if user_type == "admin":
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM admin WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
+        if not profile_data:
+            conn.close()
+            return jsonify({"error": "Profile data not found"}), 404
+
+        # Count regular members
+        cursor.execute("SELECT COUNT(*) FROM members")
+        total_members = cursor.fetchone()[0]
+
+        # Count school staff (teachers + principals)
+        cursor.execute("SELECT COUNT(*) FROM teachers")
+        total_teachers = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM school")
+        total_principals = cursor.fetchone()[0]
+        total_staff = total_teachers + total_principals
+
+        # Count students
+        cursor.execute("SELECT COUNT(*) FROM students")
+        total_students = cursor.fetchone()[0]
+
+    else:
+        profile_query = {
+            "student": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM students WHERE user_id = ?",
+            "teacher": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM teachers WHERE user_id = ?",
+            "member": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM members WHERE user_id = ?",
+            "principal": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM school WHERE user_id = ?"
+        }
+        query = profile_query.get(user_type, "")
+        cursor.execute(query, (user_id,))
+        profile_data = cursor.fetchone()
+        if not profile_data:
+            conn.close()
+            return jsonify({"error": "Profile data not found"}), 404
+
+    conn.close()
+
+    # Build the basic response data
+    response_data = {
+        "username": username,
+        "name": profile_data[0],
+        "role": user_type,
+        "avatar": profile_data[1] if profile_data[1] else "Images/default.png",
+        "posts": profile_data[2],
+        "points": profile_data[3]
+    }
+
+    # Append extra admin-related fields if the user is an admin
+    if user_type == "admin":
+        response_data["members"] = total_members
+        response_data["staff"] = total_staff
+        response_data["students"] = total_students
+
+    return jsonify(response_data)
+
+@app.route('/api/getSchoolProfile', methods=['GET'])
+def get_school_profile():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        conn = sqlite3.connect('KH_Database.db')
+        cursor = conn.cursor()
+
+        # First, fetch basic user details (like in getUserProfile)
+        cursor.execute("SELECT username, user_type FROM users WHERE user_id = ?", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"error": "User not found"}), 404
+        username, user_type = user
+
+        # Ensure that the provided user_id corresponds to a school (principal)
+        if user_type != "principal":
+            conn.close()
+            return jsonify({"error": "Not a school profile"}), 400
+
+        # Now, fetch the school profile data
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM school WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
+        if not profile_data:
+            conn.close()
+            return jsonify({"error": "School not found"}), 404
+
+        # Unpack the profile data correctly
+        name, avatar, posts, points = profile_data
+
+        # Retrieve additional contributions for public view:
+        # Count teachers associated with the school
+        cursor.execute("SELECT COUNT(*) FROM teachers")
+        teachers_count = cursor.fetchone()[0]
+
+        # Count students associated with the school
+        cursor.execute("SELECT COUNT(*) FROM students")
+        students_count = cursor.fetchone()[0]
+
+        conn.close()
+
+        response_data = {
+            "username": username,
+            "name": name,
+            "role": user_type,
+            "avatar": avatar if avatar else "Images/schoolprof.jpg",
+            "posts": posts,
+            "points": points,
+            "teachers": teachers_count,
+            "students": students_count
+        }
+
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+##### Alvisha's work end here ##### 
 
 # Riya's work starts here
 

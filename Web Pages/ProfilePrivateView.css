@@ -63,7 +63,7 @@ body {
 }
 
 
-.navbar .logout-button {
+.navbar .login {
     margin-left: auto;
     margin-right: 20px;
     transform: none;
@@ -444,4 +444,17 @@ h3 {
 }
 #studentAccessCodeMessage::before {
     content: "";
+}
+
+.emoji-icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  
+.icon {
+    width: 16px;      
+    height: 16px;
+    vertical-align:text-top;
 }

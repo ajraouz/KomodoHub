@@ -4,9 +4,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Profile - Komodo Hub</title>
+    <title>School Public Profile - Komodo Hub</title>
     <link rel="stylesheet" href="SchoolPage.css">
-    <script defer src="SchoolPage.js"></script>
+    <script defer src="SchoolPublicView.js"></script>
+    <script src="Main.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -22,7 +23,7 @@
             <a href="Games.html"><button>Games</button></a>
         </div>
     
-        <a href="ProfilePrivateView.html"><button class="logout-button">Profile</button></a>
+       <button class="login">Profile</button>
     </div>
 
     <div class="main-container">
@@ -31,10 +32,10 @@
             <div class="profile-container">
                 <img id="profile-avatar" src="Images/schoolprof.jpg" alt="Profile Picture">  
                 <div class="profile-info">
-                    <h2 class="name">Ujung Raya Primary School</h2> <!-- Name -->
-                    <p class="username">@KhairunnisaUjungRayaPrimary</p>
-                    <p class="role"><strong>Role:</strong> Principal</p> <!-- Role -->
-                    <p class="role"><strong>About Us:</strong> Located in the heart of Ujung Kulon, Ujung Raya Primary School is dedicated to nurturing young minds while protecting our natural heritage. Surrounded by the Javan Rhinoceros Conservation Area, we inspire students to learn, explore, and lead in environmental conservation. 
+                    <h2 id="profile-name" class="name">Loading...</h2> 
+                    <p id="profile-username" class="username">@Loading...</p>
+                    <p id="profile-role" class="role"><strong>Role:</strong> Loading...</p> 
+                    <p class="about"><strong>About Us:</strong> Located in the heart of Ujung Kulon, Ujung Raya Primary School is dedicated to nurturing young minds while protecting our natural heritage. Surrounded by the Javan Rhinoceros Conservation Area, we inspire students to learn, explore, and lead in environmental conservation. 
                         Through our partnership with Komodo Hub, we integrate conservation education into our curriculum, empowering students to actively participate in protecting endangered species. We are committed to fostering responsible, compassionate, and environmentally conscious leaders of tomorrow.
                         Join us in learning and leading for a better future.
                     </p>
@@ -79,18 +80,46 @@
             <!-- Contributions Section -->
             <div class="contributions-container">
                 <h3>School Contributions</h3>
-                <p><strong>📜 Posts: </strong> <span id="posts">10</span></p>
-                <p><strong>⭐ Points: </strong> <span id="points">550</span></p>
-                <p><strong>📘 Teachers Involved: </strong> <span id="teachers">15</span></p>
-                <p><strong>🎓 Students Involved: </strong> <span id="students">300</span></p>
-                <p><strong>🎖 Rank: </strong> <span id="rank">Beginner</span></p>
-
+                <p>
+                    <strong>
+                        <img src="Images/icons/scroll.png" alt="Posts Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Posts:
+                    </strong>
+                    <span id="posts">Loading...</span>
+                </p>
+                <p>
+                    <strong>
+                        <img src="Images/icons/star.png" alt="Points Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Points:
+                    </strong>
+                    <span id="points">Loading...</span>
+                </p>
+                <p>
+                    <strong>
+                        <img src="Images/icons/teacher_school.png" alt="Teachers Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Teachers Involved:
+                    </strong>
+                    <span id="teachers">Loading...</span>
+                </p>
+                <p>
+                    <strong>
+                        <img src="Images/icons/student_school.png" alt="Students Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Students Involved:
+                    </strong>
+                    <span id="students">Loading...</span>
+                </p>
+                <p>
+                    <strong>
+                        <img src="Images/icons/rank.png" alt="Rank Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Rank:
+                    </strong>
+                    <span id="rank">Loading...</span>
+                </p>
                 <!-- Progress Bar -->
                 <div class="progress-bar">
-                    <div class="progress" id="progress"></div>
+                    <div id="progress" class="progress" id="progress"></div>
                 </div>
-
-                <p class="next-rank" id="next-rank">Next Rank: Advanced</p>
+                <p class="next-rank" id="next-rank">
+                    <strong>
+                        <img src="Images/icons/rank.png" alt="Next Rank Icon" class="emoji-icon" style="width:20px; height:20px; vertical-align:middle;"> Next Rank:
+                    </strong>
+                    <span>Loading...</span>
+                </p>
             </div>
         </div>
     </div>

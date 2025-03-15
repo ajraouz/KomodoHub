@@ -158,14 +158,14 @@ body {
 }
 
 
-.profile-info .member-name {
+.profile-info .username {
     font-size: 14px;
     font-weight: bold;
     display: block;
     line-height: 1.2; 
 }
 
-.profile-info .member-type {
+.profile-info .role {
     font-size: 12px;
     color: gray;
     display: block;
@@ -240,13 +240,13 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    text-align: center;
-    width: 400px;
+    text-align: left;
+    width: 800px;
     max-height: 80%;
+    height: 500px;
     overflow: hidden;
 }
 
-/* Modal content section */
 .modal-content {
     overflow-y: auto; 
     max-height: 400px; 
@@ -269,9 +269,10 @@ body {
     border-radius: 1px;
 }
 
-/* Image styling inside modal */
 #modal-image {
-    width: 100%;
+    display: flex;         
+    margin: auto;           
+    width: 65%;             
     height: auto;
     max-height: 300px;
     object-fit: cover;
@@ -297,6 +298,12 @@ body {
     transform: scale(1.1);
 }
 
+#modal-timestamp {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 .overlay {
     position: fixed;
     top: 0;
@@ -317,11 +324,10 @@ body {
     border: 2px solid green;
 }
 
-.profile-link:hover .member-name {
+.profile-link:hover .username {
     text-decoration: underline;
 }
 
-/* Ensures the profile info is stacked correctly */
 .modal-info {
     display: flex;
     justify-content: space-between;
@@ -329,7 +335,6 @@ body {
     flex: auto;
 }
 
-/* Profile information styling */
 .profile-info {
     display: flex;
     flex-direction: column; 
@@ -337,30 +342,26 @@ body {
     text-align: left;
 }
 
-/* Member Name */
-.profile-info .member-name {
+.profile-info .username {
     font-size: 14px;
     font-weight: bold;
     display: block;
     line-height: 1.2;
 }
 
-/* Member Type */
-.profile-info .member-type {
+.profile-info .role {
     font-size: 12px;
     color: gray;
     display: block;
     margin-top: 2px;
 }
 
-/* Timestamp styling */
 .timestamp {
     display: flex;
     flex-direction: column;
     align-items: flex-end; 
 }
 
-/* Timestamp elements */
 .timestamp .time {
     font-size: 14px;
     color: #666;
@@ -369,4 +370,97 @@ body {
 .timestamp .date {
     font-size: 12px;
     color: gray;
+}
+
+.delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 999;
+}
+
+/* Delete Confirmation Modal */
+.delete-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ebf5ec;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+    display: none;
+    width: 350px;
+    max-width: 90%;
+}
+
+.delete-modal h3 {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.delete-modal p {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Delete Modal Buttons */
+.delete-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.delete-modal button {
+    background: green;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.2s ease-in-out;
+}
+
+.delete-modal button#cancel-delete-btn {
+    background: red;
+}
+
+.delete-modal button:hover {
+    opacity: 0.8;
+}
+
+#modal-timestamp-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    gap: 10px; 
+}
+
+.delete-post-btn {
+    background: red;
+    color: white;
+    border: none;
+    font-size: 12px !important;  
+    font-weight: bold;
+    padding: 5px 5px !important;  
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    height: auto;  
+    width: 60px !important;  
+    text-align: center;
+    display: inline-block;
+    margin-top: 5px !important;
+}
+
+.delete-post-btn:hover {
+    background: darkred;
 }
