@@ -93,6 +93,13 @@ document.getElementById("contactForm").addEventListener("submit", function(event
     const email = event.target.email.value.trim();
     const message = event.target.message.value.trim();
 
+    // Email validation using regex:
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address in the format: user@example.com");
+        return; // Stop form submission if the email is invalid.
+    }
+
     if (name && email && message) {
         // Use EmailJS to send the form
         emailjs.sendForm('service_hlzwn4b', 'template_5rdnkew', this)
