@@ -442,7 +442,9 @@ def delete_post():
         return jsonify({"error": str(e)}), 500
 
 # Shayan's work ends here
-# Alvisha's work start here
+
+
+##### Alvisha's work start here ##### 
 
 @app.route('/get_user_details', methods=['POST'])
 def get_user_details():
@@ -723,7 +725,144 @@ def update_student_access_code():
 
     return jsonify({"success": "Student access code updated successfully!"})
 
-# Alvisha's work end here
+@app.route('/api/getUserProfile', methods=['GET'])
+def getUserProfile():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    conn = sqlite3.connect('KH_Database.db')
+    cursor = conn.cursor()
+
+    # First, fetch basic user details
+    cursor.execute("SELECT username, user_type FROM users WHERE user_id = ?", (user_id,))
+    user = cursor.fetchone()
+
+    if not user:
+        conn.close()
+        return jsonify({"error": "User not found"}), 404
+
+    username, user_type = user
+
+    # For admin, fetch profile data and additional counts
+    if user_type == "admin":
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM admin WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
+        if not profile_data:
+            conn.close()
+            return jsonify({"error": "Profile data not found"}), 404
+
+        # Count regular members
+        cursor.execute("SELECT COUNT(*) FROM members")
+        total_members = cursor.fetchone()[0]
+
+        # Count school staff (teachers + principals)
+        cursor.execute("SELECT COUNT(*) FROM teachers")
+        total_teachers = cursor.fetchone()[0]
+        cursor.execute("SELECT COUNT(*) FROM school")
+        total_principals = cursor.fetchone()[0]
+        total_staff = total_teachers + total_principals
+
+        # Count students
+        cursor.execute("SELECT COUNT(*) FROM students")
+        total_students = cursor.fetchone()[0]
+
+    else:
+        profile_query = {
+            "student": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM students WHERE user_id = ?",
+            "teacher": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM teachers WHERE user_id = ?",
+            "member": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM members WHERE user_id = ?",
+            "principal": "SELECT FullName, Avatar, TotalPosts, TotalPoints FROM school WHERE user_id = ?"
+        }
+        query = profile_query.get(user_type, "")
+        cursor.execute(query, (user_id,))
+        profile_data = cursor.fetchone()
+        if not profile_data:
+            conn.close()
+            return jsonify({"error": "Profile data not found"}), 404
+
+    conn.close()
+
+    # Build the basic response data
+    response_data = {
+        "username": username,
+        "name": profile_data[0],
+        "role": user_type,
+        "avatar": profile_data[1] if profile_data[1] else "Images/default.png",
+        "posts": profile_data[2],
+        "points": profile_data[3]
+    }
+
+    # Append extra admin-related fields if the user is an admin
+    if user_type == "admin":
+        response_data["members"] = total_members
+        response_data["staff"] = total_staff
+        response_data["students"] = total_students
+
+    return jsonify(response_data)
+
+@app.route('/api/getSchoolProfile', methods=['GET'])
+def get_school_profile():
+    user_id = request.args.get("user_id")
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        conn = sqlite3.connect('KH_Database.db')
+        cursor = conn.cursor()
+
+        # First, fetch basic user details (like in getUserProfile)
+        cursor.execute("SELECT username, user_type FROM users WHERE user_id = ?", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"error": "User not found"}), 404
+        username, user_type = user
+
+        # Ensure that the provided user_id corresponds to a school (principal)
+        if user_type != "principal":
+            conn.close()
+            return jsonify({"error": "Not a school profile"}), 400
+
+        # Now, fetch the school profile data
+        cursor.execute("SELECT FullName, Avatar, TotalPosts, TotalPoints FROM school WHERE user_id = ?", (user_id,))
+        profile_data = cursor.fetchone()
+        if not profile_data:
+            conn.close()
+            return jsonify({"error": "School not found"}), 404
+
+        # Unpack the profile data correctly
+        name, avatar, posts, points = profile_data
+
+        # Retrieve additional contributions for public view:
+        # Count teachers associated with the school
+        cursor.execute("SELECT COUNT(*) FROM teachers")
+        teachers_count = cursor.fetchone()[0]
+
+        # Count students associated with the school
+        cursor.execute("SELECT COUNT(*) FROM students")
+        students_count = cursor.fetchone()[0]
+
+        conn.close()
+
+        response_data = {
+            "username": username,
+            "name": name,
+            "role": user_type,
+            "avatar": avatar if avatar else "Images/schoolprof.jpg",
+            "posts": posts,
+            "points": points,
+            "teachers": teachers_count,
+            "students": students_count
+        }
+
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+##### Alvisha's work end here ##### 
 
 # Riya's work starts here
 
