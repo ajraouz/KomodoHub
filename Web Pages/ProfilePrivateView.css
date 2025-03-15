@@ -458,3 +458,52 @@ h3 {
     height: 16px;
     vertical-align:text-top;
 }
+
+.confetti {
+    position: absolute;  
+    width: 8px;
+    height: 8px;
+    background-color: red; 
+    border-radius: 50%;  
+    opacity: 0;
+    pointer-events: none;
+    animation: fallCircle 5s ease-out forwards, glitter 0.5s infinite alternate;
+    z-index: 9999;
+}
+
+
+@keyframes fallCircle {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    1% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(var(--x-offset)) translateY(500px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes glitter {
+    0% {
+        filter: brightness(1.5) drop-shadow(0 0 2px rgba(255,255,255,0.5));
+    }
+    50% {
+        filter: brightness(2.5) drop-shadow(0 0 6px rgba(255,255,255,1));
+    }
+    100% {
+        filter: brightness(1.5) drop-shadow(0 0 2px rgba(255,255,255,0.5));
+    }
+}
+
+@keyframes shine {
+    0% {
+        filter: brightness(1);
+    }
+    100% {
+        filter: brightness(1.5);
+    }
+}

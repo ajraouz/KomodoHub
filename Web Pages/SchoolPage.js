@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }); 
     
     // Load saved avatar from localStorage
-    const savedAvatar = localStorage.Item("userAvatar");
+    const savedAvatar = localStorage.getItem("userAvatar");
     if (savedAvatar) {
         profileAvatar.src = savedAvatar;
     }
@@ -353,7 +353,9 @@ function toggleContactForm() {
 }
 
 // Form Validation and Submission
-document.getElementById("contactForm").addEventListener("submit", function(event) {
+const contactForm = document.getElementById("contactForm");
+if (contactForm) {
+    contactForm.addEventListener("submit", function(event) {
     event.preventDefault();
     
     const name = event.target.name.value.trim();
@@ -368,6 +370,7 @@ document.getElementById("contactForm").addEventListener("submit", function(event
         alert("Please fill in all the fields.");
     }
 });
+}
 // Toggle Contact Form
 function toggleContact() {
     const form = document.getElementById("contact-form");
@@ -383,17 +386,46 @@ document.querySelectorAll('button').forEach(button => {
     });
 });
 
-// Confetti Animation for Rank Up
-const rankElement = document.getElementById('rank');
-if (rankElement.innerText === 'Beginner') {
-    rankElement.addEventListener('click', () => {
-        rankUpSound.play();
-        // Simple confetti effect
-        const confettiElement = document.createElement('div');
-        confettiElement.classList.add('confetti');
-        document.body.appendChild(confettiElement);
-        setTimeout(() => confettiElement.remove(), 3000);
-    });
+// Confetti Animation 
+document.addEventListener("DOMContentLoaded", () => {
+    const contributionsSection = document.querySelector('.contributions-container');
+    contributionsSection.style.position = 'relative';
+    const numberOfConfetti = 150; 
+
+    for (let i = 0; i < numberOfConfetti; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+
+        // Randomize horizontal position within the container
+        confetti.style.left = Math.random() * 100 + "%";
+        // Randomize a bit of vertical starting position so they don’t all start on the same line
+        confetti.style.top = Math.random() * 90 + "px"; 
+
+        // Set a random horizontal offset for the falling path (spread effect)
+        confetti.style.setProperty("--x-offset", (Math.random() * 100 - 50) + "px");
+
+        // Optional: Randomize background color
+        confetti.style.backgroundColor = randomColor();
+
+        // Randomize animation delay so the pieces start at different times
+        confetti.style.animationDelay = Math.random() * 4 + "s";
+        // Set a slower animation duration
+        confetti.style.animationDuration = "7s";
+
+        contributionsSection.appendChild(confetti);
+
+        // Remove each confetti element after its animation 
+        const delay = parseFloat(confetti.style.animationDelay) || 0;
+        setTimeout(() => {
+            confetti.remove();
+        }, (7 + delay) * 1000);
+    }
+});
+
+// Helper function to return a random color
+function randomColor() {
+    const colors = ["red","coral", "teal" , "green", "yellow", "purple","pink", "cyan" ];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
 
 function validateTeacherAccessCode() {
