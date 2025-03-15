@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hangman Game</title>
   <link rel="stylesheet" href="hangman.css" />
+  <script src="protect.js"></script>
+  <script src="/Web Pages/Main.js"></script>
 </head>
 <body>
 
@@ -18,7 +20,7 @@
         <a href="Post.html"><button>Post</button></a>
         <a href="Games.html"><button>Games</button></a>
     </div>
-    <a href="LoginPage.html"><button class="login">Login</button></a>
+    <button class="login">Login</button>
 </div>
     
   <div id="game-container">
@@ -49,7 +51,7 @@
     <button id="restart-button">Restart</button>
 
     <div id="highscore-display">
-      High Score: <span id="high-score">0</span>
+      Points: <span id="high-score">0</span>
     </div>
 
     <!-- Hint Box  -->
@@ -100,7 +102,8 @@
       
       // Reveal spaces automatically in the displayed word
       guessedLetters = wordToGuess.split("").map(letter => (letter === " " ? " " : "_"));
-  
+      
+      highScore = 0;
       attemptsRemaining = 6;
       wrongGuesses = 0;
       lettersTried = [];
@@ -169,7 +172,9 @@
             messageDisplay.textContent = "You win! The word was: " + wordToGuess;
             if (attemptsRemaining > highScore) {
                 highScore = attemptsRemaining;
+                updateDisplay()
             }
+            updateScoreToDB(highScore); 
             endGame(false);
         } else if (attemptsRemaining <= 0) {
             messageDisplay.textContent = "Game Over! The word was: " + wordToGuess;
@@ -182,15 +187,6 @@
         }
     }
 
-    function endGame(showHint) {
-        guessInput.disabled = true;
-        guessButton.disabled = true;
-        restartButton.style.display = "inline-block";
-        if (showHint) {
-            libraryHint.style.display = "block";
-        }
-    }
-
     guessButton.addEventListener("click", processGuess);
     guessInput.addEventListener("keyup", function(e) {
         if (e.key === "Enter") {
@@ -200,6 +196,42 @@
     restartButton.addEventListener("click", initializeGame);
 
     initializeGame();
+
+
+    function updateScoreToDB(score) {
+        const username = localStorage.getItem('username'); // Assumes username is stored locally after login
+        
+        fetch('/update_score', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({
+            username: username,
+            score: score
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.message){
+            console.log('Score updated:', data.message);
+          } else {
+            console.error('Error updating score:', data.error);
+          }
+        })
+        .catch(error => console.error('Fetch error:', error));
+      }
+      
+      function endGame(showHint) {
+          guessInput.disabled = true;
+          guessButton.disabled = true;
+          restartButton.style.display = "inline-block";
+      
+          if (showHint) {
+              libraryHint.style.display = "block";
+          }
+      }
+      
   </script>
 
 </body>
