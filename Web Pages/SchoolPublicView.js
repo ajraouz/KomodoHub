@@ -1,3 +1,7 @@
+(function(){
+  emailjs.init("PLK6mtkQw8p1xzATo"); 
+})();
+
 // Ranking & Progress
 const rankThresholds = [
     { rank: "Beginner", points: 0 },
@@ -82,6 +86,7 @@ function toggleContact() {
     toggleContactForm();
 }
 
+// Updated Contact Form Submission using EmailJS
 document.getElementById("contactForm").addEventListener("submit", function(event) {
     event.preventDefault();
     const name = event.target.name.value.trim();
@@ -89,9 +94,17 @@ document.getElementById("contactForm").addEventListener("submit", function(event
     const message = event.target.message.value.trim();
 
     if (name && email && message) {
-        alert("Thank you for contacting us, " + name + "! We will get back to you soon.");
-        event.target.reset();
-        toggleContactForm();
+        // Use EmailJS to send the form
+        emailjs.sendForm('service_hlzwn4b', 'template_5rdnkew', this)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                alert("Thank you for contacting us, " + name + "! Your message has been sent.");
+                event.target.reset();
+                toggleContactForm();
+            }, function(error) {
+                console.log('FAILED...', error);
+                alert("Failed to send email. Please try again later.");
+            });
     } else {
         alert("Please fill in all the fields.");
     }
