@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Page</title>
     <link rel="stylesheet" href="Post.css">
+    <script src="Protect.js"></script>
+    <script src="main.js"></script>
 </head>
 <body> 
     <div class="navbar">
@@ -18,7 +20,7 @@
             <a href="Post.html"><button class="post-btn">Post</button></a>
             <a href="Games.html"><button>Games</button></a>
         </div>
-        <a href="ProfilePrivateView.html"><button class="login">Profile</button></a>
+        <button class="login">Login</button>
     </div>
 
     <div class="container">
@@ -39,6 +41,7 @@
                 <select name="post-type" id="post-type">
                     <option value="school">School Library</option>
                     <option value="community">Community Library</option>
+                    <option value="both" style="display: none;">Both (School & Community)</option>
                 </select>
 
                 <input type="text" name="title" id="title" placeholder="Title" required>
