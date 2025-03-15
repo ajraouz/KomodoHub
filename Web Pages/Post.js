@@ -51,7 +51,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             postType.value = "school"; 
             postType.style.display = "none"; 
             dropdownLabel.style.display = "none";
-        }
+        } else if (data.role.toLowerCase() === "admin") {
+            // Allow admins to choose "Both"
+            document.querySelector("option[value='both']").style.display = "block"; 
+        }        
         // Admins can see the dropdown (default behavior)
         
     } catch (error) {
@@ -140,25 +143,34 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     });
 
-    // Validate input
     function validateInput(input, errorElement, minWords) {
         const text = input.value.trim();
         const words = text.split(/\s+/);
-
+    
         let isValid = true;
         let errorMessage = "";
-
+    
         if (words.length < minWords) {
             errorMessage = `Minimum of ${minWords} words required.`;
             isValid = false;
         }
-
-        const pattern = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s.,'!?()-]*$/;
-        if (!pattern.test(text)) {
-            errorMessage = "Only numbers or special characters accompanied by alphabets are allowed.";
+    
+        // New validation conditions:
+        const containsLetters = /[a-zA-Z]/.test(text);
+        const containsNumbers = /[0-9]/.test(text);
+        const containsSymbols = /[^a-zA-Z0-9\s]/.test(text);
+    
+        if (!containsLetters) {
+            errorMessage = "Text must contain at least one letter.";
+            isValid = false;
+        } else if (!containsLetters && (containsNumbers || containsSymbols)) {
+            errorMessage = "Numbers or special characters must be accompanied by letters.";
+            isValid = false;
+        } else if (text.length === 0) {
+            errorMessage = "Post cannot be empty.";
             isValid = false;
         }
-
+    
         if (!isValid) {
             errorElement.textContent = errorMessage;
             input.style.border = "2px solid red";
@@ -166,9 +178,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             errorElement.textContent = "";
             input.style.border = "2px solid green";
         }
-
+    
         return isValid;
     }
+    
     function showConfirmationPopup(callback) {
         // Remove existing popup if present
         const existingPopup = document.getElementById("custom-popup");
@@ -211,16 +224,36 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
     let lastPostTime = 0; // Stores timestamp of the last post
+
     postButton.addEventListener("click", async (event) => {
         event.preventDefault();
     
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
         const media = mediaUpload.files[0];
-        const postDestination = postType.value; // Get selected post destination
+        const postDestination = postType.value;
     
-        // Determine which endpoint to use
-        const endpoint = postDestination === "school" ? "/post" : "/post_community";
+        // 30-second cooldown before allowing another post
+        const currentTime = Date.now();
+        if (currentTime - lastPostTime < 30000) {  // 30 seconds = 30,000 ms
+            mediaError.textContent = "Please wait 30 seconds before posting again.";
+            return;
+        } else {
+            mediaError.textContent = ""; // Clear previous error message
+        }
+    
+        // Determine which endpoints to use
+        let endpoint1 = null;
+        let endpoint2 = null;
+    
+        if (postDestination === "school") {
+            endpoint1 = "/post";
+        } else if (postDestination === "community") {
+            endpoint1 = "/post_community";
+        } else if (postDestination === "both") {
+            endpoint1 = "/post";
+            endpoint2 = "/post_community";
+        }
     
         // Validate title (1 word) and content (10 words)
         const isTitleValid = validateInput(titleInput, titleError, 1);
@@ -231,7 +264,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
     
-        // Check if media is uploaded before showing confirmation pop-up
         if (!mediaUpload.files[0]) {
             console.log("Media is missing.");
             mediaError.textContent = "You must upload an image before posting.";
@@ -239,48 +271,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
             mediaError.textContent = "";
         }
-
-        // Check if 1 minute (60,000 milliseconds) has passed since the last post
-        const currentTime = Date.now();
-        if (currentTime - lastPostTime < 60000) {  
-            mediaError.textContent = "Please wait before posting again.";
-            return;
-        } else {
-            mediaError.textContent = ""; // Clear previous error message
-        }
-
-        // Show confirmation pop-up only if media is valid
-        showConfirmationPopup(async (confirmed) => {
-            if (!confirmed) return;
-
-            lastPostTime = Date.now(); // Update last post timestamp
-
-
     
-            // Create FormData object for sending data
-            if (!mediaUpload.files[0]) {
-                console.log(" Media is missing.");
-                mediaError.textContent = "You must upload an image, video, or document before posting.";
-                return;
-            } else {
-                mediaError.textContent = "";
-            }
-            
-            // Proceed with post submission
-            const formData = new FormData();
-            formData.append("title", title);
-            formData.append("content", content);
-            formData.append("owner", document.getElementById("post-owner").value);
-            formData.append("image", mediaUpload.files[0]);
-            
-    
-            console.log("Sending post data:", {
-                title: title,
-                content: content,
-                media: media ? media.name : "No media",
-                destination: postDestination
-            });
-    
+        // Function to send the post
+        async function submitPost(endpoint, formData) {
             try {
                 const response = await fetch(`http://127.0.0.1:5001${endpoint}`, {
                     method: "POST",
@@ -288,19 +281,55 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
     
                 const result = await response.json();
-                console.log("Server response:", result);
+                console.log(`Server response from ${endpoint}:`, result);
     
-                if (response.ok) {
-                    showSuccessMessage(`Post uploaded to ${postDestination} successfully!`);
-                } else {
-                    console.error("Server responded with an error:", response.statusText);
-                    showSuccessMessage("Post saved, but server response was invalid.");
-                }
+                return response.ok;
             } catch (error) {
-                console.error(" Network error:", error);
-                showSuccessMessage("Post saved locally, but a network error occurred.");
+                console.error(`Network error while posting to ${endpoint}:`, error);
+                return false;
             }
+        }
     
+        // Show confirmation pop-up before posting
+        showConfirmationPopup(async (confirmed) => {
+            if (!confirmed) return;
+    
+            lastPostTime = Date.now(); // Update last post timestamp to enforce cooldown
+    
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("content", content);
+            formData.append("owner", document.getElementById("post-owner").value);
+            formData.append("image", mediaUpload.files[0]);
+    
+            console.log("Sending post data:", {
+                title: title,
+                content: content,
+                destination: postDestination,
+            });
+    
+            let success1 = endpoint1 ? await submitPost(endpoint1, formData) : false;
+            let success2 = endpoint2 ? await submitPost(endpoint2, formData) : false;
+            
+            if (postDestination === "both") {
+                if (success1 && success2) {
+                    showSuccessMessage(`Post uploaded to **both** School and Community Library!`);
+                } else {
+                    showSuccessMessage(`Post failed. Please try again.`);
+                }
+            } else if (postDestination === "school") {
+                if (success1) {
+                    showSuccessMessage(`Post uploaded to **School Library** successfully!`);
+                } else {
+                    showSuccessMessage(`Post failed. Please try again.`);
+                }
+            } else if (postDestination === "community") {
+                if (success1) {
+                    showSuccessMessage(`Post uploaded to **Community Library** successfully!`);
+                } else {
+                    showSuccessMessage(`Post failed. Please try again.`);
+                }
+            }
             // Clear inputs
             titleInput.value = "";
             contentInput.value = "";
@@ -308,6 +337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             uploadFeedback.style.display = "none";
         });
     });
+    
     
 
     function showSuccessMessage(message) {
