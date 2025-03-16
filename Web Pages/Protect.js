@@ -14,56 +14,59 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
   }
-  // Profile link logic
-  document.querySelectorAll(".profile-link").forEach(link => {
-    link.addEventListener("click", function(event) {
-      event.preventDefault();
+  
+  // Use event delegation to capture clicks on dynamically added profile links
+  document.body.addEventListener("click", function(event) {
+    // Check if the clicked element or one of its parents has the "profile-link" class
+    const link = event.target.closest(".profile-link");
+    if (!link) return;
+    event.preventDefault();
 
-      // Gather attributes from the clicked link
-      const targetUsername = link.getAttribute("data-username");
-      const targetRole     = link.getAttribute("data-role");
-      const userId         = link.getAttribute("data-user_id");
+    // Gather attributes from the clicked link
+    const targetUsername = link.getAttribute("data-username");
+    const targetRole     = link.getAttribute("data-role");
+    const userId         = link.getAttribute("data-user_id");
 
-      //If the user clicked their own profile => private profile
-      if (targetUsername === currentUser) {
-        window.location.href = "/Web Pages/ProfilePrivateView.html";
-        return;
-      }
-
-      // Student or teacher profile must be logged in as student, teacher, principal, or admin
-      if (["student", "teacher"].includes(targetRole)) {
-        if (
-          !currentRole || 
-          !["student", "teacher", "principal", "admin"].includes(currentRole)
-        ) {
-          alert("You do not have permission to view this profile.");
-          return;
-        }
-      }
-
-      // Principal (School) profile , Everyone can see
-      if (targetRole === "principal") {
-        if (currentRole === "principal") {
-          // If I'm also a principal, view private page
-          window.location.href = "/Web Pages/SchoolPrivatePage.html";
-        } else {
-          // Otherwise, go to the public school page
-          window.location.href =
-            `/Web Pages/SchoolPage.html?user_id=${encodeURIComponent(userId)}&role=${encodeURIComponent(targetRole)}`;
-        }
-        return;
-      }
-
-      // Admin profile ,Everyone can see goes to public profile view
-      if (targetRole === "admin") {
-        window.location.href = 
-          `/Web Pages/ProfilePublicView.html?user_id=${encodeURIComponent(userId)}&role=${encodeURIComponent(targetRole)}`;
-        return;
-      }
-
-      // For any other role not covered above , public profile
-      window.location.href =
-        `/Web Pages/ProfilePublicView.html?user_id=${encodeURIComponent(userId)}&role=${encodeURIComponent(targetRole)}`;
-    });
+    // Get the proper profile URL using our helper function
+    const profileUrl = getProfileLink(userId, targetUsername, targetRole);
+    if (profileUrl === "#") {
+      alert("You do not have permission to view this profile.");
+      return;
+    }
+    window.location.href = profileUrl;
   });
 });
+
+function getProfileLink(userId, username, role) {
+  const currentUser = localStorage.getItem("username");
+  const currentRole = localStorage.getItem("userType");
+
+  // When a user clicks on their own profile:
+  if (username === currentUser) {
+    if (currentRole === "principal" && currentUser === "KhairunnisaUjungRayaPrimary") {
+      return "/Web Pages/SchoolPrivatePage.html";
+    }
+    return "/Web Pages/ProfilePrivateView.html";
+  }
+  
+  if (["student", "teacher"].includes(role)) {
+    if (!currentRole || !["student", "teacher", "principal", "admin"].includes(currentRole)) {
+      return "#"; 
+    }
+  }
+  
+  if (role === "principal") {
+    if (currentRole === "principal") {
+      return "/Web Pages/SchoolPrivatePage.html";
+    } else {
+      return `/Web Pages/SchoolPage.html?user_id=${encodeURIComponent(userId)}&role=${encodeURIComponent(role)}`;
+    }
+  }
+  
+  if (role === "admin") {
+    return `/Web Pages/ProfilePublicView.html?user_id=${encodeURIComponent(userId)}&role=${encodeURIComponent(role)}`;
+  }
+  
+  // For any other role, default to public profile view.
+  return `/Web Pages/ProfilePublicView.html?user_id=${encodeURIComponent(userId)}&role=${encodeURIComponent(role)}`;
+}
