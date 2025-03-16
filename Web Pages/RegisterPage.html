@@ -206,13 +206,12 @@
                 .then(async response => {
                     let result = await response.json(); // Parse JSON correctly
                     if (response.ok) {
-                        showPopup("WELCOME 🤩", "success", 1500);  // Call function to show animated pop-up
+                        localStorage.setItem("registeredName", name);
                         setTimeout(() => {
                             window.location.replace('/Web Pages/LoginPage.html');
-                        }, 1700);  // Redirect to login page
-                    } else {
-                        showPopup("" + result.error, "error", 2200);
+                        }, 1700);
                     }
+
                 })
                 .catch(error => {
                     showPopup("An error occurred while logging in.", "error", 2200);
@@ -240,16 +239,17 @@
             }
         }
 
+        // Function to toggle password visibility
         function togglePassword(fieldId, button) {
             let passwordField = document.getElementById(fieldId);
             let img = button.querySelector('img');
             if (passwordField.type === "password") {
                 passwordField.type = "text";
-                img.src = "/Web Pages/Images/Show_pass.png"; // Change to open eye image
+                img.src = "/Web Pages/Images/Show_pass.png"; 
                 img.alt = "Show Password";
             } else {
                 passwordField.type = "password";
-                img.src = "/Web Pages/Images/Hide_pass.png"; // Change to closed eye image
+                img.src = "/Web Pages/Images/Hide_pass.png";
                 img.alt = "Hide Password";
             }
         }
@@ -296,4 +296,5 @@
     </script>
 </body>
 </html>
+
 
