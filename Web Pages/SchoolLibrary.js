@@ -74,25 +74,24 @@ function createCardHeader(article) {
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("card-header");
 
-    const currentUser = localStorage.getItem("username");
-    const currentRole = localStorage.getItem("userType");
-    
+    // Create profile link with image
     const profileLink = document.createElement("a");
     profileLink.classList.add("profile-link");
     profileLink.setAttribute("data-user_id", article.user_id);
     profileLink.setAttribute("data-role", article.userType);
     profileLink.setAttribute("data-username", article.username || article.name);
-
     profileLink.href = getProfileLink(article.user_id, article.username || article.name, article.userType);
 
     const profileImg = document.createElement("img");
     profileImg.classList.add("profile-img");
     profileImg.alt = "Profile";
-    profileImg.src = article.profile_image && article.profile_image !== "null"
-        ? article.profile_image
-        : "Images/default.png";
-
+    profileImg.src = article.profile_image && article.profile_image !== "null" ? article.profile_image : "Images/default.png";
     profileLink.appendChild(profileImg);
+
+    // Create a container for profile information and timestamp
+    const cardInfo = document.createElement("div");
+    cardInfo.classList.add("card-info"); 
+
 
     const profileInfo = document.createElement("div");
     profileInfo.classList.add("profile-info");
@@ -106,7 +105,25 @@ function createCardHeader(article) {
     roleSpan.innerText = article.userType;
 
     profileInfo.append(usernameSpan, roleSpan);
-    cardHeader.append(profileLink, profileInfo);
+
+    const timestampContainer = document.createElement("div");
+    timestampContainer.classList.add("timestamp");
+
+    const dateSpan = document.createElement("span");
+    dateSpan.classList.add("date");
+    dateSpan.innerText = article.date;  
+
+    const timeSpan = document.createElement("span");
+    timeSpan.classList.add("time");
+    timeSpan.innerText = article.time;  
+
+    timestampContainer.append(dateSpan, timeSpan);
+
+
+    cardInfo.append(profileInfo, timestampContainer);
+
+
+    cardHeader.append(profileLink, cardInfo);
 
     return cardHeader;
 }
