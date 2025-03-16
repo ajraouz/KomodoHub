@@ -14,13 +14,18 @@
         </a>
     </div>
     <div class="form-container login-box">
-        <h2 class="form-title">Login to Komodo Hub</h2> <!-- Title inside the box -->
+        <h2 class="form-title">Login to Komodo Hub</h2> 
         <form id="loginForm">
             <input type="text" name="username" placeholder="Username *" oninput="this.value = this.value.replace(/\s/g, '')" required>
+            <div id="usernameError" class="error-message-username"></div>
+
             <div class="password-container">
                 <input type="password" id="password" name="password" placeholder="Password *" oninput="this.value = this.value.replace(/\s/g, '')" required>
-                <button type="button" class="toggle-password" onclick="togglePassword('password', this)">👓</button>
+                <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                    <img src="/Web Pages/Images/Hide_pass.png" alt="Hide Password" class="eye">
+                </button>
             </div>
+            <div id="passwordError" class="error-message"></div>
 
             <div class="dropdown">
                 <select id="dropdown" name="user_type" required>
@@ -34,12 +39,12 @@
             <img src="Images/giphy.gif" alt="Loading animation" class="gif">
 
             <button id="submit" type="submit" class="submit-button">Log In</button>
-
         </form>
         <p class="redirect">
             Don't have an account? <a href="#" id="registerLink">Register</a>
         </p>
     </div>
+    
     <script>
         document.querySelector('input[name="username"]').addEventListener('input', function () {
             let username = document.querySelector('input[name="username"]').value;
@@ -59,6 +64,7 @@
                 dropdown.setAttribute('required', 'true'); // Ensure required is added back
             }
         });
+
         document.getElementById('loginForm').addEventListener('submit', async function (event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -80,7 +86,7 @@
             formData.append('user_type', userType);
 
             try {
-                let response = await fetch('/login', {  // <-- Update the endpoint to your login route
+                let response = await fetch('/login', {  //Update the endpoint to your login route
                     method: 'POST',
                     body: formData
                 });
@@ -88,31 +94,86 @@
                 let result = await response.json();
 
                 if (response.ok) {
-                    //Stores in memory who is running the session
+                    
                     localStorage.setItem("username", username);
                     localStorage.setItem("userType", userType);
 
-                    showPopup("LOGIN SUCCESSFUL 🎉", "success", 1500);  // Call function to show animated pop-up
-                    // Redirect to user dashboard based on user type
+                    // Show popup message
+                    showLoginSuccessPopup(username);
+                
+                    // Redirect to user dashboard after a short delay
                     setTimeout(() => {
                         window.location.replace('/Web Pages/HomePage.html');
-                    }, 1700);
+                    }, 2000);
                 } else {
-                    showPopup("" + result.error, "error", 1700);
+                    let passwordError = document.getElementById("passwordError");
+                    passwordError.textContent = "";
+
+                    if (result.error.toLowerCase().includes("invalid password")) {
+                        passwordError.textContent = "❗Invalid password.";
+                        setTimeout(() => {
+                            passwordError.textContent = "";
+                        }, 2500);
+                    } else if (result.error.toLowerCase().includes("user does not exist")) {
+                        let usernameError = document.getElementById("usernameError");
+                        usernameError.textContent = "❗User does not exist";
+                        setTimeout(() => {
+                            usernameError.textContent = "";
+                        }, 3000);
+                    } else if (result.error.toLowerCase().includes("username does not exist")) {
+                        let usernameError = document.getElementById("usernameError");
+                        usernameError.textContent = "❗Username does not exist";
+                        setTimeout(() => {
+                            usernameError.textContent = "";
+                        }, 3000);
+                    } else {
+                        showPopup("An error occurred while logging in.", "error", 1800);
+                    }                         
                 }
             } catch (error) {
-                showPopup("An error occurred while logging in.", "error", 1700);
+                showPopup("An error occurred while logging in.", "error", 1800);
             }
         });
 
+        // login success popup
+        function showLoginSuccessPopup(username) {
+            let registeredName = localStorage.getItem("registeredName") || username;
+            
+            let successPopup = document.createElement("div");
+            successPopup.className = "login success-popup"; 
+            successPopup.innerHTML = `
+                <div class="popup-content">
+                    <h2> ✔ LOGIN SUCCESSFUL!</h2>
+                    <img src="Images/bird_waving.gif" alt="Bird Waving" class="popup-bird" />
+                    <p>WELCOME <strong class="shiny-name">${registeredName}</strong></p>
+                    <hr class="popup-divider">
+                    <p>Enjoy your journey with <strong>KomodoHub!</strong> </p>
+                </div>
+            `;
+            document.body.appendChild(successPopup);
+            
+            setTimeout(() => {
+                successPopup.style.opacity = "1";
+            }, 10);
+            
+            setTimeout(() => {
+                successPopup.style.opacity = "0";
+                setTimeout(() => successPopup.remove(), 300);
+            }, 290000);
+        }
+
+        // Function to toggle password visibility
         function togglePassword(fieldId, button) {
             let passwordField = document.getElementById(fieldId);
+            let img = button.querySelector('img');
             if (passwordField.type === "password") {
                 passwordField.type = "text";
-                button.textContent = "👀"; // Hands off eyes
+                img.src = "/Web Pages/Images/Show_pass.png"; 
+                img.alt = "Show Password";
             } else {
                 passwordField.type = "password";
-                button.textContent = "👓"; // Hands covering eyes
+                img.src = "/Web Pages/Images/Hide_pass.png"; 
+                img.alt = "Hide Password";
             }
         }
 
@@ -152,6 +213,7 @@
             event.preventDefault(); // Prevent default navigation
             window.location.replace("/Web Pages/RegisterPage.html"); // Redirect without allowing back navigation
         });
+
         document.getElementById("home").addEventListener("click", function (event) {
             event.preventDefault(); // Prevent default navigation
             window.location.replace("/Web Pages/HomePage.html"); // Redirect without allowing back navigation
