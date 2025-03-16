@@ -214,6 +214,7 @@ def get_articles():
     cursor.execute("""
         SELECT sp.ID, 
             COALESCE(s.FullName, t.FullName, m.FullName, sch.FullName, a.FullName, u.username) AS name,
+            u.username AS username,  
             sp.Title, 
             sp.Image, 
             sp.Content, 
@@ -238,10 +239,9 @@ def get_articles():
         LEFT JOIN admin a ON u.user_id = a.user_id
     """)
 
-
     articles = []
     for row in cursor.fetchall():
-        (article_id, username, title, image, content, date, time, user_id, user_type, avatar) = row  
+        (article_id, name, username, title, image, content, date, time, user_id, user_type, avatar) = row  
 
         if image:
             try:
@@ -252,11 +252,12 @@ def get_articles():
         else:
             image_base64 = None
 
-        print(f"DEBUG: Fetching article - Owner: {username}, userType: {user_type}, Title: {title}")
+        print(f"DEBUG: Fetching article - Name: {name}, Username: {username}, UserType: {user_type}, Title: {title}")
 
         articles.append({
             "id": article_id,
-            "username": username,
+            "name": name, 
+            "username": username, 
             "user_id": user_id,
             "title": title,
             "image": image_base64,
@@ -280,6 +281,7 @@ def get_community_articles():
     cursor.execute("""
         SELECT sp.ID, 
             COALESCE(s.FullName, t.FullName, m.FullName, sch.FullName, a.FullName, u.username) AS name,
+            u.username AS username,  
             sp.Title, 
             sp.Image, 
             sp.Content, 
@@ -303,9 +305,10 @@ def get_community_articles():
         LEFT JOIN school sch ON u.user_id = sch.user_id
         LEFT JOIN admin a ON u.user_id = a.user_id
     """)
+
     articles = []
     for row in cursor.fetchall():
-        (article_id, name, title, image, content, date, time, user_id, userType, avatar) = row  
+        (article_id, name, username, title, image, content, date, time, user_id, userType, avatar) = row  
 
         if image:
             try:
@@ -316,9 +319,12 @@ def get_community_articles():
         else:
             image_base64 = None
 
+        print(f"DEBUG: Fetching community article - Name: {name}, Username: {username}, UserType: {userType}, Title: {title}")
+
         articles.append({
             "id": article_id,
-            "username": name,
+            "name": name, 
+            "username": username,  
             "user_id": user_id,
             "title": title,
             "image": image_base64,
@@ -328,10 +334,11 @@ def get_community_articles():
             "userType": userType if userType else "Unknown",  
             "profile_image": avatar if avatar else "Images/default.png"
         })
-    conn.close()
-    print(f"DEBUG: Total Community Articles Fetched: {len(articles)}")
-    return jsonify(articles)
 
+    conn.close()
+    
+    print(f"DEBUG: Total Community Articles Fetched: {len(articles)}") 
+    return jsonify(articles)
 
 @app.route('/post', methods=['POST'])
 def post_article():
