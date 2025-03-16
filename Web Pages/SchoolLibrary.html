@@ -25,12 +25,32 @@
         <button class="login">Login</button>
     </div>
 
-    <!--MAIN CONTENT-->
     <div class="content-wrapper">
+        <!-- New Filter Container -->
+        <div class="filter-container" id="filter-container">
+          <select id="userTypeFilter">
+              <option value="">All Roles</option>
+              <option value="admin">Admin</option>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="principal">Principal</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Search by Name, Role and Title" />
+          <!-- New Order Filter Dropdown -->
+          <select id="orderFilter">
+              <option value="new">Newest First</option>
+              <option value="old">Oldest First</option>
+          </select>
+          <button id="searchButton">Search</button>
+      </div>
+      
+        
+        <!-- Existing Container for Article Cards -->
         <div class="container" id="container">
             <!-- Cards will be dynamically inserted here -->
         </div>
-    </div>
+      </div>
+      
 
     <!-- MODAL (POST DETAILS) -->
     <div class="overlay" id="overlay" onclick="closeModal()"></div>
@@ -83,6 +103,7 @@
 
 
     <script src="SchoolLibrary.js"></script>
+    <script src="Protect.js"></script>
     <script src="Main.js"></script>
 
 </body>

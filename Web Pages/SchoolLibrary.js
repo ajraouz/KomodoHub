@@ -1,18 +1,56 @@
+let articlesData = [];
+
 document.addEventListener("DOMContentLoaded", function () {
     fetchArticles();
+    document.getElementById("searchButton").addEventListener("click", applyFilters);
 });
 
 function fetchArticles() {
     fetch("/articles")
         .then(response => response.json())
         .then(data => {
-            const container = document.querySelector(".container");
-            data.forEach(article => {
-                const card = createCard(article);
-                container.prepend(card);
-            });
+            articlesData = data; 
+            renderArticles(articlesData);
         })
         .catch(error => console.error("Error fetching articles:", error));
+}
+
+function renderArticles(articles) {
+    const container = document.getElementById("container");
+    container.innerHTML = ""; // Clear current articles
+    articles.forEach(article => {
+        const card = createCard(article);
+        container.prepend(card);
+    });
+}
+
+function applyFilters() {
+    const userTypeFilter = document.getElementById("userTypeFilter").value.toLowerCase();
+    const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+    const orderFilter = document.getElementById("orderFilter").value; // 'new' or 'old'
+
+    const filteredArticles = articlesData.filter(article => {
+        // Filter by user type
+        const matchesUserType =
+            userTypeFilter === "" || article.userType.toLowerCase() === userTypeFilter;
+        
+        // Filter by search query across multiple fields
+        const matchesSearch =
+            searchQuery === "" ||
+            article.userType.toLowerCase().includes(searchQuery) ||
+            (article.name && article.name.toLowerCase().includes(searchQuery)) ||
+            (article.username && article.username.toLowerCase().includes(searchQuery)) ||
+            (article.title && article.title.toLowerCase().includes(searchQuery));
+
+        return matchesUserType && matchesSearch;
+    });
+
+    let orderedArticles = filteredArticles;
+    if (orderFilter === "old") {
+        orderedArticles = filteredArticles.slice().reverse();
+    }
+    
+    renderArticles(orderedArticles);
 }
 
 function createCard(article) {
@@ -32,38 +70,30 @@ function createCard(article) {
     return card;
 }
 
-/** 
- * Create Card Header (Profile Picture & Info)
- * */
 function createCardHeader(article) {
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("card-header");
 
+    const currentUser = localStorage.getItem("username");
+    const currentRole = localStorage.getItem("userType");
+    
     const profileLink = document.createElement("a");
-    if (article.userType=="principal"){
-        profileLink.href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
-
-    }
-    else{
-        profileLink.href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
-    }
     profileLink.classList.add("profile-link");
+    profileLink.setAttribute("data-user_id", article.user_id);
+    profileLink.setAttribute("data-role", article.userType);
+    profileLink.setAttribute("data-username", article.username || article.name);
+
+    profileLink.href = getProfileLink(article.user_id, article.username || article.name, article.userType);
 
     const profileImg = document.createElement("img");
     profileImg.classList.add("profile-img");
     profileImg.alt = "Profile";
-    profileImg.src = article.profile_image && article.profile_image !== "null" ? sanitizeImageUrl(article.profile_image) : "Images/default.png";
-    
+    profileImg.src = article.profile_image && article.profile_image !== "null"
+        ? article.profile_image
+        : "Images/default.png";
+
     profileLink.appendChild(profileImg);
 
-    
-    // Ensure a valid profile image is shown, fallback to default if missing
-    profileImg.src = article.profile_image && article.profile_image !== "null" ? sanitizeImageUrl(article.profile_image) : "Images/default.png";
-    
-    profileLink.appendChild(profileImg);
-    
-
-    // Profile Info
     const profileInfo = document.createElement("div");
     profileInfo.classList.add("profile-info");
 
@@ -73,29 +103,11 @@ function createCardHeader(article) {
 
     const roleSpan = document.createElement("span");
     roleSpan.classList.add("role");
-    roleSpan.innerText = article.userType;  // <-- Updated to match backend
+    roleSpan.innerText = article.userType;
 
     profileInfo.append(usernameSpan, roleSpan);
+    cardHeader.append(profileLink, profileInfo);
 
-    // Timestamp
-    const timestamp = document.createElement("div");
-    timestamp.classList.add("timestamp");
-
-    const date = document.createElement("span");
-    date.classList.add("date");
-    date.innerText = article.date;
-
-    const time = document.createElement("span");
-    time.classList.add("time");
-    time.innerText = article.time;
-
-    timestamp.append(date, time);
-
-    const cardInfo = document.createElement("div");
-    cardInfo.classList.add("card-info");
-    cardInfo.append(profileInfo, timestamp);
-
-    cardHeader.append(profileLink, cardInfo);
     return cardHeader;
 }
 
@@ -121,50 +133,32 @@ function createCardContent(article) {
 function showModal(article) {
     document.getElementById("modal-title").innerText = article.title;
     document.getElementById("modal-content").innerText = article.content;
-    document.getElementById("modal-image").src = article.image.startsWith("data:image") ? article.image : "images/default.png";
+    document.getElementById("modal-image").src = article.image.startsWith("data:image") 
+        ? article.image 
+        : "images/default.png";
     document.getElementById("modal-profile").src = article.profile_image && article.profile_image !== "null" 
-    ? sanitizeImageUrl(article.profile_image) 
-    : "Images/default.png";
+        ? sanitizeImageUrl(article.profile_image) 
+        : "Images/default.png";
 
-    // Dynamically update the href of the existing modal-profile-link
-    if (article.userType === "principal") {
-    document.getElementById("modal-profile-link").href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
-    } else {
-    document.getElementById("modal-profile-link").href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
-    }
+    const modalProfileLink = document.getElementById("modal-profile-link");
+    
+    modalProfileLink.setAttribute("data-user_id", article.user_id);
+    modalProfileLink.setAttribute("data-role", article.userType);
+    modalProfileLink.setAttribute("data-username", article.username || article.name);
+
+    modalProfileLink.href = getProfileLink(article.user_id, article.username || article.name, article.userType);
 
     document.getElementById("modal-username").innerText = article.name || article.username;
-    document.getElementById("modal-role").innerText = article.userType;  
+    document.getElementById("modal-role").innerText = article.userType;
     document.getElementById("modal-date").innerText = article.date;
     document.getElementById("modal-time").innerText = article.time;
-    
-    const profileLink = document.createElement("a");
-
-    // Pass user_id and role for accurate profile retrieval
-    if (article.userType=="principal"){
-        profileLink.href = `SchoolPage.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
-
-    }
-    else{
-        profileLink.href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
-    }
-    profileLink.classList.add("profile-link");
-    
-    const profileImg = document.createElement("img");
-    profileImg.classList.add("profile-img");
-    profileImg.alt = "Profile";
-    
-    // Ensure valid profile image, fallback to default
-    profileImg.src = article.profile_image && article.profile_image !== "null" ? sanitizeImageUrl(article.profile_image) : "Images/default.png";
-    
-    profileLink.appendChild(profileImg);
-    
 
     handleDeleteButton(article);
-    // Show Modal
+
     document.getElementById("modal").style.display = "block";
     document.getElementById("overlay").style.display = "block";
 }
+
 
 /** 
  * Handle Delete Button Visibility
