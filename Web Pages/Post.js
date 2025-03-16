@@ -8,12 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const username = localStorage.getItem("username");
 
-    if (!username) {
-        console.error("No username found. Redirecting to login page...");
-        window.location.href = "LoginPage.html";
-        return;
-    }
-
     try {
         let formData = new FormData();
         formData.append("username", username);
