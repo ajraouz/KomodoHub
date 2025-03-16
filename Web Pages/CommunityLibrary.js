@@ -1,18 +1,57 @@
+let articlesData = [];
+
 document.addEventListener("DOMContentLoaded", function () {
     fetchArticles();
+
+    document.getElementById("searchButton").addEventListener("click", applyFilters);
 });
 
 function fetchArticles() {
     fetch("http://127.0.0.1:5001/community_articles")
         .then(response => response.json())
         .then(data => {
-            const container = document.querySelector(".container");
-            data.forEach(article => {
-                const card = createCard(article);
-                container.prepend(card);
-            });
+            articlesData = data; // Save the articles globally
+            renderArticles(articlesData);
         })
         .catch(error => console.error("Error fetching community articles:", error));
+}
+
+function renderArticles(articles) {
+    const container = document.getElementById("container");
+    container.innerHTML = ""; // Clear current articles
+    articles.forEach(article => {
+        const card = createCard(article);
+        container.prepend(card);
+    });
+}
+
+
+function applyFilters() {
+    const userTypeFilter = document.getElementById("userTypeFilter").value.toLowerCase();
+    const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+    const orderFilter = document.getElementById("orderFilter").value; 
+
+    const filteredArticles = articlesData.filter(article => {
+        const matchesUserType =
+            userTypeFilter === "" || article.userType.toLowerCase() === userTypeFilter;
+        
+
+        const matchesSearch =
+            searchQuery === "" ||
+            article.userType.toLowerCase().includes(searchQuery) ||
+            (article.name && article.name.toLowerCase().includes(searchQuery)) ||
+            (article.username && article.username.toLowerCase().includes(searchQuery)) ||
+            (article.title && article.title.toLowerCase().includes(searchQuery));
+
+        return matchesUserType && matchesSearch;
+    });
+
+    let orderedArticles = filteredArticles;
+    if (orderFilter === "old") {
+        orderedArticles = filteredArticles.slice().reverse();
+    }
+    
+    renderArticles(orderedArticles);
 }
 
 function createCard(article) {
@@ -36,17 +75,24 @@ function createCardHeader(article) {
     const cardHeader = document.createElement("div");
     cardHeader.classList.add("card-header");
 
+    const currentUser = localStorage.getItem("username");
+    const currentRole = localStorage.getItem("userType");
+    
     const profileLink = document.createElement("a");
-    profileLink.href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
     profileLink.classList.add("profile-link");
+    profileLink.setAttribute("data-user_id", article.user_id);
+    profileLink.setAttribute("data-role", article.userType);
+    profileLink.setAttribute("data-username", article.username || article.name);
+
+    profileLink.href = getProfileLink(article.user_id, article.username || article.name, article.userType);
 
     const profileImg = document.createElement("img");
     profileImg.classList.add("profile-img");
     profileImg.alt = "Profile";
-    profileImg.src = article.profile_image && article.profile_image !== "null" 
-        ? sanitizeImageUrl(article.profile_image) 
+    profileImg.src = article.profile_image && article.profile_image !== "null"
+        ? article.profile_image
         : "Images/default.png";
-    
+
     profileLink.appendChild(profileImg);
 
     const profileInfo = document.createElement("div");
@@ -61,27 +107,11 @@ function createCardHeader(article) {
     roleSpan.innerText = article.userType;
 
     profileInfo.append(usernameSpan, roleSpan);
+    cardHeader.append(profileLink, profileInfo);
 
-    const timestamp = document.createElement("div");
-    timestamp.classList.add("timestamp");
-
-    const date = document.createElement("span");
-    date.classList.add("date");
-    date.innerText = article.date;
-
-    const time = document.createElement("span");
-    time.classList.add("time");
-    time.innerText = article.time;
-
-    timestamp.append(date, time);
-
-    const cardInfo = document.createElement("div");
-    cardInfo.classList.add("card-info");
-    cardInfo.append(profileInfo, timestamp);
-
-    cardHeader.append(profileLink, cardInfo);
     return cardHeader;
 }
+
 
 function createCardImage(article) {
     const img = document.createElement("img");
@@ -105,24 +135,32 @@ function createCardContent(article) {
 function showModal(article) {
     document.getElementById("modal-title").innerText = article.title;
     document.getElementById("modal-content").innerText = article.content;
-    document.getElementById("modal-image").src = article.image && article.image.startsWith("data:image") 
+    document.getElementById("modal-image").src = article.image.startsWith("data:image") 
         ? article.image 
         : "images/default.png";
     document.getElementById("modal-profile").src = article.profile_image && article.profile_image !== "null" 
         ? sanitizeImageUrl(article.profile_image) 
         : "Images/default.png";
 
-    document.getElementById("modal-profile-link").href = `ProfilePublicView.html?user_id=${encodeURIComponent(article.user_id)}&role=${encodeURIComponent(article.userType)}`;
+    const modalProfileLink = document.getElementById("modal-profile-link");
+    
+    modalProfileLink.setAttribute("data-user_id", article.user_id);
+    modalProfileLink.setAttribute("data-role", article.userType);
+    modalProfileLink.setAttribute("data-username", article.username || article.name);
+
+    modalProfileLink.href = getProfileLink(article.user_id, article.username || article.name, article.userType);
+
     document.getElementById("modal-username").innerText = article.name || article.username;
     document.getElementById("modal-role").innerText = article.userType;
     document.getElementById("modal-date").innerText = article.date;
     document.getElementById("modal-time").innerText = article.time;
-    
+
     handleDeleteButton(article);
 
     document.getElementById("modal").style.display = "block";
     document.getElementById("overlay").style.display = "block";
 }
+
 
 function handleDeleteButton(article) {
     const deleteButton = document.getElementById("delete-post-btn");
