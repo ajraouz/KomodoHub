@@ -209,7 +209,9 @@
                         localStorage.setItem("registeredName", name);
                         setTimeout(() => {
                             window.location.replace('/Web Pages/LoginPage.html');
-                        }, 1700);
+                        }, 1700); // Redirect to login page
+                    } else {
+                        showPopup("" + result.error, "error", 2200);
                     }
 
                 })
