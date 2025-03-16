@@ -20,11 +20,30 @@
     <button class="login">Login</button>
 </div>
 
-  <div class="content-wrapper">
-    <div class="container" id="container">
+<div class="content-wrapper">
+  <!-- New Filter Container -->
+  <div class="filter-container" id="filter-container">
+    <select id="userTypeFilter">
+        <option value="">All Roles</option>
+        <option value="admin">Admin</option>
+        <option value="member">Member</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="Search by Name, Role and Title" />
+    <!-- New Order Filter Dropdown -->
+    <select id="orderFilter">
+        <option value="new">Newest First</option>
+        <option value="old">Oldest First</option>
+    </select>
+    <button id="searchButton">Search</button>
+</div>
+
+  
+  <!-- Existing Container for Article Cards -->
+  <div class="container" id="container">
       <!-- Cards will be dynamically inserted here -->
-    </div>
   </div>
+</div>
+
 
   <!-- MODAL (POST DETAILS) -->
   <div class="overlay" id="overlay" onclick="closeModal()"></div>
@@ -70,6 +89,7 @@
     <button onclick="closeModal()">Close</button>
   </div>
   <script src="CommunityLibrary.js"></script>
+  <script src="Protect.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
