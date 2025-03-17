@@ -523,3 +523,38 @@ input::placeholder, select {
     width: 100%;
     white-space: nowrap;
 }
+
+.register-box .popup {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(145deg, #c4d4bc, #90b07e);
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    font-family: 'Times New Roman', Times, serif;
+    border: 2px solid transparent;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    white-space: normal;       
+    overflow: visible;         
+    text-overflow: unset;    
+    min-width: 100px;         
+    max-width: 60%; 
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.register-box .popup.error {
+    color: #ab4e4e;        
+    border: 1.5px solid #ab4e4e;
+}
