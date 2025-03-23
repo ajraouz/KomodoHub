@@ -380,6 +380,12 @@ function showCompletionPopup() {
   const pointsDisplay = document.createElement('p');
   pointsDisplay.textContent = `⭐ You earned: ${points} points! ⭐`;
 
+  // Update points using the same approach as JigsawGame.js
+  const username = localStorage.getItem('username');
+  if (username) {
+      updateScoreInDB(username, points);
+  }
+
   const playAgainBtn = document.createElement('button');
   playAgainBtn.textContent = "🔄 Play Again";
   playAgainBtn.addEventListener('click', () => {
@@ -393,10 +399,31 @@ function showCompletionPopup() {
   });
 
   popup.appendChild(message);
-  popup.appendChild(pointsDisplay); // Add points display
+  popup.appendChild(pointsDisplay);
   popup.appendChild(playAgainBtn);
   popup.appendChild(moreGamesBtn);
   document.body.appendChild(popup);
+}
+
+function updateScoreInDB(username, score) {
+  fetch('/update_score', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `username=${encodeURIComponent(username)}&score=${encodeURIComponent(score)}`
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.error) {
+          console.error('Error updating score:', data.error);
+      } else {
+          console.log('Score updated successfully:', data.message);
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 }
     shuffleBtn.addEventListener('click', shuffleLetters);
     hintBtn.addEventListener('click', provideHint);
