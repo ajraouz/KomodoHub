@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       setTimeout(function() {
         alert("You must be logged in to access this page.");
         window.location.href = "/Web Pages/LoginPage.html"; }, 
-      20); // 20 milliseconds
+      50); // 50 milliseconds
       return;
     }
   }
