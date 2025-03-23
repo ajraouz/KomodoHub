@@ -9,8 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // If a restricted page is accessed by a non-logged-in user, redirect
   if (restrictedPages.includes(currentPage)) {
     if (!currentUser) {
-      alert("You must be logged in to access this page.");
-      window.location.href = "/Web Pages/LoginPage.html";
+      // delay the redirection to give the user a chance to see the protected Pages
+      setTimeout(function() {
+        alert("You must be logged in to access this page.");
+        window.location.href = "/Web Pages/LoginPage.html"; }, 
+      20); // 20 milliseconds
       return;
     }
   }
