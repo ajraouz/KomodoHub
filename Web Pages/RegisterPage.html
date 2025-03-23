@@ -104,8 +104,6 @@
             }
         });
 
-
-
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -281,7 +279,7 @@
 
             setTimeout(() => {
                 popup.style.opacity = "0";
-                setTimeout(() => popup.style.display = "none", 300);
+                setTimeout(() => popup.style.display = "none", 400);
                 if (errorField) {
                     errorField.classList.remove("input-error");
                 }
