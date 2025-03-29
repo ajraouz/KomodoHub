@@ -15,7 +15,7 @@
     </div>
     <div class="form-container register-box">
         <h2 class="form-title">Register to Komodo Hub</h2>
-        <form id="registerForm" action="/register" method="POST">
+        <form id="registerForm" action="/register" method="POST"novalidate>
             <input type="text" name="name" placeholder="Name *" required>
             <input type="text" name="username" placeholder="Username *" oninput="this.value = this.value.replace(/\s/g, '')" required>
             <div id="usernameError" class="error-message-username"></div>
@@ -158,19 +158,6 @@
             formData.append('user_type', userType);
             formData.append('accessCode', accessCode);
 
-            // If user is a member, store the data in localStorage and redirect to payment page
-            if (userType === 'member') {
-                localStorage.setItem('registrationData', JSON.stringify({
-                    name: name,
-                    username: username,
-                    password: password,
-                    userType: userType
-                }));
-                
-                // Redirect to payment page
-                window.location.replace('/Web Pages/PaymentPage.html');
-            }
-
             // If student or teacher, check access code
             if (userType === 'student' || userType === 'teacher') {
                 if (!accessCode.trim()) {  // Fix: Ensure input is not just spaces
@@ -195,6 +182,20 @@
                 }, 2501);
                 return;
             }
+
+            // If user is a member, store the data in localStorage and redirect to payment page
+            if (userType === 'member') {
+                localStorage.setItem('registrationData', JSON.stringify({
+                    name: name,
+                    username: username,
+                    password: password,
+                    userType: userType
+                }));
+                
+                // Redirect to payment page
+                window.location.replace('/Web Pages/PaymentPage.html');
+            }
+
             // Handle student or teacher registration immediately
             if (userType != 'member'){
                 fetch('/register', {
