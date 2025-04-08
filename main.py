@@ -346,24 +346,28 @@ def post_article():
         title = request.form.get('title')
         content = request.form.get('content')
         owner = request.form.get('owner')
-        date = datetime.now().strftime("%Y-%m-%d")
-        time = datetime.now().strftime("%H:%M:%S")
-
-        image = request.files.get('image')
-        image_blob = image.read() if image else None  
-
+        now = datetime.now()
+        date, t = now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
+        img = request.files.get('image')
+        blob = img.read() if img else None
         if not title.strip() or not content.strip() or not owner.strip():
-            return jsonify({"error": "Fields cannot be empty or blank"}), 400
-
-        conn = sqlite3.connect("KH_Database.db")
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO School_Post (Owner, Title, Image, Content, Date, Time) VALUES (?, ?, ?, ?, ?, ?)", (owner, title, image_blob, content, date, time))
-
-        conn.commit()
-        conn.close()
-
+            return jsonify({"error": "Fields cannot be empty"}), 400
+        conn = sqlite3.connect("KH_Database.db"); cur = conn.cursor()
+        cur.execute("INSERT INTO School_Post (Owner, Title, Image, Content, Date, Time) VALUES (?, ?, ?, ?, ?, ?)",
+                    (owner, title, blob, content, date, t))
+        cur.execute("SELECT user_id, user_type FROM users WHERE username=?", (owner,))
+        row = cur.fetchone()
+        if row:
+            uid, utype = row
+            cur.execute("SELECT (SELECT COUNT(*) FROM School_Post WHERE Owner=?)+(SELECT COUNT(*) FROM Community_Post WHERE Owner=?)", (owner, owner))
+            total = cur.fetchone()[0]
+            if utype=="student": cur.execute("UPDATE students SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="teacher": cur.execute("UPDATE teachers SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="member": cur.execute("UPDATE members SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="admin": cur.execute("UPDATE admin SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="principal": cur.execute("UPDATE school SET TotalPosts=? WHERE user_id=?", (total, uid))
+        conn.commit(); conn.close()
         return jsonify({"message": "Post uploaded successfully!"}), 200
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -373,25 +377,28 @@ def post_community_article():
         title = request.form.get('title')
         content = request.form.get('content')
         owner = request.form.get('owner')
-        date = datetime.now().strftime("%Y-%m-%d")
-        time = datetime.now().strftime("%H:%M:%S")
-
-        image = request.files.get('image')
-        image_blob = image.read() if image else None  
-
+        now = datetime.now()
+        date, t = now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
+        img = request.files.get('image')
+        blob = img.read() if img else None
         if not title.strip() or not content.strip() or not owner.strip():
-            return jsonify({"error": "Fields cannot be empty or blank"}), 400
-
-        conn = sqlite3.connect("KH_Database.db")
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO Community_Post (Owner, Title, Image, Content, Date, Time) VALUES (?, ?, ?, ?, ?, ?)", 
-                       (owner, title, image_blob, content, date, time))
-
-        conn.commit()
-        conn.close()
-
+            return jsonify({"error": "Fields cannot be empty"}), 400
+        conn = sqlite3.connect("KH_Database.db"); cur = conn.cursor()
+        cur.execute("INSERT INTO Community_Post (Owner, Title, Image, Content, Date, Time) VALUES (?, ?, ?, ?, ?, ?)",
+                    (owner, title, blob, content, date, t))
+        cur.execute("SELECT user_id, user_type FROM users WHERE username=?", (owner,))
+        row = cur.fetchone()
+        if row:
+            uid, utype = row
+            cur.execute("SELECT (SELECT COUNT(*) FROM School_Post WHERE Owner=?)+(SELECT COUNT(*) FROM Community_Post WHERE Owner=?)", (owner, owner))
+            total = cur.fetchone()[0]
+            if utype=="student": cur.execute("UPDATE students SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="teacher": cur.execute("UPDATE teachers SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="member": cur.execute("UPDATE members SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="admin": cur.execute("UPDATE admin SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype=="principal": cur.execute("UPDATE school SET TotalPosts=? WHERE user_id=?", (total, uid))
+        conn.commit(); conn.close()
         return jsonify({"message": "Community post uploaded successfully!"}), 200
-
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -401,140 +408,135 @@ def delete_post():
     try:
         data = request.get_json()
         post_id = data.get("id")
-        username = data.get("owner")  # The user requesting the deletion
-
-        if not post_id or not username:
+        requester = data.get("owner")
+        if not post_id or not requester:
             return jsonify({"error": "Invalid request data"}), 400
 
         conn = sqlite3.connect("KH_Database.db")
-        cursor = conn.cursor()
+        cur = conn.cursor()
 
-        # Get post owner and the post's userType (aliased correctly)
-        cursor.execute("""
-            SELECT sp.Owner, u.user_type AS userType 
-            FROM School_Post sp
-            JOIN users u ON sp.Owner = u.username
-            WHERE sp.ID = ?
-        """, (post_id,))
-        
-        post = cursor.fetchone()
-        if not post:
+        # Retrieve post details (owner and user type) from School_Post.
+        cur.execute("SELECT sp.Owner, u.user_type FROM School_Post sp JOIN users u ON sp.Owner = u.username WHERE sp.ID=?", (post_id,))
+        post_data = cur.fetchone()
+        if not post_data:
             conn.close()
             return jsonify({"error": "Post not found"}), 404
+        post_owner, post_userType = post_data
 
-        post_owner, post_userType = post
-
-        # Fetch the requesting user's userType using the correct column
-        cursor.execute("SELECT user_type AS userType FROM users WHERE username = ?", (username,))
-        user = cursor.fetchone()
-        
-        if not user:
+        # Retrieve the requester's user type.
+        cur.execute("SELECT user_type FROM users WHERE username=?", (requester,))
+        req_data = cur.fetchone()
+        if not req_data:
             conn.close()
             return jsonify({"error": "User not found"}), 404
+        req_type = req_data[0]
 
-        userType = user[0]
+        print(f"DEBUG: Deletion Request by {requester} ({req_type}) on Post by {post_owner} ({post_userType})")
 
-        # Debug log to trace deletion attempt
-        print(f"DEBUG: Deletion Request by {username} ({userType}) on Post by {post_owner} ({post_userType})")
-
-        if userType == "principal":
-            cursor.execute("SELECT user_id FROM school WHERE user_id = (SELECT user_id FROM users WHERE username = ?)", (username,))
-            school_data = cursor.fetchone()
-
-            if school_data and (username == post_owner or post_owner in ["school", username]):
-                authorized = True
-            else:
-                authorized = False
+        if req_type == "principal":
+            cur.execute("SELECT user_id FROM school WHERE user_id=(SELECT user_id FROM users WHERE username=?)", (requester,))
+            sch = cur.fetchone()
+            authorized = bool(sch and (requester == post_owner or post_owner in ["school", requester]))
         else:
-            # Role-Based Deletion Authorization
-            authorized = (
-                userType == "admin" or  
-                (userType == "principal" and (username == post_owner or post_userType in ["teacher", "student"])) or  
-                (userType == "teacher" and (username == post_owner or post_userType in ["student"])) or  
-                (userType in ["student", "member"] and username == post_owner) 
-            )
-
+            authorized = (req_type == "admin" or  
+                          (req_type == "principal" and (requester == post_owner or post_userType in ["teacher", "student"])) or  
+                          (req_type == "teacher" and (requester == post_owner or post_userType in ["student"])) or  
+                          (req_type in ["student", "member"] and requester == post_owner))
         if not authorized:
             conn.close()
             return jsonify({"error": "Unauthorized to delete this post"}), 403
 
-        # Delete the post if authorized
-        cursor.execute("DELETE FROM School_Post WHERE ID = ?", (post_id,))
+        cur.execute("DELETE FROM School_Post WHERE ID=?", (post_id,))
+
+        cur.execute("SELECT (SELECT COUNT(*) FROM School_Post WHERE Owner=?)+(SELECT COUNT(*) FROM Community_Post WHERE Owner=?)", (post_owner, post_owner))
+        total_posts = cur.fetchone()[0]
+
+        cur.execute("SELECT user_id, user_type FROM users WHERE username=?", (post_owner,))
+        owner_data = cur.fetchone()
+        if owner_data:
+            owner_id, owner_type = owner_data
+            if owner_type == "student":
+                cur.execute("UPDATE students SET TotalPosts=? WHERE user_id=?", (total_posts, owner_id))
+            elif owner_type == "teacher":
+                cur.execute("UPDATE teachers SET TotalPosts=? WHERE user_id=?", (total_posts, owner_id))
+            elif owner_type == "member":
+                cur.execute("UPDATE members SET TotalPosts=? WHERE user_id=?", (total_posts, owner_id))
+            elif owner_type == "admin":
+                cur.execute("UPDATE admin SET TotalPosts=? WHERE user_id=?", (total_posts, owner_id))
+            elif owner_type == "principal":
+                cur.execute("UPDATE school SET TotalPosts=? WHERE user_id=?", (total_posts, owner_id))
         conn.commit()
         conn.close()
-
         return jsonify({"message": "Post deleted successfully!"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 @app.route('/delete_community_post', methods=['POST'])
 def delete_community_post():
     try:
         data = request.get_json()
-        post_id = data.get("id")
-        username = data.get("owner")  # The user requesting the deletion
-
-        if not post_id or not username:
+        post_id, requester = data.get("id"), data.get("owner")
+        if not post_id or not requester:
             return jsonify({"error": "Invalid request data"}), 400
 
         conn = sqlite3.connect("KH_Database.db")
-        cursor = conn.cursor()
-
-        # Get community post owner and userType
-        cursor.execute("""
-            SELECT sp.Owner, u.user_type AS userType 
-            FROM Community_Post sp
-            JOIN users u ON sp.Owner = u.username
-            WHERE sp.ID = ?
-        """, (post_id,))
+        cur = conn.cursor()
         
-        post = cursor.fetchone()
-        if not post:
+        cur.execute("SELECT sp.Owner, u.user_type FROM Community_Post sp JOIN users u ON sp.Owner = u.username WHERE sp.ID=?", (post_id,))
+        post_data = cur.fetchone()
+        if not post_data:
             conn.close()
             return jsonify({"error": "Post not found"}), 404
+        post_owner, post_userType = post_data
 
-        post_owner, post_userType = post
-
-        # Fetch the requesting user's userType
-        cursor.execute("SELECT user_type AS userType FROM users WHERE username = ?", (username,))
-        user = cursor.fetchone()
-        if not user:
+        cur.execute("SELECT user_type FROM users WHERE username=?", (requester,))
+        req_data = cur.fetchone()
+        if not req_data:
             conn.close()
             return jsonify({"error": "User not found"}), 404
+        req_type = req_data[0]
 
-        userType = user[0]
-
-        print(f"DEBUG: Community Deletion Request by {username} ({userType}) on Post by {post_owner} ({post_userType})")
-
-        if userType == "principal":
-            cursor.execute("SELECT user_id FROM school WHERE user_id = (SELECT user_id FROM users WHERE username = ?)", (username,))
-            school_data = cursor.fetchone()
-            # Adjust the condition to check for "community" as needed
-            if school_data and (username == post_owner or post_owner in ["community", username]):
-                authorized = True
-            else:
-                authorized = False
+        print(f"DEBUG: Community Deletion Request by {requester} ({req_type}) on Post by {post_owner} ({post_userType})")
+        
+        if req_type == "principal":
+            cur.execute("SELECT user_id FROM school WHERE user_id=(SELECT user_id FROM users WHERE username=?)", (requester,))
+            sch = cur.fetchone()
+            authorized = bool(sch and (requester == post_owner or post_owner in ["community", requester]))
         else:
-            authorized = (
-                userType == "admin" or  
-                (userType == "principal" and (username == post_owner or post_userType in ["teacher", "student"])) or  
-                (userType == "teacher" and (username == post_owner or post_userType in ["student"])) or  
-                (userType in ["student", "member"] and username == post_owner) 
-            )
-
+            authorized = (req_type == "admin" or 
+                          (req_type == "principal" and (requester == post_owner or post_userType in ["teacher", "student"])) or
+                          (req_type == "teacher" and (requester == post_owner or post_userType in ["student"])) or
+                          (req_type in ["student", "member"] and requester == post_owner))
         if not authorized:
             conn.close()
             return jsonify({"error": "Unauthorized to delete this post"}), 403
 
-        cursor.execute("DELETE FROM Community_Post WHERE ID = ?", (post_id,))
+        cur.execute("DELETE FROM Community_Post WHERE ID=?", (post_id,))
+
+        cur.execute("SELECT (SELECT COUNT(*) FROM School_Post WHERE Owner=?)+(SELECT COUNT(*) FROM Community_Post WHERE Owner=?)", (post_owner, post_owner))
+        total = cur.fetchone()[0]
+
+        cur.execute("SELECT user_id, user_type FROM users WHERE username=?", (post_owner,))
+        owner_data = cur.fetchone()
+        if owner_data:
+            uid, utype = owner_data
+            if utype == "student":
+                cur.execute("UPDATE students SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype == "teacher":
+                cur.execute("UPDATE teachers SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype == "member":
+                cur.execute("UPDATE members SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype == "admin":
+                cur.execute("UPDATE admin SET TotalPosts=? WHERE user_id=?", (total, uid))
+            elif utype == "principal":
+                cur.execute("UPDATE school SET TotalPosts=? WHERE user_id=?", (total, uid))
         conn.commit()
         conn.close()
-
         return jsonify({"message": "Community post deleted successfully!"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 # Shayan's work ends here
 
 
